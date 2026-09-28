@@ -5,6 +5,9 @@
  */
 export const whatsappDigits = (raw: string | null | undefined) => String(raw ?? "").replace(/\D/g, "");
 
+/** The public inbox, used wherever Site Settings has no email of its own. */
+export const DEFAULT_EMAIL = "info@zirkadigitalsolutions.com";
+
 /** Opening line pre-filled in the visitor's WhatsApp, so the first message is one tap. */
 export const WHATSAPP_GREETING = "Hi Zirka, I'd like to talk about my marketing.";
 

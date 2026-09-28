@@ -189,8 +189,42 @@ export const SiteSettings: GlobalConfig = {
               },
             },
             { name: "phoneDisplay", type: "text", defaultValue: "+1 (678) 799–4634" },
-            { name: "email", type: "email" },
+            {
+              name: "email",
+              type: "email",
+              defaultValue: "info@zirkadigitalsolutions.com",
+              admin: { description: "Shown on the contact page, footer and privacy policy." },
+            },
             { name: "socialHandle", type: "text", defaultValue: "zirka digital solutions" },
+            {
+              type: "row",
+              fields: (
+                [
+                  ["facebookUrl", "Facebook page", "facebook.com"],
+                  ["instagramUrl", "Instagram profile", "instagram.com"],
+                  ["linkedinUrl", "LinkedIn page", "linkedin.com"],
+                ] as const
+              ).map(([name, label, host]) => ({
+                name,
+                label,
+                type: "text" as const,
+                admin: {
+                  description: `Full link, e.g. https://www.${host}/yourpage. Leave empty to hide it.`,
+                },
+                validate: (value: unknown) => {
+                  const raw = String(value ?? "").trim();
+                  if (!raw) return true;
+                  try {
+                    const url = new URL(raw);
+                    return url.protocol === "https:" && url.hostname.replace(/^www\./, "").endsWith(host)
+                      ? true
+                      : `Use the full https:// link to your ${host} page.`;
+                  } catch {
+                    return `Use the full https:// link to your ${host} page.`;
+                  }
+                },
+              })),
+            },
             { name: "hours", type: "text", defaultValue: "Monday – Friday, 9am – 6pm" },
           ],
         },

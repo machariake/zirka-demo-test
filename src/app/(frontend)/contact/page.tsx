@@ -7,6 +7,7 @@ import { pageMeta } from "@/lib/seo";
 import JsonLd from "@/components/JsonLd";
 import { breadcrumbSchema } from "@/lib/schema";
 import { WHATSAPP_GREETING, whatsappUrl } from "@/lib/contact";
+import { SocialIcon } from "@/components/Icons";
 
 export const metadata: Metadata = pageMeta({
   title: "Contact",
@@ -104,15 +105,31 @@ export default async function ContactPage() {
                 <a href={`mailto:${settings.email}`}>{settings.email}</a>
               </div>
             )}
-            {settings.socialHandle && (
+            {settings.social.length > 0 ? (
               <div className="info-block">
                 <h3>Social</h3>
-                <p>
-                  Facebook &amp; Instagram
-                  <br />
-                  {settings.socialHandle}
-                </p>
+                <ul className="contact-social">
+                  {settings.social.map((s) => (
+                    <li key={s.network}>
+                      <a href={s.url} target="_blank" rel="noopener noreferrer">
+                        <SocialIcon network={s.network} />
+                        {s.network}
+                      </a>
+                    </li>
+                  ))}
+                </ul>
               </div>
+            ) : (
+              settings.socialHandle && (
+                <div className="info-block">
+                  <h3>Social</h3>
+                  <p>
+                    Facebook &amp; Instagram
+                    <br />
+                    {settings.socialHandle}
+                  </p>
+                </div>
+              )
             )}
             {settings.hours && (
               <div className="info-block">

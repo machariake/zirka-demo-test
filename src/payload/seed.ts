@@ -165,6 +165,7 @@ import {
         "Zirka helps growing businesses generate more leads and revenue through paid advertising, SEO, high-converting websites, content, and smart automation.",
       whatsapp: "16787994634",
       phoneDisplay: "+1 (678) 799–4634",
+      email: "info@zirkadigitalsolutions.com",
       socialHandle: "zirka digital solutions",
       hours: "Monday – Friday, 9am – 6pm",
       stats: stats.map((s) => ({ value: s.num, label: s.label })),

@@ -1531,8 +1531,23 @@ export interface SiteSetting {
    */
   whatsapp?: string | null;
   phoneDisplay?: string | null;
+  /**
+   * Shown on the contact page, footer and privacy policy.
+   */
   email?: string | null;
   socialHandle?: string | null;
+  /**
+   * Full link, e.g. https://www.facebook.com/yourpage. Leave empty to hide it.
+   */
+  facebookUrl?: string | null;
+  /**
+   * Full link, e.g. https://www.instagram.com/yourpage. Leave empty to hide it.
+   */
+  instagramUrl?: string | null;
+  /**
+   * Full link, e.g. https://www.linkedin.com/yourpage. Leave empty to hide it.
+   */
+  linkedinUrl?: string | null;
   hours?: string | null;
   /**
    * The four figures under the hero.
@@ -1810,6 +1825,9 @@ export interface SiteSettingsSelect<T extends boolean = true> {
   phoneDisplay?: T;
   email?: T;
   socialHandle?: T;
+  facebookUrl?: T;
+  instagramUrl?: T;
+  linkedinUrl?: T;
   hours?: T;
   stats?:
     | T

@@ -2,6 +2,7 @@ import Link from "next/link";
 import Image from "next/image";
 import { getFeatures, getSettings, getSolutionCategories, hasPosts } from "@/lib/cms";
 import { WHATSAPP_GREETING, whatsappUrl } from "@/lib/contact";
+import { SocialIcon } from "./Icons";
 
 /**
  * Brief §27: who Zirka is, the four solutions, the main pages and the legal
@@ -99,6 +100,17 @@ export default async function Footer() {
               <Link href="/contact">All contact options</Link>
             </li>
           </ul>
+          {settings.social.length > 0 && (
+            <ul className="foot-social" aria-label="Zirka on social media">
+              {settings.social.map((s) => (
+                <li key={s.network}>
+                  <a href={s.url} target="_blank" rel="noopener noreferrer" aria-label={`Zirka on ${s.network}`}>
+                    <SocialIcon network={s.network} />
+                  </a>
+                </li>
+              ))}
+            </ul>
+          )}
         </div>
       </div>
 

@@ -2959,6 +2959,53 @@ section {
   color: var(--slate);
 }
 
+.audit__next-heading {
+  margin-top: 40px;
+}
+
+.audit__next {
+  list-style: none;
+  margin: 18px 0 0;
+  padding: 0;
+  display: flex;
+  flex-direction: column;
+  gap: 18px;
+}
+
+.audit__next li {
+  display: grid;
+  grid-template-columns: 36px minmax(0, 1fr);
+  gap: 14px;
+  align-items: start;
+}
+
+.audit__next-idx {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  width: 32px;
+  height: 32px;
+  border-radius: 50%;
+  border: 1px solid var(--gold-soft);
+  color: var(--gold);
+  font-family: var(--font-mono), monospace;
+  font-size: 12px;
+}
+
+.audit__next strong {
+  display: block;
+  font-weight: 500;
+  color: var(--ink);
+}
+
+.audit__next li span:not(.audit__next-idx) {
+  display: block;
+  margin-top: 2px;
+  font-size: 0.95rem;
+  line-height: 1.55;
+  color: var(--slate);
+}
+
 .audit__note {
   margin: 20px 0 0;
   font-size: 0.93rem;
@@ -3140,6 +3187,51 @@ footer::before {
   transition: width 0.3s ease;
 }
 
+.foot-col .foot-social {
+  list-style: none;
+  display: flex;
+  flex-direction: row;
+  gap: 10px;
+  margin: 18px 0 0;
+  padding: 0;
+}
+
+.foot-social a {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  width: 36px;
+  height: 36px;
+  border: 1px solid rgba(242, 239, 230, 0.18);
+  border-radius: 50%;
+  color: rgba(242, 239, 230, 0.85);
+  transition: border-color 0.2s ease, color 0.2s ease;
+}
+
+.foot-social a:hover {
+  border-color: var(--gold-soft);
+  color: var(--hero-paper);
+}
+
+.foot-social a::after {
+  display: none;
+}
+
+.contact-social {
+  list-style: none;
+  margin: 0;
+  padding: 0;
+  display: flex;
+  flex-direction: column;
+  gap: 8px;
+}
+
+.contact-social a {
+  display: inline-flex;
+  align-items: center;
+  gap: 10px;
+}
+
 .foot-note {
   font-size: 13.5px;
   color: rgba(242, 239, 230, 0.6);
@@ -3181,7 +3273,8 @@ footer::before {
   .foot-grid {
     grid-template-columns: repeat(2, minmax(0, 1fr));
   }
-  .foot-brand {
+  .foot-brand,
+  .foot-grid > .foot-col:last-child {
     grid-column: 1 / -1;
   }
 }
