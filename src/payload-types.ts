@@ -216,6 +216,10 @@ export interface Quote {
   phone?: string | null;
   company?: string | null;
   /**
+   * Filled in when the visitor came from a plan on the Pricing page.
+   */
+  plan?: string | null;
+  /**
    * What they asked us to quote for.
    */
   services?: (number | Service)[] | null;
@@ -1049,6 +1053,7 @@ export interface QuotesSelect<T extends boolean = true> {
   email?: T;
   phone?: T;
   company?: T;
+  plan?: T;
   services?: T;
   budget?: T;
   timeline?: T;

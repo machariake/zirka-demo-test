@@ -52,6 +52,17 @@ export const organizationSchema = (s: OrgInput) => ({
     : {}),
 });
 
+/** The site itself, tied to the business so search engines read one entity. */
+export const websiteSchema = (companyName: string) => ({
+  "@context": "https://schema.org",
+  "@type": "WebSite",
+  "@id": `${SITE_URL}/#website`,
+  name: companyName,
+  url: SITE_URL,
+  publisher: { "@id": ORG_ID },
+  inLanguage: "en",
+});
+
 export const serviceSchema = (service: ServiceDetailView, companyName: string) => ({
   "@context": "https://schema.org",
   "@type": "Service",

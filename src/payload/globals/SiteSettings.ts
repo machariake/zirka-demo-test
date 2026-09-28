@@ -178,6 +178,15 @@ export const SiteSettings: GlobalConfig = {
               type: "text",
               defaultValue: "16787994634",
               admin: { description: "Digits only, including country code — used for the wa.me link." },
+              // Spaces, dashes and a leading + are stripped when the site reads it;
+              // this only stops a number too short to reach anyone.
+              validate: (value: unknown) => {
+                const digits = String(value ?? "").replace(/\D/g, "");
+                if (!digits) return true;
+                return digits.length >= 8 && digits.length <= 15
+                  ? true
+                  : "Enter the full number with country code, e.g. 16787994634.";
+              },
             },
             { name: "phoneDisplay", type: "text", defaultValue: "+1 (678) 799–4634" },
             { name: "email", type: "email" },

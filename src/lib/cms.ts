@@ -3,6 +3,7 @@ import config from "@payload-config";
 import type { Service, CaseStudy, TeamMember, Faq, Engagement, Testimonial, Project, Post } from "@/payload-types";
 import { services as seedServices } from "@/lib/data";
 import { isSiteTheme, type SiteThemeId } from "@/lib/site-themes";
+import { whatsappDigits } from "@/lib/contact";
 
 export const getCms = async () => getPayload({ config });
 
@@ -711,7 +712,8 @@ export const getSettings = async () => {
     story: (s.story ?? []).map((p) => p.text).filter(Boolean),
     storyImage: urlOf(s.storyImage as MediaLike, "/images/about-office.jpg"),
     storyAlt: altOf(s.storyImage as MediaLike, "The Zirka team at work"),
-    whatsapp: s.whatsapp ?? "16787994634",
+    // Digits only, whatever was typed in the admin, so every wa.me link works.
+    whatsapp: whatsappDigits(s.whatsapp ?? "16787994634"),
     phoneDisplay: s.phoneDisplay ?? "",
     email: s.email ?? "",
     socialHandle: s.socialHandle ?? "",

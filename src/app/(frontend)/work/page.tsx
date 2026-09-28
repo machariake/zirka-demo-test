@@ -5,6 +5,8 @@ import WorkCard from "@/components/WorkCard";
 import ProjectCard from "@/components/ProjectCard";
 import { getCaseStudies, getProjects } from "@/lib/cms";
 import { pageMeta } from "@/lib/seo";
+import JsonLd from "@/components/JsonLd";
+import { breadcrumbSchema } from "@/lib/schema";
 
 export async function generateMetadata(): Promise<Metadata> {
   const [work, projects] = await Promise.all([getCaseStudies(), getProjects()]);
@@ -30,6 +32,12 @@ export default async function WorkPage() {
 
   return (
     <>
+      <JsonLd
+        data={breadcrumbSchema([
+          { name: "Home", path: "/" },
+          { name: "Work", path: "/work" },
+        ])}
+      />
       <PageHeader
         eyebrow="Selected work"
         title={

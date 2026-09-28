@@ -8,7 +8,7 @@ import WorkCard from "@/components/WorkCard";
 import ProjectCard from "@/components/ProjectCard";
 import JsonLd from "@/components/JsonLd";
 import VideoEmbed, { hasVideo } from "@/components/VideoEmbed";
-import { CheckIcon, ArrowIcon } from "@/components/Icons";
+import { CheckIcon, ArrowIcon, WhatsAppIcon } from "@/components/Icons";
 import {
   getService,
   getServices,
@@ -16,7 +16,9 @@ import {
   getSettings,
   getSolutionCategories,
   getProcessSteps,
+  getFeatures,
 } from "@/lib/cms";
+import { whatsappUrl } from "@/lib/contact";
 import { relatedServices } from "@/lib/related";
 import ServiceCard from "@/components/ServiceCard";
 import { serviceSchema, breadcrumbSchema } from "@/lib/schema";
@@ -45,14 +47,19 @@ export async function generateMetadata({ params }: Props): Promise<Metadata> {
 
 export default async function ServicePage({ params }: Props) {
   const { slug } = await params;
-  const [service, settings, all, categories, steps] = await Promise.all([
+  const [service, settings, all, categories, steps, features] = await Promise.all([
     getService(slug),
     getSettings(),
     getServices(),
     getSolutionCategories(),
     getProcessSteps(),
+    getFeatures(),
   ]);
   if (!service) notFound();
+
+  const whatsapp = features.showWhatsApp
+    ? whatsappUrl(settings.whatsapp, `Hi Zirka, I'd like to talk about ${service.name}.`)
+    : null;
 
   const related = relatedServices(service.slug, categories, all);
   const hasRealWork = service.relatedWork.some((w) => !w.sample);
@@ -110,7 +117,7 @@ export default async function ServicePage({ params }: Props) {
 
       {/* Brief §21: problem, solution, what's included, process, proof, FAQ, related. */}
       <section className="section--flow">
-        <div className="wrap">
+        <div className="wrap service-layout">
           <div className="service-page">
             {service.problem && (
               <div className="service-page__block service-page__intro">
@@ -151,6 +158,30 @@ export default async function ServicePage({ params }: Props) {
               </div>
             )}
           </div>
+
+          {/* Stays in view beside the long-form content, so the next step is never a scroll away. */}
+          <aside className="service-aside" aria-labelledby="service-aside-heading">
+            <div className="service-aside__card">
+              <span className="eyebrow">Next step</span>
+              <h2 id="service-aside-heading">Not sure {service.name} is the right fit?</h2>
+              <p>
+                Start with a free marketing audit. We&rsquo;ll review what you have now and tell you
+                honestly whether this service is where you&rsquo;ll see the biggest difference.
+              </p>
+              <Link className="btn btn-gold" href="/free-marketing-audit" data-track="main_cta_click">
+                Get a Free Marketing Audit
+              </Link>
+              <Link className="btn btn-outline" href={`/quote?service=${service.slug}`}>
+                Get a quote
+              </Link>
+              {whatsapp && (
+                <a className="service-aside__direct" href={whatsapp} target="_blank" rel="noopener noreferrer">
+                  <WhatsAppIcon />
+                  Ask a strategist on WhatsApp
+                </a>
+              )}
+            </div>
+          </aside>
         </div>
       </section>
 
