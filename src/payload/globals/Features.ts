@@ -322,9 +322,24 @@ export const Features: GlobalConfig = {
           label: "Contact & WhatsApp",
           fields: [
             toggle("showWhatsApp", "WhatsApp buttons", "WhatsApp buttons in the hero and closing banners."),
+            toggle(
+              "whatsappFloat",
+              "Floating WhatsApp button",
+              "A round WhatsApp button fixed to the corner of every page. Needs WhatsApp buttons switched on too."
+            ),
             toggle("contactFormEnabled", "Contact form", "When off, the contact page shows your WhatsApp and details only."),
             toggle("quotesEnabled", "Quote requests", "Let visitors pick services and request a quote from the website."),
             toggle("bookingEnabled", "Online booking", "Let people book a free consultation from the website. Set your hours under Bookings → Booking Availability."),
+          ],
+        },
+        {
+          label: "Languages",
+          fields: [
+            toggle(
+              "translateEnabled",
+              "Automatic translation",
+              "Shows a language menu, and translates the site automatically for visitors whose device is set to another language (visitors from a non-English country are offered it instead). Uses Google Translate, which only loads once a visitor uses another language; the privacy policy updates itself to match."
+            ),
           ],
         },
         {

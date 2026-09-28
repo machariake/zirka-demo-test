@@ -552,6 +552,8 @@ const FEATURE_DEFAULTS = {
   showValues: true,
   showLeadership: true,
   showWhatsApp: true,
+  whatsappFloat: true,
+  translateEnabled: true,
   contactFormEnabled: true,
   quotesEnabled: true,
   bookingEnabled: true,

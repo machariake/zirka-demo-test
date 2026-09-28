@@ -1699,6 +1699,10 @@ export interface Feature {
    */
   showWhatsApp?: boolean | null;
   /**
+   * A round WhatsApp button fixed to the corner of every page. Needs WhatsApp buttons switched on too.
+   */
+  whatsappFloat?: boolean | null;
+  /**
    * When off, the contact page shows your WhatsApp and details only.
    */
   contactFormEnabled?: boolean | null;
@@ -1710,6 +1714,10 @@ export interface Feature {
    * Let people book a free consultation from the website. Set your hours under Bookings → Booking Availability.
    */
   bookingEnabled?: boolean | null;
+  /**
+   * Shows a language menu, and translates the site automatically for visitors whose device is set to another language (visitors from a non-English country are offered it instead). Uses Google Translate, which only loads once a visitor uses another language; the privacy policy updates itself to match.
+   */
+  translateEnabled?: boolean | null;
   /**
    * Anonymous page-view counting for the dashboard charts. Turning this off stops new data; existing data is kept.
    */
@@ -1894,9 +1902,11 @@ export interface FeaturesSelect<T extends boolean = true> {
   showValues?: T;
   showLeadership?: T;
   showWhatsApp?: T;
+  whatsappFloat?: T;
   contactFormEnabled?: T;
   quotesEnabled?: T;
   bookingEnabled?: T;
+  translateEnabled?: T;
   analyticsEnabled?: T;
   gaMeasurementId?: T;
   googleVerification?: T;

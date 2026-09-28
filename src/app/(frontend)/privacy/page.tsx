@@ -1,6 +1,6 @@
 import type { Metadata } from "next";
 import PageHeader from "@/components/PageHeader";
-import { getGaMeasurementId, getSettings } from "@/lib/cms";
+import { getFeatures, getGaMeasurementId, getSettings } from "@/lib/cms";
 import { pageMeta } from "@/lib/seo";
 
 export const metadata: Metadata = pageMeta({
@@ -17,7 +17,7 @@ export const metadata: Metadata = pageMeta({
 const LAST_UPDATED = "September 2026";
 
 export default async function PrivacyPage() {
-  const [settings, gaId] = await Promise.all([getSettings(), getGaMeasurementId()]);
+  const [settings, gaId, features] = await Promise.all([getSettings(), getGaMeasurementId(), getFeatures()]);
 
   return (
     <>
@@ -79,6 +79,26 @@ export default async function PrivacyPage() {
             </>
           )}
 
+          {features.translateEnabled && (
+            <>
+              <h2>Translation</h2>
+              <p>
+                If your device is set to a language other than English, or you pick one from the
+                language menu, the site is translated automatically by Google Translate. Only then
+                is Google&rsquo;s translation script loaded, and the text of the pages you view is
+                sent to Google to be translated, under Google&rsquo;s own privacy policy. Visitors
+                reading in English never load it.
+              </p>
+              <p>
+                To remember your language between pages, a small &ldquo;googtrans&rdquo; cookie
+                holds the language code, and your browser&rsquo;s storage notes the language you
+                chose. If your device is set to English, we check which country your connection
+                comes from, using the country our host already sees, to offer a translation. We do
+                not store it.
+              </p>
+            </>
+          )}
+
           <h2>Our hosting and network providers</h2>
           <p>
             The site is hosted by Vercel and served through Cloudflare, which protect it and make
@@ -100,6 +120,8 @@ export default async function PrivacyPage() {
             {gaId
               ? "The only cookies visitors receive are the Google Analytics cookies described above, and none at all in the EEA, UK or Switzerland. "
               : "Visitors to the public site receive no cookies from us at all. "}
+            {features.translateEnabled &&
+              "Reading the site in another language adds the language cookie described under Translation. "}
             Our staff receive a login cookie when they sign in to manage the site, which does not
             affect visitors.
           </p>

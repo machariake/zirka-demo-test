@@ -3751,6 +3751,374 @@ footer::before {
 }
 
 /* ---------- PREVIEW BADGE (team only, during maintenance) ---------- */
+/* ---------- AD LANDING PAGES ---------- */
+.lp-hero {
+  background: var(--hero-ink);
+  color: var(--hero-paper);
+  border-radius: 0 0 18px 18px;
+  padding-bottom: 64px;
+}
+
+.lp-bar__wa svg {
+  width: 16px;
+  height: 16px;
+}
+
+.lp-hero__grid {
+  display: grid;
+  grid-template-columns: minmax(0, 1fr) minmax(0, 480px);
+  gap: 56px;
+  align-items: start;
+  padding-top: 48px;
+}
+
+.lp-hero__copy {
+  display: flex;
+  flex-direction: column;
+  gap: 18px;
+  padding-top: 12px;
+}
+
+.lp-hero__copy h1 {
+  font-size: clamp(2rem, 4.2vw, 3.2rem);
+  font-weight: 300;
+  letter-spacing: -0.025em;
+  line-height: 1.08;
+  max-width: 20ch;
+}
+
+.lp-hero__copy .lede {
+  max-width: 52ch;
+  font-size: 1.02rem;
+  line-height: 1.6;
+  color: rgba(245, 242, 230, 0.78);
+}
+
+.lp-hero__points {
+  list-style: none;
+  margin: 8px 0 0;
+  padding: 0;
+  display: flex;
+  flex-direction: column;
+  gap: 10px;
+  font-size: 0.98rem;
+}
+
+.lp-hero__points li {
+  display: flex;
+  align-items: center;
+  gap: 10px;
+}
+
+.lp-hero__points svg {
+  width: 16px;
+  height: 16px;
+  color: var(--gold-soft);
+  flex: none;
+}
+
+/* The form card keeps the site's light surface so fields read as usual. */
+.lp-hero__form {
+  color: var(--ink);
+  scroll-margin-top: 24px;
+}
+
+.lp-hero__form h2 {
+  font-size: 1.5rem;
+  font-weight: 300;
+  letter-spacing: -0.015em;
+  margin-bottom: 20px;
+}
+
+@media (max-width: 900px) {
+  .lp-hero__grid {
+    grid-template-columns: minmax(0, 1fr);
+    gap: 32px;
+    padding-top: 28px;
+  }
+}
+
+@media (max-width: 520px) {
+  .lp-bar__wa span {
+    display: none;
+  }
+  .lp-hero__form {
+    padding: 22px 18px;
+  }
+}
+
+/* On landing pages the WhatsApp button is the only way out, so it stays on phones (icon only). */
+.lp-bar .nav-right .lp-bar__wa {
+  display: inline-flex;
+}
+
+/* ---------- LANGUAGE MENU ---------- */
+.lang-menu {
+  position: relative;
+}
+
+.lang-menu__toggle {
+  display: inline-flex;
+  align-items: center;
+  gap: 6px;
+  height: 38px;
+  padding: 0 12px;
+  border-radius: 999px;
+  border: 1px solid var(--hero-line);
+  background: transparent;
+  color: var(--hero-paper);
+  font: inherit;
+  font-size: 12.5px;
+  font-weight: 600;
+  letter-spacing: 0.04em;
+  cursor: pointer;
+  transition: background-color 0.15s ease, border-color 0.15s ease;
+}
+
+.lang-menu__toggle svg {
+  width: 16px;
+  height: 16px;
+}
+
+.lang-menu__toggle:hover {
+  background: rgba(245, 242, 230, 0.08);
+  border-color: var(--gold-soft);
+}
+
+.lang-menu__panel {
+  position: absolute;
+  top: calc(100% + 12px);
+  right: 0;
+  z-index: 45;
+  width: 230px;
+  padding: 8px;
+  border-radius: 16px;
+  background: var(--paper-raised);
+  border: 1px solid var(--line);
+  box-shadow: var(--shadow);
+  color: var(--ink);
+}
+
+.lang-menu__panel[hidden] {
+  display: none;
+}
+
+.lang-menu__panel ul {
+  list-style: none;
+  margin: 0;
+  padding: 0;
+}
+
+.lang-menu__panel li button {
+  display: block;
+  width: 100%;
+  padding: 10px 12px;
+  border: 0;
+  border-radius: 10px;
+  background: transparent;
+  color: var(--ink);
+  font: inherit;
+  font-size: 15px;
+  text-align: start;
+  cursor: pointer;
+}
+
+.lang-menu__panel li button:hover,
+.lang-menu__panel li button:focus-visible {
+  background: color-mix(in srgb, var(--gold) 10%, transparent);
+}
+
+.lang-menu__panel li button[aria-current="true"] {
+  color: var(--gold);
+  font-weight: 600;
+}
+
+.lang-menu__more {
+  display: flex;
+  flex-direction: column;
+  gap: 6px;
+  margin: 6px 4px 0;
+  padding-top: 10px;
+  border-top: 1px solid var(--line);
+  font-size: 12px;
+  color: var(--slate);
+}
+
+.lang-menu__more select {
+  width: 100%;
+  padding: 8px 10px;
+  border-radius: 10px;
+  border: 1px solid var(--line);
+  background: var(--paper);
+  color: var(--ink);
+  font: inherit;
+  font-size: 14px;
+}
+
+.lang-menu__note {
+  margin: 8px 4px 2px;
+  font-size: 11.5px;
+  color: var(--slate);
+}
+
+@media (max-width: 520px) {
+  .lang-menu__code {
+    display: none;
+  }
+  .lang-menu__toggle {
+    width: 38px;
+    padding: 0;
+    justify-content: center;
+  }
+}
+
+/* Suggestion shown to English-browser visitors from a non-English country. */
+.lang-offer {
+  position: fixed;
+  left: 20px;
+  bottom: 20px;
+  z-index: 65;
+  display: flex;
+  flex-direction: column;
+  gap: 12px;
+  width: min(340px, calc(100vw - 100px));
+  padding: 18px 18px 16px;
+  border-radius: 16px;
+  background: var(--paper-raised);
+  border: 1px solid var(--line);
+  box-shadow: var(--shadow);
+  color: var(--ink);
+}
+
+.lang-offer p {
+  margin: 0;
+  display: flex;
+  flex-direction: column;
+  gap: 2px;
+  font-size: 1.05rem;
+  font-weight: 500;
+}
+
+.lang-offer__sub {
+  font-size: 0.9rem;
+  font-weight: 400;
+  color: var(--slate);
+}
+
+.lang-offer__actions {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 8px;
+}
+
+@media (max-width: 600px) {
+  .lang-offer {
+    left: 16px;
+    bottom: 16px;
+  }
+}
+
+/* ---------- GOOGLE TRANSLATE ---------- */
+/* The widget's own toolbar, hover tooltips and highlights: the header menu replaces them. */
+iframe.skiptranslate,
+.goog-te-banner-frame,
+#goog-gt-tt,
+.goog-te-balloon-frame,
+.VIpgJd-ZVi9od-ORHb-OEVmcd,
+.VIpgJd-yAWNEb-L7lbkb,
+#google_translate_element {
+  display: none !important;
+}
+
+/* The toolbar pushes the page down by setting body's top; undo it. */
+body {
+  top: 0 !important;
+}
+
+.goog-text-highlight,
+.VIpgJd-yAWNEb-VIpgJd-fmcmS-sn54Q {
+  background: none !important;
+  box-shadow: none !important;
+}
+
+/* Right-to-left languages: mirror the few pieces that are fixed to one side. */
+[dir="rtl"] .wa-float {
+  right: auto;
+  left: 20px;
+}
+
+[dir="rtl"] .lang-offer {
+  left: auto;
+  right: 20px;
+}
+
+[dir="rtl"] .lang-menu__panel {
+  right: auto;
+  left: 0;
+}
+
+/* Arrows point the way you read. */
+[dir="rtl"] .icon-arrow {
+  scale: -1 1;
+}
+
+/* ---------- FLOATING WHATSAPP ---------- */
+.wa-float {
+  position: fixed;
+  right: 20px;
+  bottom: 20px;
+  z-index: 60;
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  width: 56px;
+  height: 56px;
+  border-radius: 50%;
+  /* WhatsApp green, a shade darker than the logo's so the white mark keeps 3:1 contrast. */
+  background: #17964a;
+  color: #fff;
+  box-shadow: 0 8px 24px -8px rgba(0, 0, 0, 0.45);
+  transition: transform 0.2s ease, box-shadow 0.2s ease;
+}
+
+.wa-float svg {
+  width: 28px;
+  height: 28px;
+}
+
+.wa-float:hover {
+  transform: translateY(-2px) scale(1.04);
+  box-shadow: 0 12px 28px -8px rgba(0, 0, 0, 0.5);
+}
+
+.wa-float:focus-visible {
+  outline: 3px solid var(--gold-soft);
+  outline-offset: 3px;
+}
+
+@media (max-width: 600px) {
+  .wa-float {
+    right: 16px;
+    bottom: 16px;
+    width: 52px;
+    height: 52px;
+  }
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .wa-float,
+  .wa-float:hover {
+    transition: none;
+    transform: none;
+  }
+}
+
+@media print {
+  .wa-float {
+    display: none;
+  }
+}
+
 .preview-badge {
   position: fixed;
   left: 50%;

@@ -6,6 +6,7 @@ import Image from "next/image";
 import { usePathname } from "next/navigation";
 import { MenuIcon, CloseIcon } from "./Icons";
 import ThemeToggle from "./ThemeToggle";
+import LanguageMenu from "./LanguageMenu";
 
 /** Services is a menu of its own (brief §26), so it is not in this list. */
 const NAV_LINKS = [
@@ -20,7 +21,15 @@ export type NavCategory = { name: string; slug: string; description: string };
 /** The Blog link appears once the first post is published. */
 const BLOG_LINK = { href: "/blog", label: "Blog" };
 
-export default function HeaderNav({ categories, showBlog = false }: { categories: NavCategory[]; showBlog?: boolean }) {
+export default function HeaderNav({
+  categories,
+  showBlog = false,
+  showLanguages = false,
+}: {
+  categories: NavCategory[];
+  showBlog?: boolean;
+  showLanguages?: boolean;
+}) {
   const links = showBlog ? [...NAV_LINKS.slice(0, 2), BLOG_LINK, ...NAV_LINKS.slice(2)] : NAV_LINKS;
   const [open, setOpen] = useState(false);
   const [servicesOpen, setServicesOpen] = useState(false);
@@ -70,7 +79,7 @@ export default function HeaderNav({ categories, showBlog = false }: { categories
     <>
       <header className="site">
         <div className="navrow">
-          <Link className="wordmark" href="/">
+          <Link className="wordmark notranslate" translate="no" href="/">
             {/* Declared at display size so the optimizer serves a ~110px file, not a 1920px one. */}
             <Image
               className="mark"
@@ -123,6 +132,7 @@ export default function HeaderNav({ categories, showBlog = false }: { categories
             ))}
           </ul>
           <div className="nav-right">
+            {showLanguages && <LanguageMenu />}
             <ThemeToggle />
             <Link
               className="btn btn-gold nav-cta"

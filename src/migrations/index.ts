@@ -9,6 +9,7 @@ import * as migration_20260919_105034_scheduled_emails from './20260919_105034_s
 import * as migration_20260919_152320_site_theme from './20260919_152320_site_theme';
 import * as migration_20260928_193446_quote_plan from './20260928_193446_quote_plan';
 import * as migration_20260928_195733_social_links_and_email from './20260928_195733_social_links_and_email';
+import * as migration_20260928_201100_floating_whatsapp_and_translation from './20260928_201100_floating_whatsapp_and_translation';
 
 export const migrations = [
   {
@@ -64,6 +65,11 @@ export const migrations = [
   {
     up: migration_20260928_195733_social_links_and_email.up,
     down: migration_20260928_195733_social_links_and_email.down,
-    name: '20260928_195733_social_links_and_email'
+    name: '20260928_195733_social_links_and_email',
+  },
+  {
+    up: migration_20260928_201100_floating_whatsapp_and_translation.up,
+    down: migration_20260928_201100_floating_whatsapp_and_translation.down,
+    name: '20260928_201100_floating_whatsapp_and_translation'
   },
 ];

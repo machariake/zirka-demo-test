@@ -40,6 +40,6 @@ export async function proxy(request: NextRequest) {
 
 export const config = {
   // Everything except the admin, the API, Next's own files, the notice, the
-  // status check, and anything with a file extension (images, icons, robots.txt).
-  matcher: ["/((?!admin|api|_next|maintenance|site-status|.*\\..*).*)"],
+  // status and country checks, and anything with a file extension (images, icons, robots.txt).
+  matcher: ["/((?!admin|api|_next|maintenance|site-status|geo|.*\\..*).*)"],
 };
