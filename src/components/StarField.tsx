@@ -84,7 +84,8 @@ export default function StarField() {
     }
 
     function paint(t: number) {
-      if (!ctx) return;
+      // A hero that is hidden or not laid out yet has a 0×0 canvas, which drawImage rejects.
+      if (!ctx || lines.width === 0 || lines.height === 0) return;
       ctx.clearRect(0, 0, width, height);
       ctx.drawImage(lines, 0, 0, width, height);
       for (const p of points) {

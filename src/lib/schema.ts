@@ -25,6 +25,7 @@ type OrgInput = {
   email: string;
   whatsapp: string;
   heroImage: string;
+  social?: { url: string }[];
 };
 
 export const organizationSchema = (s: OrgInput) => ({
@@ -37,6 +38,8 @@ export const organizationSchema = (s: OrgInput) => ({
   ...(s.slogan ? { slogan: s.slogan } : {}),
   ...(s.heroImage ? { image: absolute(s.heroImage) } : {}),
   logo: `${SITE_URL}/icon.png`,
+  // The business's own profiles, so search engines connect them to this site.
+  ...(s.social && s.social.length > 0 ? { sameAs: s.social.map((p) => p.url) } : {}),
   ...(s.email ? { email: s.email } : {}),
   // The display number is for people; contactPoint wants E.164.
   ...(s.whatsapp ? { telephone: `+${s.whatsapp.replace(/\D/g, "")}` } : {}),
@@ -50,6 +53,17 @@ export const organizationSchema = (s: OrgInput) => ({
         },
       }
     : {}),
+});
+
+/** The site itself, tied to the business so search engines read one entity. */
+export const websiteSchema = (companyName: string) => ({
+  "@context": "https://schema.org",
+  "@type": "WebSite",
+  "@id": `${SITE_URL}/#website`,
+  name: companyName,
+  url: SITE_URL,
+  publisher: { "@id": ORG_ID },
+  inLanguage: "en",
 });
 
 export const serviceSchema = (service: ServiceDetailView, companyName: string) => ({

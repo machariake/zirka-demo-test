@@ -47,7 +47,12 @@ export default async function Engagements({ withProjects = false }: { withProjec
                       ))}
                     </ul>
                   )}
-                  <Link className="explore" href="/quote" data-track="pricing_cta_click">
+                  {/* Carries the plan to the quote form so the visitor never has to restate it. */}
+                  <Link
+                    className={`btn ${tier.featured ? "btn-gold" : "btn-outline"} tier-cta`}
+                    href={`/quote?plan=${encodeURIComponent(tier.name)}`}
+                    data-track="pricing_cta_click"
+                  >
                     {tier.price.toLowerCase().includes("custom")
                       ? "Request a quote"
                       : `Start with ${tier.name.replace(/^Zirka\s+/, "")}`}
@@ -60,7 +65,10 @@ export default async function Engagements({ withProjects = false }: { withProjec
             <p className="tier-note">
               Not sure which one fits? Tell us what you sell and what you want more of, and
               we&rsquo;ll tell you which plan to start on — free, and with no obligation.{" "}
-              <Link href="/contact">Ask us</Link>.
+              <Link href="/free-marketing-audit" data-track="main_cta_click">
+                Start with a free marketing audit
+              </Link>
+              .
             </p>
           </>
         )}

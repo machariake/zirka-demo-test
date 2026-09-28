@@ -1,11 +1,17 @@
 "use server";
 
-import { getCms, getFeatures } from "@/lib/cms";
+import { getCms, getEngagements, getFeatures } from "@/lib/cms";
 import { allow, clientIp } from "@/lib/rate-limit";
 
-export type QuoteResult = { ok: boolean; error?: string };
+export type QuoteField = "name" | "email" | "phone" | "services";
+export type QuoteResult = {
+  ok: boolean;
+  /** One message per field, so the form can mark exactly what needs fixing. */
+  fieldErrors?: Partial<Record<QuoteField, string>>;
+  error?: string;
+};
 
-const MAX = { name: 120, email: 200, phone: 40, company: 160, budget: 60, timeline: 60, details: 5000 };
+const MAX = { name: 120, email: 200, phone: 40, company: 160, budget: 60, timeline: 60, details: 5000, plan: 120 };
 const field = (form: FormData, key: keyof typeof MAX) =>
   String(form.get(key) ?? "")
     .trim()
@@ -21,15 +27,12 @@ export async function requestQuote(formData: FormData): Promise<QuoteResult> {
   const name = field(formData, "name");
   const email = field(formData, "email");
   const phone = field(formData, "phone");
-  if (!name || !email || !phone) {
-    return { ok: false, error: "Please add your name, email and phone number." };
-  }
-  if (!/^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(email)) return { ok: false, error: "That email address doesn't look right." };
-  // Checked here as well as in the browser, since the required attribute only
-  // stops an honest mistake — it is not a constraint anyone has to obey.
-  if (phone.replace(/\D/g, "").length < 7) {
-    return { ok: false, error: "That phone number doesn't look right. Please include the area code." };
-  }
+
+  // Only a plan that is really on the Pricing page is kept.
+  const requestedPlan = field(formData, "plan");
+  const plan = requestedPlan
+    ? ((await getEngagements()).find((e) => e.name === requestedPlan)?.name ?? "")
+    : "";
 
   // Only accept ids that match real, published services.
   const payload = await getCms();
@@ -48,8 +51,23 @@ export async function requestQuote(formData: FormData): Promise<QuoteResult> {
     .slice(0, 20)
     .map(Number);
 
-  if (services.length === 0) {
-    return { ok: false, error: "Please choose at least one service you'd like quoted." };
+  const fieldErrors: QuoteResult["fieldErrors"] = {};
+  if (!name) fieldErrors.name = "Please add your name.";
+  if (!email) fieldErrors.email = "Please add your email address.";
+  else if (!/^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(email)) fieldErrors.email = "That email address doesn't look right.";
+  // Checked here as well as in the browser, since the required attribute only
+  // stops an honest mistake — it is not a constraint anyone has to obey.
+  if (!phone) fieldErrors.phone = "Please add a phone or WhatsApp number.";
+  else if (phone.replace(/\D/g, "").length < 7) {
+    fieldErrors.phone = "That phone number doesn't look right. Please include the area code.";
+  }
+  // A plan already says what they want priced; otherwise we need at least one service.
+  if (services.length === 0 && !plan) {
+    fieldErrors.services = "Please choose at least one service you'd like quoted.";
+  }
+
+  if (Object.keys(fieldErrors).length > 0) {
+    return { ok: false, fieldErrors, error: "A few details need attention — see the highlighted fields." };
   }
 
   // Counted only once the details are valid, so someone correcting typos is
@@ -66,6 +84,7 @@ export async function requestQuote(formData: FormData): Promise<QuoteResult> {
         email,
         phone,
         company: field(formData, "company"),
+        plan,
         services,
         budget: field(formData, "budget"),
         timeline: field(formData, "timeline"),

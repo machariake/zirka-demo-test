@@ -1,20 +1,34 @@
 import Link from "next/link";
 import Image from "next/image";
-import { getSettings, getSolutionCategories, hasPosts } from "@/lib/cms";
+import { getFeatures, getSettings, getSolutionCategories, hasPosts } from "@/lib/cms";
+import { WHATSAPP_GREETING, whatsappUrl } from "@/lib/contact";
+import { SocialIcon } from "./Icons";
 
 /**
  * Brief §27: who Zirka is, the four solutions, the main pages and the legal
  * links. Only real details — no invented address, registrations or badges.
  */
 export default async function Footer() {
-  const [settings, categories, showBlog] = await Promise.all([getSettings(), getSolutionCategories(), hasPosts()]);
+  const [settings, categories, showBlog, features] = await Promise.all([
+    getSettings(),
+    getSolutionCategories(),
+    hasPosts(),
+    getFeatures(),
+  ]);
+  const whatsapp = features.showWhatsApp ? whatsappUrl(settings.whatsapp, WHATSAPP_GREETING) : null;
 
   return (
     <footer>
       <div className="wrap foot-grid">
         <div className="foot-brand">
           <Link className="foot-logo" href="/">
-            <Image src="/images/logo.png" alt="Zirka Digital Solutions — home" width={101} height={82} />
+            <Image
+              src="/images/logo.png"
+              alt="Zirka Digital Solutions — home"
+              width={101}
+              height={82}
+              style={{ width: "auto", height: 82 }}
+            />
           </Link>
           <p className="slogan">{settings.slogan}</p>
           <p className="foot-about">
@@ -64,6 +78,40 @@ export default async function Footer() {
             </li>
           </ul>
         </nav>
+
+        {/* Only the details actually set in Site Settings → Contact. */}
+        <div className="foot-col">
+          <h2 className="foot-heading">Get in touch</h2>
+          <ul>
+            {whatsapp && (
+              <li>
+                <a href={whatsapp} target="_blank" rel="noopener noreferrer">
+                  WhatsApp {settings.phoneDisplay || `+${settings.whatsapp}`}
+                </a>
+              </li>
+            )}
+            {settings.email && (
+              <li>
+                <a href={`mailto:${settings.email}`}>{settings.email}</a>
+              </li>
+            )}
+            {settings.hours && <li className="foot-note">{settings.hours}</li>}
+            <li>
+              <Link href="/contact">All contact options</Link>
+            </li>
+          </ul>
+          {settings.social.length > 0 && (
+            <ul className="foot-social" aria-label="Zirka on social media">
+              {settings.social.map((s) => (
+                <li key={s.network}>
+                  <a href={s.url} target="_blank" rel="noopener noreferrer" aria-label={`Zirka on ${s.network}`}>
+                    <SocialIcon network={s.network} />
+                  </a>
+                </li>
+              ))}
+            </ul>
+          )}
+        </div>
       </div>
 
       <div className="wrap foot-base">

@@ -4,8 +4,10 @@ import Footer from "@/components/Footer";
 import GoogleAnalytics from "@/components/GoogleAnalytics";
 import PageTracker from "@/components/PageTracker";
 import PreviewBadge from "@/components/PreviewBadge";
+import WhatsAppFloat from "@/components/WhatsAppFloat";
+import AutoTranslate from "@/components/AutoTranslate";
 import { SITE_URL } from "@/lib/site";
-import { getGaMeasurementId, getSiteTheme, getSiteVerification } from "@/lib/cms";
+import { getFeatures, getGaMeasurementId, getSiteTheme, getSiteVerification } from "@/lib/cms";
 import { themeScript } from "@/components/ThemeToggle";
 import "./globals.css";
 
@@ -63,7 +65,7 @@ export async function generateMetadata(): Promise<Metadata> {
 }
 
 export default async function RootLayout({ children }: LayoutProps<"/">) {
-  const [gaId, siteTheme] = await Promise.all([getGaMeasurementId(), getSiteTheme()]);
+  const [gaId, siteTheme, features] = await Promise.all([getGaMeasurementId(), getSiteTheme(), getFeatures()]);
   return (
     <html
       lang="en"
@@ -80,6 +82,8 @@ export default async function RootLayout({ children }: LayoutProps<"/">) {
         </a>
         <main id="main">{children}</main>
         <Footer />
+        <WhatsAppFloat />
+        {features.translateEnabled && <AutoTranslate />}
         <PageTracker />
         <PreviewBadge />
         {gaId && <GoogleAnalytics id={gaId} />}

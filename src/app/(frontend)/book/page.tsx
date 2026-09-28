@@ -5,6 +5,7 @@ import BookingWidget from "@/components/BookingWidget";
 import { getCms, getFeatures, getSettings } from "@/lib/cms";
 import { getAvailability } from "@/lib/booking";
 import { pageMeta } from "@/lib/seo";
+import { WHATSAPP_GREETING, whatsappUrl } from "@/lib/contact";
 
 export const metadata: Metadata = pageMeta({
   title: "Talk to a Strategist",
@@ -30,7 +31,12 @@ export default async function BookPage() {
         <section>
           <div className="wrap">
             <div className="hero-ctas">
-              <a className="btn btn-gold" href={`https://wa.me/${settings.whatsapp}`}>
+              <a
+                className="btn btn-gold"
+                href={whatsappUrl(settings.whatsapp, WHATSAPP_GREETING) ?? "/contact"}
+                target="_blank"
+                rel="noopener noreferrer"
+              >
                 Message us on WhatsApp
               </a>
               <Link className="btn btn-outline" href="/contact">

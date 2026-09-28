@@ -216,6 +216,10 @@ export interface Quote {
   phone?: string | null;
   company?: string | null;
   /**
+   * Filled in when the visitor came from a plan on the Pricing page.
+   */
+  plan?: string | null;
+  /**
    * What they asked us to quote for.
    */
   services?: (number | Service)[] | null;
@@ -1049,6 +1053,7 @@ export interface QuotesSelect<T extends boolean = true> {
   email?: T;
   phone?: T;
   company?: T;
+  plan?: T;
   services?: T;
   budget?: T;
   timeline?: T;
@@ -1526,8 +1531,23 @@ export interface SiteSetting {
    */
   whatsapp?: string | null;
   phoneDisplay?: string | null;
+  /**
+   * Shown on the contact page, footer and privacy policy.
+   */
   email?: string | null;
   socialHandle?: string | null;
+  /**
+   * Full link, e.g. https://www.facebook.com/yourpage. Leave empty to hide it.
+   */
+  facebookUrl?: string | null;
+  /**
+   * Full link, e.g. https://www.instagram.com/yourpage. Leave empty to hide it.
+   */
+  instagramUrl?: string | null;
+  /**
+   * Full link, e.g. https://www.linkedin.com/yourpage. Leave empty to hide it.
+   */
+  linkedinUrl?: string | null;
   hours?: string | null;
   /**
    * The four figures under the hero.
@@ -1679,6 +1699,10 @@ export interface Feature {
    */
   showWhatsApp?: boolean | null;
   /**
+   * A round WhatsApp button fixed to the corner of every page. Needs WhatsApp buttons switched on too.
+   */
+  whatsappFloat?: boolean | null;
+  /**
    * When off, the contact page shows your WhatsApp and details only.
    */
   contactFormEnabled?: boolean | null;
@@ -1690,6 +1714,10 @@ export interface Feature {
    * Let people book a free consultation from the website. Set your hours under Bookings → Booking Availability.
    */
   bookingEnabled?: boolean | null;
+  /**
+   * Shows a language menu, and translates the site automatically for visitors whose device is set to another language (visitors from a non-English country are offered it instead). Uses Google Translate, which only loads once a visitor uses another language; the privacy policy updates itself to match.
+   */
+  translateEnabled?: boolean | null;
   /**
    * Anonymous page-view counting for the dashboard charts. Turning this off stops new data; existing data is kept.
    */
@@ -1805,6 +1833,9 @@ export interface SiteSettingsSelect<T extends boolean = true> {
   phoneDisplay?: T;
   email?: T;
   socialHandle?: T;
+  facebookUrl?: T;
+  instagramUrl?: T;
+  linkedinUrl?: T;
   hours?: T;
   stats?:
     | T
@@ -1871,9 +1902,11 @@ export interface FeaturesSelect<T extends boolean = true> {
   showValues?: T;
   showLeadership?: T;
   showWhatsApp?: T;
+  whatsappFloat?: T;
   contactFormEnabled?: T;
   quotesEnabled?: T;
   bookingEnabled?: T;
+  translateEnabled?: T;
   analyticsEnabled?: T;
   gaMeasurementId?: T;
   googleVerification?: T;

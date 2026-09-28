@@ -178,10 +178,53 @@ export const SiteSettings: GlobalConfig = {
               type: "text",
               defaultValue: "16787994634",
               admin: { description: "Digits only, including country code — used for the wa.me link." },
+              // Spaces, dashes and a leading + are stripped when the site reads it;
+              // this only stops a number too short to reach anyone.
+              validate: (value: unknown) => {
+                const digits = String(value ?? "").replace(/\D/g, "");
+                if (!digits) return true;
+                return digits.length >= 8 && digits.length <= 15
+                  ? true
+                  : "Enter the full number with country code, e.g. 16787994634.";
+              },
             },
             { name: "phoneDisplay", type: "text", defaultValue: "+1 (678) 799–4634" },
-            { name: "email", type: "email" },
+            {
+              name: "email",
+              type: "email",
+              defaultValue: "info@zirkadigitalsolutions.com",
+              admin: { description: "Shown on the contact page, footer and privacy policy." },
+            },
             { name: "socialHandle", type: "text", defaultValue: "zirka digital solutions" },
+            {
+              type: "row",
+              fields: (
+                [
+                  ["facebookUrl", "Facebook page", "facebook.com"],
+                  ["instagramUrl", "Instagram profile", "instagram.com"],
+                  ["linkedinUrl", "LinkedIn page", "linkedin.com"],
+                ] as const
+              ).map(([name, label, host]) => ({
+                name,
+                label,
+                type: "text" as const,
+                admin: {
+                  description: `Full link, e.g. https://www.${host}/yourpage. Leave empty to hide it.`,
+                },
+                validate: (value: unknown) => {
+                  const raw = String(value ?? "").trim();
+                  if (!raw) return true;
+                  try {
+                    const url = new URL(raw);
+                    return url.protocol === "https:" && url.hostname.replace(/^www\./, "").endsWith(host)
+                      ? true
+                      : `Use the full https:// link to your ${host} page.`;
+                  } catch {
+                    return `Use the full https:// link to your ${host} page.`;
+                  }
+                },
+              })),
+            },
             { name: "hours", type: "text", defaultValue: "Monday – Friday, 9am – 6pm" },
           ],
         },

@@ -1,5 +1,6 @@
 import Link from "next/link";
 import { getSettings, getFeatures } from "@/lib/cms";
+import { WHATSAPP_GREETING, whatsappUrl } from "@/lib/contact";
 
 /**
  * The closing call to action on most pages (brief §10): the free audit as the
@@ -16,11 +17,8 @@ export default async function CtaBand({
 
   // "Talk to a Strategist" goes to the booking calendar when it's open,
   // otherwise straight to WhatsApp.
-  const strategistHref = features.bookingEnabled
-    ? "/book"
-    : features.showWhatsApp
-      ? `https://wa.me/${settings.whatsapp}`
-      : "/contact";
+  const whatsapp = features.showWhatsApp ? whatsappUrl(settings.whatsapp, WHATSAPP_GREETING) : null;
+  const strategistHref = features.bookingEnabled ? "/book" : (whatsapp ?? "/contact");
   const external = strategistHref.startsWith("http");
 
   return (
@@ -44,10 +42,10 @@ export default async function CtaBand({
               )}
             </div>
             <span className="contact">
-              {features.showWhatsApp ? (
+              {whatsapp ? (
                 <>
                   WhatsApp{" "}
-                  <a href={`https://wa.me/${settings.whatsapp}`} target="_blank" rel="noopener noreferrer">
+                  <a href={whatsapp} target="_blank" rel="noopener noreferrer">
                     {settings.phoneDisplay || settings.whatsapp}
                   </a>
                 </>

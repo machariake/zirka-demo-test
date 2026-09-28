@@ -3,6 +3,7 @@ import config from "@payload-config";
 import type { Service, CaseStudy, TeamMember, Faq, Engagement, Testimonial, Project, Post } from "@/payload-types";
 import { services as seedServices } from "@/lib/data";
 import { isSiteTheme, type SiteThemeId } from "@/lib/site-themes";
+import { DEFAULT_EMAIL, whatsappDigits } from "@/lib/contact";
 
 export const getCms = async () => getPayload({ config });
 
@@ -551,6 +552,8 @@ const FEATURE_DEFAULTS = {
   showValues: true,
   showLeadership: true,
   showWhatsApp: true,
+  whatsappFloat: true,
+  translateEnabled: true,
   contactFormEnabled: true,
   quotesEnabled: true,
   bookingEnabled: true,
@@ -569,6 +572,17 @@ export const getSiteTheme = async (): Promise<SiteThemeId> => {
     return isSiteTheme(f.siteTheme) ? f.siteTheme : "emerald";
   } catch {
     return "emerald";
+  }
+};
+
+/** When audit findings are promised, from Features → Enquiry alerts; null when not set. */
+export const getAuditReplyTime = async (): Promise<string | null> => {
+  try {
+    const payload = await getCms();
+    const f = (await payload.findGlobal({ slug: "features", depth: 0 })) as { auditReplyTime?: string | null };
+    return f.auditReplyTime?.trim() || null;
+  } catch {
+    return null;
   }
 };
 
@@ -711,10 +725,21 @@ export const getSettings = async () => {
     story: (s.story ?? []).map((p) => p.text).filter(Boolean),
     storyImage: urlOf(s.storyImage as MediaLike, "/images/about-office.jpg"),
     storyAlt: altOf(s.storyImage as MediaLike, "The Zirka team at work"),
-    whatsapp: s.whatsapp ?? "16787994634",
+    // Digits only, whatever was typed in the admin, so every wa.me link works.
+    whatsapp: whatsappDigits(s.whatsapp ?? "16787994634"),
     phoneDisplay: s.phoneDisplay ?? "",
-    email: s.email ?? "",
+    email: s.email?.trim() || DEFAULT_EMAIL,
     socialHandle: s.socialHandle ?? "",
+    // Only links that are actually set, in a fixed order for the icon row.
+    social: (
+      [
+        ["Facebook", s.facebookUrl],
+        ["Instagram", s.instagramUrl],
+        ["LinkedIn", s.linkedinUrl],
+      ] as const
+    )
+      .filter((entry): entry is readonly ["Facebook" | "Instagram" | "LinkedIn", string] => Boolean(entry[1]?.trim()))
+      .map(([network, url]) => ({ network, url: url.trim() })),
     hours: s.hours ?? "",
     stats: (s.stats ?? []).map((x) => ({ num: x.value, label: x.label })),
     trustedBy: (s.trustedBy ?? []).map((x) => x.name),

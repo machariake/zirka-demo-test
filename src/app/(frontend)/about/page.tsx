@@ -5,6 +5,8 @@ import CtaBand from "@/components/CtaBand";
 import TeamSection from "@/components/TeamSection";
 import { getTeam, getValues, getFeatures, getSettings } from "@/lib/cms";
 import { pageMeta } from "@/lib/seo";
+import JsonLd from "@/components/JsonLd";
+import { breadcrumbSchema } from "@/lib/schema";
 
 export const metadata: Metadata = pageMeta({
   title: "About",
@@ -23,6 +25,12 @@ export default async function AboutPage() {
 
   return (
     <>
+      <JsonLd
+        data={breadcrumbSchema([
+          { name: "Home", path: "/" },
+          { name: "About", path: "/about" },
+        ])}
+      />
       <PageHeader eyebrow="About Zirka" title={settings.aboutTitle} lede={settings.aboutLede} />
 
       {settings.story.length > 0 && (

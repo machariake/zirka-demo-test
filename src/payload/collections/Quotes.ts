@@ -51,6 +51,7 @@ export const Quotes: CollectionConfig = {
                   ${row("Email", doc.email)}
                   ${row("Phone", doc.phone)}
                   ${row("Company", doc.company)}
+                  ${row("Plan", doc.plan)}
                   ${row("Monthly budget", doc.budget)}
                   ${row("Timeline", doc.timeline)}
                   ${row("Services", picked.join(", "))}
@@ -71,6 +72,12 @@ export const Quotes: CollectionConfig = {
     { name: "email", type: "email", required: true },
     { name: "phone", type: "text" },
     { name: "company", type: "text" },
+    {
+      name: "plan",
+      label: "Plan of interest",
+      type: "text",
+      admin: { description: "Filled in when the visitor came from a plan on the Pricing page." },
+    },
     {
       name: "services",
       type: "relationship",

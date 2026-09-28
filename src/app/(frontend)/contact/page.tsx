@@ -4,6 +4,10 @@ import PageHeader from "@/components/PageHeader";
 import ContactForm from "@/components/ContactForm";
 import { getSettings, getFeatures } from "@/lib/cms";
 import { pageMeta } from "@/lib/seo";
+import JsonLd from "@/components/JsonLd";
+import { breadcrumbSchema } from "@/lib/schema";
+import { WHATSAPP_GREETING, whatsappUrl } from "@/lib/contact";
+import { SocialIcon } from "@/components/Icons";
 
 export const metadata: Metadata = pageMeta({
   title: "Contact",
@@ -15,11 +19,17 @@ export const metadata: Metadata = pageMeta({
 export default async function ContactPage() {
   const [settings, features] = await Promise.all([getSettings(), getFeatures()]);
 
-  const digits = settings.whatsapp.replace(/\D/g, "");
-  const whatsapp = `https://wa.me/${digits}`;
+  const digits = settings.whatsapp;
+  const whatsapp = whatsappUrl(digits, WHATSAPP_GREETING) ?? "/contact";
 
   return (
     <>
+      <JsonLd
+        data={breadcrumbSchema([
+          { name: "Home", path: "/" },
+          { name: "Contact", path: "/contact" },
+        ])}
+      />
       <PageHeader
         eyebrow="Contact"
         title="Let's talk about your marketing."
@@ -85,7 +95,9 @@ export default async function ContactPage() {
             <h2 className="index-heading">Contact details</h2>
             <div className="info-block">
               <h3>WhatsApp</h3>
-              <a href={whatsapp}>{settings.phoneDisplay}</a>
+              <a href={whatsapp} target="_blank" rel="noopener noreferrer">
+                {settings.phoneDisplay || `+${digits}`}
+              </a>
             </div>
             {settings.email && (
               <div className="info-block">
@@ -93,15 +105,31 @@ export default async function ContactPage() {
                 <a href={`mailto:${settings.email}`}>{settings.email}</a>
               </div>
             )}
-            {settings.socialHandle && (
+            {settings.social.length > 0 ? (
               <div className="info-block">
                 <h3>Social</h3>
-                <p>
-                  Facebook &amp; Instagram
-                  <br />
-                  {settings.socialHandle}
-                </p>
+                <ul className="contact-social">
+                  {settings.social.map((s) => (
+                    <li key={s.network}>
+                      <a href={s.url} target="_blank" rel="noopener noreferrer">
+                        <SocialIcon network={s.network} />
+                        {s.network}
+                      </a>
+                    </li>
+                  ))}
+                </ul>
               </div>
+            ) : (
+              settings.socialHandle && (
+                <div className="info-block">
+                  <h3>Social</h3>
+                  <p>
+                    Facebook &amp; Instagram
+                    <br />
+                    {settings.socialHandle}
+                  </p>
+                </div>
+              )
             )}
             {settings.hours && (
               <div className="info-block">

@@ -14,9 +14,10 @@ import Engagements from "@/components/Engagements";
 import Faq from "@/components/Faq";
 import CtaBand from "@/components/CtaBand";
 import JsonLd from "@/components/JsonLd";
-import { organizationSchema } from "@/lib/schema";
+import { organizationSchema, websiteSchema } from "@/lib/schema";
 import { pageMeta } from "@/lib/seo";
 import type { Metadata } from "next";
+import { WHATSAPP_GREETING, whatsappUrl } from "@/lib/contact";
 import {
   getServices,
   getCaseStudies,
@@ -59,11 +60,13 @@ export default async function Home() {
 
   // Only claim results when there is real, documented client work to show.
   const hasRealWork = work.some((w) => !w.sample);
+  const whatsapp = features.showWhatsApp ? whatsappUrl(settings.whatsapp, WHATSAPP_GREETING) : null;
 
   return (
     <>
       {/* The business record every other page's schema points back at. */}
       <JsonLd data={organizationSchema(settings)} />
+      <JsonLd data={websiteSchema(settings.companyName)} />
 
       {/* 1 — Hook: who we are and the one line that matters */}
       <div className="hero">
@@ -94,10 +97,10 @@ export default async function Home() {
                 See Our Work
               </Link>
             </div>
-            {features.showWhatsApp && (
+            {whatsapp && (
               <a
                 className="hero-direct"
-                href={`https://wa.me/${settings.whatsapp}`}
+                href={whatsapp}
                 target="_blank"
                 rel="noopener noreferrer"
               >

@@ -374,6 +374,20 @@ header.site {
   opacity: 1;
 }
 
+/* The section the visitor is in: full strength with a short accent rule beneath. */
+.links a[aria-current="page"],
+.nav-services__toggle.is-current {
+  opacity: 1;
+  text-decoration: underline;
+  text-decoration-color: var(--gold-soft);
+  text-decoration-thickness: 1.5px;
+  text-underline-offset: 8px;
+}
+
+.mobile-panel a[aria-current="page"] {
+  color: var(--gold-soft);
+}
+
 .nav-right {
   display: flex;
   align-items: center;
@@ -1640,6 +1654,30 @@ section {
   gap: 12px;
 }
 
+/* The plan carried over from the Pricing page. */
+.quote__plan {
+  display: flex;
+  flex-direction: column;
+  gap: 6px;
+  padding: 20px 22px;
+  border: 1px solid var(--gold-soft);
+  border-radius: 16px;
+  background: var(--paper-raised);
+}
+
+.quote__plan strong {
+  font-size: 1.3rem;
+  font-weight: 500;
+  color: var(--ink);
+}
+
+.quote__plan span:last-child {
+  color: var(--slate);
+  font-size: 0.95rem;
+  line-height: 1.55;
+  max-width: 62ch;
+}
+
 /* A read-back of the chosen services, so the request is confirmed before it is sent. */
 .quote__chosen {
   display: flex;
@@ -2155,6 +2193,74 @@ section {
 }
 
 /* ---------- SERVICE PAGE BODY ---------- */
+/* Long-form content with a sticky next-step card beside it on wide screens. */
+.service-layout {
+  display: grid;
+  grid-template-columns: minmax(0, 1fr) 320px;
+  gap: 56px;
+  align-items: start;
+}
+
+.service-aside {
+  position: sticky;
+  top: 24px;
+}
+
+.service-aside__card {
+  display: flex;
+  flex-direction: column;
+  gap: 12px;
+  padding: 26px 24px;
+  border: 1px solid var(--line);
+  border-radius: 20px;
+  background: var(--paper-raised);
+}
+
+.service-aside__card h2 {
+  font-size: 1.3rem;
+  font-weight: 400;
+  letter-spacing: -0.01em;
+  line-height: 1.3;
+}
+
+.service-aside__card p {
+  margin: 0 0 6px;
+  font-size: 0.95rem;
+  line-height: 1.6;
+  color: var(--slate);
+}
+
+.service-aside__card .btn {
+  justify-content: center;
+}
+
+.service-aside__direct {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  gap: 8px;
+  margin-top: 4px;
+  font-size: 0.9rem;
+  color: var(--ink);
+  text-underline-offset: 3px;
+}
+
+.service-aside__direct svg {
+  width: 16px;
+  height: 16px;
+}
+
+@media (max-width: 1024px) {
+  .service-layout {
+    grid-template-columns: minmax(0, 1fr);
+    gap: 48px;
+  }
+  .service-aside {
+    position: static;
+    max-width: 560px;
+  }
+}
+
 .service-page {
   display: flex;
   flex-direction: column;
@@ -2454,9 +2560,16 @@ section {
   background: var(--gold-soft);
 }
 
-.tier .explore {
+/* A full-width button pinned to the card's foot, so every plan's action lines up. */
+.tier .tier-cta {
   margin-top: auto;
-  padding-top: 16px;
+  justify-content: center;
+  width: 100%;
+}
+
+.tier .tier-cta svg {
+  width: 14px;
+  height: 14px;
 }
 
 .tier-note {
@@ -2846,6 +2959,53 @@ section {
   color: var(--slate);
 }
 
+.audit__next-heading {
+  margin-top: 40px;
+}
+
+.audit__next {
+  list-style: none;
+  margin: 18px 0 0;
+  padding: 0;
+  display: flex;
+  flex-direction: column;
+  gap: 18px;
+}
+
+.audit__next li {
+  display: grid;
+  grid-template-columns: 36px minmax(0, 1fr);
+  gap: 14px;
+  align-items: start;
+}
+
+.audit__next-idx {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  width: 32px;
+  height: 32px;
+  border-radius: 50%;
+  border: 1px solid var(--gold-soft);
+  color: var(--gold);
+  font-family: var(--font-mono), monospace;
+  font-size: 12px;
+}
+
+.audit__next strong {
+  display: block;
+  font-weight: 500;
+  color: var(--ink);
+}
+
+.audit__next li span:not(.audit__next-idx) {
+  display: block;
+  margin-top: 2px;
+  font-size: 0.95rem;
+  line-height: 1.55;
+  color: var(--slate);
+}
+
 .audit__note {
   margin: 20px 0 0;
   font-size: 0.93rem;
@@ -2971,10 +3131,10 @@ footer::before {
   opacity: 0.5;
 }
 
-/* Brand, then Solutions and Company columns (brief §27); legal links below. */
+/* Brand, then Solutions, Company and contact columns (brief §27); legal links below. */
 .foot-grid {
   display: grid;
-  grid-template-columns: minmax(0, 1.6fr) minmax(0, 1fr) minmax(0, 1fr);
+  grid-template-columns: minmax(0, 1.5fr) repeat(3, minmax(0, 1fr));
   gap: 40px;
   align-items: start;
 }
@@ -3027,6 +3187,56 @@ footer::before {
   transition: width 0.3s ease;
 }
 
+.foot-col .foot-social {
+  list-style: none;
+  display: flex;
+  flex-direction: row;
+  gap: 10px;
+  margin: 18px 0 0;
+  padding: 0;
+}
+
+.foot-social a {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  width: 36px;
+  height: 36px;
+  border: 1px solid rgba(242, 239, 230, 0.18);
+  border-radius: 50%;
+  color: rgba(242, 239, 230, 0.85);
+  transition: border-color 0.2s ease, color 0.2s ease;
+}
+
+.foot-social a:hover {
+  border-color: var(--gold-soft);
+  color: var(--hero-paper);
+}
+
+.foot-social a::after {
+  display: none;
+}
+
+.contact-social {
+  list-style: none;
+  margin: 0;
+  padding: 0;
+  display: flex;
+  flex-direction: column;
+  gap: 8px;
+}
+
+.contact-social a {
+  display: inline-flex;
+  align-items: center;
+  gap: 10px;
+}
+
+.foot-note {
+  font-size: 13.5px;
+  color: rgba(242, 239, 230, 0.6);
+}
+
 .foot-col a:hover,
 .foot-legal a:hover {
   color: var(--hero-paper);
@@ -3063,7 +3273,8 @@ footer::before {
   .foot-grid {
     grid-template-columns: repeat(2, minmax(0, 1fr));
   }
-  .foot-brand {
+  .foot-brand,
+  .foot-grid > .foot-col:last-child {
     grid-column: 1 / -1;
   }
 }
@@ -3540,6 +3751,374 @@ footer::before {
 }
 
 /* ---------- PREVIEW BADGE (team only, during maintenance) ---------- */
+/* ---------- AD LANDING PAGES ---------- */
+.lp-hero {
+  background: var(--hero-ink);
+  color: var(--hero-paper);
+  border-radius: 0 0 18px 18px;
+  padding-bottom: 64px;
+}
+
+.lp-bar__wa svg {
+  width: 16px;
+  height: 16px;
+}
+
+.lp-hero__grid {
+  display: grid;
+  grid-template-columns: minmax(0, 1fr) minmax(0, 480px);
+  gap: 56px;
+  align-items: start;
+  padding-top: 48px;
+}
+
+.lp-hero__copy {
+  display: flex;
+  flex-direction: column;
+  gap: 18px;
+  padding-top: 12px;
+}
+
+.lp-hero__copy h1 {
+  font-size: clamp(2rem, 4.2vw, 3.2rem);
+  font-weight: 300;
+  letter-spacing: -0.025em;
+  line-height: 1.08;
+  max-width: 20ch;
+}
+
+.lp-hero__copy .lede {
+  max-width: 52ch;
+  font-size: 1.02rem;
+  line-height: 1.6;
+  color: rgba(245, 242, 230, 0.78);
+}
+
+.lp-hero__points {
+  list-style: none;
+  margin: 8px 0 0;
+  padding: 0;
+  display: flex;
+  flex-direction: column;
+  gap: 10px;
+  font-size: 0.98rem;
+}
+
+.lp-hero__points li {
+  display: flex;
+  align-items: center;
+  gap: 10px;
+}
+
+.lp-hero__points svg {
+  width: 16px;
+  height: 16px;
+  color: var(--gold-soft);
+  flex: none;
+}
+
+/* The form card keeps the site's light surface so fields read as usual. */
+.lp-hero__form {
+  color: var(--ink);
+  scroll-margin-top: 24px;
+}
+
+.lp-hero__form h2 {
+  font-size: 1.5rem;
+  font-weight: 300;
+  letter-spacing: -0.015em;
+  margin-bottom: 20px;
+}
+
+@media (max-width: 900px) {
+  .lp-hero__grid {
+    grid-template-columns: minmax(0, 1fr);
+    gap: 32px;
+    padding-top: 28px;
+  }
+}
+
+@media (max-width: 520px) {
+  .lp-bar__wa span {
+    display: none;
+  }
+  .lp-hero__form {
+    padding: 22px 18px;
+  }
+}
+
+/* On landing pages the WhatsApp button is the only way out, so it stays on phones (icon only). */
+.lp-bar .nav-right .lp-bar__wa {
+  display: inline-flex;
+}
+
+/* ---------- LANGUAGE MENU ---------- */
+.lang-menu {
+  position: relative;
+}
+
+.lang-menu__toggle {
+  display: inline-flex;
+  align-items: center;
+  gap: 6px;
+  height: 38px;
+  padding: 0 12px;
+  border-radius: 999px;
+  border: 1px solid var(--hero-line);
+  background: transparent;
+  color: var(--hero-paper);
+  font: inherit;
+  font-size: 12.5px;
+  font-weight: 600;
+  letter-spacing: 0.04em;
+  cursor: pointer;
+  transition: background-color 0.15s ease, border-color 0.15s ease;
+}
+
+.lang-menu__toggle svg {
+  width: 16px;
+  height: 16px;
+}
+
+.lang-menu__toggle:hover {
+  background: rgba(245, 242, 230, 0.08);
+  border-color: var(--gold-soft);
+}
+
+.lang-menu__panel {
+  position: absolute;
+  top: calc(100% + 12px);
+  right: 0;
+  z-index: 45;
+  width: 230px;
+  padding: 8px;
+  border-radius: 16px;
+  background: var(--paper-raised);
+  border: 1px solid var(--line);
+  box-shadow: var(--shadow);
+  color: var(--ink);
+}
+
+.lang-menu__panel[hidden] {
+  display: none;
+}
+
+.lang-menu__panel ul {
+  list-style: none;
+  margin: 0;
+  padding: 0;
+}
+
+.lang-menu__panel li button {
+  display: block;
+  width: 100%;
+  padding: 10px 12px;
+  border: 0;
+  border-radius: 10px;
+  background: transparent;
+  color: var(--ink);
+  font: inherit;
+  font-size: 15px;
+  text-align: start;
+  cursor: pointer;
+}
+
+.lang-menu__panel li button:hover,
+.lang-menu__panel li button:focus-visible {
+  background: color-mix(in srgb, var(--gold) 10%, transparent);
+}
+
+.lang-menu__panel li button[aria-current="true"] {
+  color: var(--gold);
+  font-weight: 600;
+}
+
+.lang-menu__more {
+  display: flex;
+  flex-direction: column;
+  gap: 6px;
+  margin: 6px 4px 0;
+  padding-top: 10px;
+  border-top: 1px solid var(--line);
+  font-size: 12px;
+  color: var(--slate);
+}
+
+.lang-menu__more select {
+  width: 100%;
+  padding: 8px 10px;
+  border-radius: 10px;
+  border: 1px solid var(--line);
+  background: var(--paper);
+  color: var(--ink);
+  font: inherit;
+  font-size: 14px;
+}
+
+.lang-menu__note {
+  margin: 8px 4px 2px;
+  font-size: 11.5px;
+  color: var(--slate);
+}
+
+@media (max-width: 520px) {
+  .lang-menu__code {
+    display: none;
+  }
+  .lang-menu__toggle {
+    width: 38px;
+    padding: 0;
+    justify-content: center;
+  }
+}
+
+/* Suggestion shown to English-browser visitors from a non-English country. */
+.lang-offer {
+  position: fixed;
+  left: 20px;
+  bottom: 20px;
+  z-index: 65;
+  display: flex;
+  flex-direction: column;
+  gap: 12px;
+  width: min(340px, calc(100vw - 100px));
+  padding: 18px 18px 16px;
+  border-radius: 16px;
+  background: var(--paper-raised);
+  border: 1px solid var(--line);
+  box-shadow: var(--shadow);
+  color: var(--ink);
+}
+
+.lang-offer p {
+  margin: 0;
+  display: flex;
+  flex-direction: column;
+  gap: 2px;
+  font-size: 1.05rem;
+  font-weight: 500;
+}
+
+.lang-offer__sub {
+  font-size: 0.9rem;
+  font-weight: 400;
+  color: var(--slate);
+}
+
+.lang-offer__actions {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 8px;
+}
+
+@media (max-width: 600px) {
+  .lang-offer {
+    left: 16px;
+    bottom: 16px;
+  }
+}
+
+/* ---------- GOOGLE TRANSLATE ---------- */
+/* The widget's own toolbar, hover tooltips and highlights: the header menu replaces them. */
+iframe.skiptranslate,
+.goog-te-banner-frame,
+#goog-gt-tt,
+.goog-te-balloon-frame,
+.VIpgJd-ZVi9od-ORHb-OEVmcd,
+.VIpgJd-yAWNEb-L7lbkb,
+#google_translate_element {
+  display: none !important;
+}
+
+/* The toolbar pushes the page down by setting body's top; undo it. */
+body {
+  top: 0 !important;
+}
+
+.goog-text-highlight,
+.VIpgJd-yAWNEb-VIpgJd-fmcmS-sn54Q {
+  background: none !important;
+  box-shadow: none !important;
+}
+
+/* Right-to-left languages: mirror the few pieces that are fixed to one side. */
+[dir="rtl"] .wa-float {
+  right: auto;
+  left: 20px;
+}
+
+[dir="rtl"] .lang-offer {
+  left: auto;
+  right: 20px;
+}
+
+[dir="rtl"] .lang-menu__panel {
+  right: auto;
+  left: 0;
+}
+
+/* Arrows point the way you read. */
+[dir="rtl"] .icon-arrow {
+  scale: -1 1;
+}
+
+/* ---------- FLOATING WHATSAPP ---------- */
+.wa-float {
+  position: fixed;
+  right: 20px;
+  bottom: 20px;
+  z-index: 60;
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  width: 56px;
+  height: 56px;
+  border-radius: 50%;
+  /* WhatsApp green, a shade darker than the logo's so the white mark keeps 3:1 contrast. */
+  background: #17964a;
+  color: #fff;
+  box-shadow: 0 8px 24px -8px rgba(0, 0, 0, 0.45);
+  transition: transform 0.2s ease, box-shadow 0.2s ease;
+}
+
+.wa-float svg {
+  width: 28px;
+  height: 28px;
+}
+
+.wa-float:hover {
+  transform: translateY(-2px) scale(1.04);
+  box-shadow: 0 12px 28px -8px rgba(0, 0, 0, 0.5);
+}
+
+.wa-float:focus-visible {
+  outline: 3px solid var(--gold-soft);
+  outline-offset: 3px;
+}
+
+@media (max-width: 600px) {
+  .wa-float {
+    right: 16px;
+    bottom: 16px;
+    width: 52px;
+    height: 52px;
+  }
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .wa-float,
+  .wa-float:hover {
+    transition: none;
+    transform: none;
+  }
+}
+
+@media print {
+  .wa-float {
+    display: none;
+  }
+}
+
 .preview-badge {
   position: fixed;
   left: 50%;

@@ -3,9 +3,15 @@
 import { getCms, getFeatures } from "@/lib/cms";
 import { allow, clientIp } from "@/lib/rate-limit";
 
-export type ContactResult = { ok: boolean; error?: string };
+export type ContactField = "name" | "email" | "phone" | "message";
+export type ContactResult = {
+  ok: boolean;
+  /** One message per field, so the form can mark exactly what needs fixing. */
+  fieldErrors?: Partial<Record<ContactField, string>>;
+  error?: string;
+};
 
-const MAX = { name: 120, email: 200, company: 160, budget: 60, message: 5000 };
+const MAX = { name: 120, email: 200, phone: 40, company: 160, budget: 60, message: 5000 };
 
 const str = (form: FormData, key: keyof typeof MAX) =>
   String(form.get(key) ?? "")
@@ -26,13 +32,21 @@ export async function submitEnquiry(formData: FormData): Promise<ContactResult> 
 
   const name = str(formData, "name");
   const email = str(formData, "email");
+  const phone = str(formData, "phone");
   const message = str(formData, "message");
 
-  if (!name || !email || !message) {
-    return { ok: false, error: "Please fill in your name, email and message." };
+  const fieldErrors: ContactResult["fieldErrors"] = {};
+  if (!name) fieldErrors.name = "Please add your name.";
+  if (!email) fieldErrors.email = "Please add your email address.";
+  else if (!/^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(email)) fieldErrors.email = "That email address doesn't look right.";
+  // Optional, but if given it has to be a number someone can actually call.
+  if (phone && phone.replace(/\D/g, "").length < 7) {
+    fieldErrors.phone = "That number looks too short. Include the area code, or leave it blank.";
   }
-  if (!/^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(email)) {
-    return { ok: false, error: "That email address doesn't look right." };
+  if (!message) fieldErrors.message = "Please tell us a little about what you need.";
+
+  if (Object.keys(fieldErrors).length > 0) {
+    return { ok: false, fieldErrors, error: "A few details need attention — see the highlighted fields." };
   }
 
   // Counted only once the details are valid, so someone correcting typos is
@@ -52,6 +66,7 @@ export async function submitEnquiry(formData: FormData): Promise<ContactResult> 
       data: {
         name,
         email,
+        phone,
         company: str(formData, "company"),
         budget: str(formData, "budget"),
         message,

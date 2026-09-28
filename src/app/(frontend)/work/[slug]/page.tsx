@@ -7,6 +7,8 @@ import CtaBand from "@/components/CtaBand";
 import { ArrowIcon } from "@/components/Icons";
 import { getCaseStudy } from "@/lib/cms";
 import { pageMeta } from "@/lib/seo";
+import JsonLd from "@/components/JsonLd";
+import { breadcrumbSchema } from "@/lib/schema";
 
 type Props = { params: Promise<{ slug: string }> };
 
@@ -54,6 +56,13 @@ export default async function CaseStudyPage({ params }: Props) {
 
   return (
     <>
+      <JsonLd
+        data={breadcrumbSchema([
+          { name: "Home", path: "/" },
+          { name: "Work", path: "/work" },
+          { name: study.name, path: `/work/${study.slug}` },
+        ])}
+      />
       <div className={`case-hero ${study.plate}`}>
         <Image
           className="case-hero__photo"

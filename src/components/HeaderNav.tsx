@@ -6,6 +6,7 @@ import Image from "next/image";
 import { usePathname } from "next/navigation";
 import { MenuIcon, CloseIcon } from "./Icons";
 import ThemeToggle from "./ThemeToggle";
+import LanguageMenu from "./LanguageMenu";
 
 /** Services is a menu of its own (brief §26), so it is not in this list. */
 const NAV_LINKS = [
@@ -20,18 +21,46 @@ export type NavCategory = { name: string; slug: string; description: string };
 /** The Blog link appears once the first post is published. */
 const BLOG_LINK = { href: "/blog", label: "Blog" };
 
-export default function HeaderNav({ categories, showBlog = false }: { categories: NavCategory[]; showBlog?: boolean }) {
+export default function HeaderNav({
+  categories,
+  showBlog = false,
+  showLanguages = false,
+}: {
+  categories: NavCategory[];
+  showBlog?: boolean;
+  showLanguages?: boolean;
+}) {
   const links = showBlog ? [...NAV_LINKS.slice(0, 2), BLOG_LINK, ...NAV_LINKS.slice(2)] : NAV_LINKS;
   const [open, setOpen] = useState(false);
   const [servicesOpen, setServicesOpen] = useState(false);
   const menuId = useId();
+  const mobileId = useId();
   const servicesRef = useRef<HTMLLIElement>(null);
+  const toggleRef = useRef<HTMLButtonElement>(null);
   const pathname = usePathname();
 
-  // Close the Services menu on navigation, on Escape, and on a click elsewhere.
+  /** Marks the section the visitor is in, for sighted and screen-reader users alike. */
+  const current = (href: string) =>
+    pathname === href || pathname.startsWith(`${href}/`) ? ("page" as const) : undefined;
+  const inServices = pathname === "/services" || pathname.startsWith("/services/");
+
+  // Close both menus on navigation, on Escape, and the Services menu on a click elsewhere.
   useEffect(() => {
-    queueMicrotask(() => setServicesOpen(false));
+    queueMicrotask(() => {
+      setServicesOpen(false);
+      setOpen(false);
+    });
   }, [pathname]);
+  useEffect(() => {
+    if (!open) return;
+    const onKey = (e: KeyboardEvent) => {
+      if (e.key !== "Escape") return;
+      setOpen(false);
+      toggleRef.current?.focus();
+    };
+    document.addEventListener("keydown", onKey);
+    return () => document.removeEventListener("keydown", onKey);
+  }, [open]);
   useEffect(() => {
     if (!servicesOpen) return;
     const onKey = (e: KeyboardEvent) => e.key === "Escape" && setServicesOpen(false);
@@ -50,7 +79,7 @@ export default function HeaderNav({ categories, showBlog = false }: { categories
     <>
       <header className="site">
         <div className="navrow">
-          <Link className="wordmark" href="/">
+          <Link className="wordmark notranslate" translate="no" href="/">
             {/* Declared at display size so the optimizer serves a ~110px file, not a 1920px one. */}
             <Image
               className="mark"
@@ -66,11 +95,11 @@ export default function HeaderNav({ categories, showBlog = false }: { categories
               <span className="sub">Digital Solutions</span>
             </span>
           </Link>
-          <ul className="links">
+          <ul className="links" aria-label="Main">
             <li className="nav-services" ref={servicesRef}>
               <button
                 type="button"
-                className="nav-services__toggle"
+                className={`nav-services__toggle${inServices ? " is-current" : ""}`}
                 aria-expanded={servicesOpen}
                 aria-controls={menuId}
                 onClick={() => setServicesOpen((v) => !v)}
@@ -96,11 +125,14 @@ export default function HeaderNav({ categories, showBlog = false }: { categories
             </li>
             {links.map((link) => (
               <li key={link.href}>
-                <Link href={link.href}>{link.label}</Link>
+                <Link href={link.href} aria-current={current(link.href)}>
+                  {link.label}
+                </Link>
               </li>
             ))}
           </ul>
           <div className="nav-right">
+            {showLanguages && <LanguageMenu />}
             <ThemeToggle />
             <Link
               className="btn btn-gold nav-cta"
@@ -110,9 +142,11 @@ export default function HeaderNav({ categories, showBlog = false }: { categories
               Get a Free Marketing Audit
             </Link>
             <button
+              ref={toggleRef}
               type="button"
               className="menu-toggle"
               aria-expanded={open}
+              aria-controls={mobileId}
               aria-label={open ? "Close menu" : "Open menu"}
               onClick={() => setOpen((v) => !v)}
             >
@@ -121,8 +155,8 @@ export default function HeaderNav({ categories, showBlog = false }: { categories
           </div>
         </div>
         {open && (
-          <nav className="mobile-panel">
-            <Link href="/services" onClick={() => setOpen(false)}>
+          <nav className="mobile-panel" id={mobileId} aria-label="Main">
+            <Link href="/services" aria-current={current("/services")} onClick={() => setOpen(false)}>
               Services
             </Link>
             {categories.map((c) => (
@@ -136,7 +170,7 @@ export default function HeaderNav({ categories, showBlog = false }: { categories
               </Link>
             ))}
             {links.map((link) => (
-              <Link key={link.href} href={link.href} onClick={() => setOpen(false)}>
+              <Link key={link.href} href={link.href} aria-current={current(link.href)} onClick={() => setOpen(false)}>
                 {link.label}
               </Link>
             ))}

@@ -3,7 +3,7 @@ import PageHeader from "@/components/PageHeader";
 import AuditForm from "@/components/AuditForm";
 import JsonLd from "@/components/JsonLd";
 import { breadcrumbSchema } from "@/lib/schema";
-import { getFeatures, getSettings } from "@/lib/cms";
+import { getAuditReplyTime, getFeatures, getSettings } from "@/lib/cms";
 import { pageMeta } from "@/lib/seo";
 
 export const metadata: Metadata = pageMeta({
@@ -34,7 +34,24 @@ const COVERS = [
 ];
 
 export default async function FreeAuditPage() {
-  const [features, settings] = await Promise.all([getFeatures(), getSettings()]);
+  const [features, settings, replyTime] = await Promise.all([getFeatures(), getSettings(), getAuditReplyTime()]);
+
+  // What happens after they press send. The timing is only stated when the team has set one.
+  const next = [
+    { title: "You send the request", body: "Two minutes: your details, your website and the goal that matters most." },
+    {
+      title: "A strategist reviews it",
+      body: "A person at Zirka looks at your website, search visibility and current marketing — not an automated scan.",
+    },
+    {
+      title: "You get your findings",
+      body: `We email you the biggest opportunities we found${replyTime ? `, ${replyTime}` : ""}, in plain language.`,
+    },
+    {
+      title: "You decide what's next",
+      body: "Talk it through with us if you'd like help, or take the recommendations and run with them yourself.",
+    },
+  ];
 
   return (
     <>
@@ -63,6 +80,20 @@ export default async function FreeAuditPage() {
                 </li>
               ))}
             </ul>
+            <h2 className="audit__next-heading">What happens next</h2>
+            <ol className="audit__next">
+              {next.map((step, i) => (
+                <li key={step.title}>
+                  <span className="audit__next-idx" aria-hidden="true">
+                    {String(i + 1).padStart(2, "0")}
+                  </span>
+                  <div>
+                    <strong>{step.title}</strong>
+                    <span>{step.body}</span>
+                  </div>
+                </li>
+              ))}
+            </ol>
             <p className="audit__note">
               It&rsquo;s free and there&rsquo;s no obligation. We&rsquo;ll tell you honestly what we
               find — we won&rsquo;t promise results before we&rsquo;ve looked.
