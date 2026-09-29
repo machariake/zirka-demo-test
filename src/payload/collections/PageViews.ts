@@ -12,7 +12,7 @@ export const PageViews: CollectionConfig = {
   admin: {
     useAsTitle: "path",
     defaultColumns: ["path", "referrer", "createdAt"],
-    group: "Enquiries",
+    group: "Setup",
     description: "Anonymous traffic log. No IP addresses or cookies are stored.",
     // The dashboard already charts page views; the raw list is for the super admin.
     hidden: hiddenUnlessSuperAdmin,

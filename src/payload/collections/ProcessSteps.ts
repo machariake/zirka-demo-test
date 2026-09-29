@@ -7,7 +7,7 @@ export const ProcessSteps: CollectionConfig = {
   admin: {
     useAsTitle: "name",
     defaultColumns: ["name", "order", "_status"],
-    group: "Content",
+    group: "Setup",
     hidden: hiddenUnlessSuperAdmin,
     description: 'The "How we work" stages on the homepage. Order matters — they read as a sequence.',
   },

@@ -12,7 +12,7 @@ export const Quotes: CollectionConfig = {
   admin: {
     useAsTitle: "name",
     defaultColumns: ["name", "company", "budget", "status", "followUp", "createdAt"],
-    group: "Enquiries",
+    group: "Leads",
     description: "Quote requests from the website, including the services each person asked about.",
     components: {
       beforeListTable: [

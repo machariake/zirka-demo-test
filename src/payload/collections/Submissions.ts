@@ -12,7 +12,7 @@ export const Submissions: CollectionConfig = {
   admin: {
     useAsTitle: "name",
     defaultColumns: ["name", "kind", "company", "status", "followUp", "createdAt"],
-    group: "Enquiries",
+    group: "Leads",
     description:
       "Everything sent through the website's contact and free-audit forms, in one list. Filter by Type to see audit requests alone.",
     components: {

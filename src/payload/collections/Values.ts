@@ -7,7 +7,7 @@ export const Values: CollectionConfig = {
   admin: {
     useAsTitle: "name",
     defaultColumns: ["name", "order", "_status"],
-    group: "Content",
+    group: "Setup",
     hidden: hiddenUnlessSuperAdmin,
     description: "The operating principles shown on the about page.",
   },

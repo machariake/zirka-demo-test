@@ -3,12 +3,12 @@ import { isAdmin, isPublicOrStaff, hiddenUnlessSuperAdmin } from "../access";
 
 /**
  * One-off pieces of work with a fixed starting price, shown under the monthly
- * retainers. Separate from Pricing Tiers because these are priced per project
+ * retainers. Separate from Monthly Plans because these are priced per project
  * rather than per month, and they carry no included-items list.
  */
 export const ProjectPricing: CollectionConfig = {
   slug: "project-pricing",
-  labels: { singular: "Project Price", plural: "Project Pricing" },
+  labels: { singular: "One-off Price", plural: "One-off Prices" },
   admin: {
     useAsTitle: "name",
     defaultColumns: ["name", "price", "order", "_status"],

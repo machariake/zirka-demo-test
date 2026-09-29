@@ -13,7 +13,7 @@ export const SolutionCategories: CollectionConfig = {
   admin: {
     useAsTitle: "name",
     defaultColumns: ["name", "order", "_status"],
-    group: "Content",
+    group: "Website",
     description:
       "The four headline categories on the homepage, the Services page and the Services menu. Pick which services belong to each.",
   },

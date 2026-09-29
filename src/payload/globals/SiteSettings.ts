@@ -5,7 +5,7 @@ export const SiteSettings: GlobalConfig = {
   slug: "site-settings",
   label: "Site Settings",
   admin: {
-    group: "Settings",
+    group: "Setup",
     description: "Brand details, hero copy and contact channels used across the site.",
   },
   access: {

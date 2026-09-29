@@ -3,11 +3,11 @@ import { isAdmin, isStaff } from "../access";
 
 export const Bookings: CollectionConfig = {
   slug: "bookings",
-  labels: { singular: "Booking", plural: "Bookings" },
+  labels: { singular: "Booked Call", plural: "Booked Calls" },
   admin: {
     useAsTitle: "name",
     defaultColumns: ["start", "name", "company", "status"],
-    group: "Bookings",
+    group: "Leads",
     description: "Consultations booked through the website. Times are stored in UTC and shown in your browser's timezone.",
   },
   defaultSort: "start",

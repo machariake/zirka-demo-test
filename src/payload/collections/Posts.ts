@@ -19,7 +19,7 @@ export const Posts: CollectionConfig = {
   admin: {
     useAsTitle: "title",
     defaultColumns: ["title", "topic", "publishedAt", "_status"],
-    group: "Content",
+    group: "Website",
     description:
       "Articles for the blog. Write, save as a draft, and press Publish when it's ready. The Blog link appears in the menu once the first post is published.",
   },

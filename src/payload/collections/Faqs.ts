@@ -7,7 +7,7 @@ export const Faqs: CollectionConfig = {
   admin: {
     useAsTitle: "question",
     defaultColumns: ["question", "order", "_status"],
-    group: "Content",
+    group: "Website",
   },
   access: {
     read: isPublicOrStaff,

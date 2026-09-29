@@ -35,6 +35,9 @@ const dirname = path.dirname(fileURLToPath(import.meta.url));
 export default buildConfig({
   admin: {
     user: Users.slug,
+    // Initials rather than Gravatar: no outside image request, and no broken
+    // picture for anyone without a Gravatar account.
+    avatar: "default",
     importMap: { baseDir: path.resolve(dirname) },
     components: {
       graphics: {
@@ -51,13 +54,13 @@ export default buildConfig({
       description: "Content and enquiries for Zirka Digital Solutions.",
     },
   },
-  // Menu order: what the team handles every day first (enquiries, quotes,
-  // bookings), then content, then setup-only sections.
+  // Menu: four groups, in the order they are used. Leads (every day), Website
+  // (content), Pricing, then Setup (settings, users and rarely-touched parts).
+  // Groups appear in the order of their first section here.
   collections: [
     Submissions,
     Quotes,
     Bookings,
-    PageViews,
     Projects,
     Posts,
     Services,
@@ -65,13 +68,14 @@ export default buildConfig({
     Testimonials,
     TeamMembers,
     Faqs,
-    Media,
     SolutionCategories,
-    ProcessSteps,
-    Values,
+    Media,
     Engagements,
     ProjectPricing,
+    ProcessSteps,
+    Values,
     Users,
+    PageViews,
   ],
   globals: [SiteSettings, Features, BookingSettings],
   // Vercel Cron calls this every morning (vercel.json).
