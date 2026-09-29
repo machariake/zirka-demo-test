@@ -200,14 +200,15 @@ export const SiteSettings: GlobalConfig = {
               type: "row",
               fields: (
                 [
-                  ["facebookUrl", "Facebook page", "facebook.com"],
-                  ["instagramUrl", "Instagram profile", "instagram.com"],
-                  ["linkedinUrl", "LinkedIn page", "linkedin.com"],
+                  ["facebookUrl", "Facebook page", "facebook.com", "https://www.facebook.com/share/19MhNyMNVX/"],
+                  ["instagramUrl", "Instagram profile", "instagram.com", "https://www.instagram.com/iamessy_blessed"],
+                  ["linkedinUrl", "LinkedIn page", "linkedin.com", undefined],
                 ] as const
-              ).map(([name, label, host]) => ({
+              ).map(([name, label, host, defaultValue]) => ({
                 name,
                 label,
                 type: "text" as const,
+                ...(defaultValue ? { defaultValue } : {}),
                 admin: {
                   description: `Full link, e.g. https://www.${host}/yourpage. Leave empty to hide it.`,
                 },

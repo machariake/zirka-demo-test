@@ -166,6 +166,8 @@ import {
       whatsapp: "16787994634",
       phoneDisplay: "+1 (678) 799–4634",
       email: "info@zirkadigitalsolutions.com",
+      facebookUrl: "https://www.facebook.com/share/19MhNyMNVX/",
+      instagramUrl: "https://www.instagram.com/iamessy_blessed",
       socialHandle: "zirka digital solutions",
       hours: "Monday – Friday, 9am – 6pm",
       stats: stats.map((s) => ({ value: s.num, label: s.label })),
