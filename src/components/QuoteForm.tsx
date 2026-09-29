@@ -4,6 +4,7 @@ import { useState, useTransition, type FormEvent } from "react";
 import { requestQuote, type QuoteField } from "@/app/(frontend)/quote/actions";
 import { budgetRanges as BUDGETS } from "@/lib/data";
 import { trackEvent } from "@/lib/analytics";
+import HumanCheck from "./HumanCheck";
 
 export type QuoteService = { id: number; name: string; short: string };
 
@@ -24,6 +25,7 @@ export default function QuoteForm({
   const [error, setError] = useState<string | null>(null);
   const [sent, setSent] = useState<string | null>(null);
   const [pending, startTransition] = useTransition();
+  const [attempt, setAttempt] = useState(0);
 
   const toggle = (id: number) => {
     setPicked((current) => (current.includes(id) ? current.filter((x) => x !== id) : [...current, id]));
@@ -64,6 +66,7 @@ export default function QuoteForm({
       }
       setErrors(result.fieldErrors ?? {});
       setError(result.error ?? "Something went wrong.");
+      setAttempt((n) => n + 1);
       // Take the visitor straight to the first thing that needs fixing.
       const first = Object.keys(result.fieldErrors ?? {})[0];
       if (first === "services") {
@@ -244,6 +247,8 @@ export default function QuoteForm({
           <label htmlFor="q-details">Anything else we should know? (optional)</label>
           <textarea id="q-details" name="details" rows={4} />
         </div>
+
+        <HumanCheck resetSignal={attempt} />
 
         {error && (
           <p className="form-error" role="alert">

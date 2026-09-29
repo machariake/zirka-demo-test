@@ -27,58 +27,45 @@ const ROLE_LABEL: Record<string, string> = {
 const DAYS = 30;
 
 const ICON = (paths: React.ReactNode) => (
-  <svg viewBox="0 0 24 24" width="26" height="26" fill="none" stroke="currentColor" strokeWidth="1.8" strokeLinecap="round" strokeLinejoin="round">
+  <svg viewBox="0 0 24 24" width="20" height="20" fill="none" stroke="currentColor" strokeWidth="1.8" strokeLinecap="round" strokeLinejoin="round">
     {paths}
   </svg>
 );
 
-/** The everyday jobs, in the order they usually matter. */
-const ACTIONS: { href: string; label: string; hint: string; icon: React.ReactNode; external?: boolean }[] = [
-  {
-    href: "/admin/collections/submissions",
-    label: "Read enquiries",
-    hint: "Messages and free audit requests",
-    icon: ICON(<><path d="M22 12h-6l-2 3h-4l-2-3H2" /><path d="M5.5 5h13L22 12v6a2 2 0 0 1-2 2H4a2 2 0 0 1-2-2v-6z" /></>),
-  },
-  {
-    href: "/admin/collections/quotes",
-    label: "See quote requests",
-    hint: "People asking for prices",
-    icon: ICON(<><path d="M14 3H6a2 2 0 0 0-2 2v14a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2V9z" /><path d="M14 3v6h6M8 13h8M8 17h5" /></>),
-  },
-  {
-    href: "/admin/collections/bookings",
-    label: "See booked calls",
-    hint: "Who is calling and when",
-    icon: ICON(<><rect x="3" y="5" width="18" height="16" rx="2" /><path d="M16 3v4M8 3v4M3 11h18" /></>),
-  },
+/**
+ * Jobs that start from nothing. Reading enquiries, quotes and calls starts from
+ * the "Needs your attention" list instead, so they are not repeated here.
+ */
+type Shortcut = { href: string; label: string; icon: React.ReactNode; external?: boolean; adminOnly?: boolean };
+const SHORTCUTS: Shortcut[] = [
   {
     href: "/admin/collections/projects/create",
-    label: "Add a project",
-    hint: "Show off work you've finished",
+    label: "Add a finished project",
     icon: ICON(<><rect x="3" y="4" width="18" height="16" rx="2" /><circle cx="9" cy="10" r="2" /><path d="m21 16-5-5-9 9" /></>),
   },
   {
     href: "/admin/collections/posts/create",
     label: "Write a blog post",
-    hint: "Share advice with customers",
     icon: ICON(<><path d="M12 20h9" /><path d="M16.5 3.5a2.1 2.1 0 0 1 3 3L7 19l-4 1 1-4z" /></>),
   },
   {
     href: "/admin/globals/site-settings",
-    label: "Change contact details",
-    hint: "Phone, WhatsApp, email and hours",
+    label: "Edit contact details and homepage text",
     icon: ICON(<><path d="M22 16.9v3a2 2 0 0 1-2.2 2 19.8 19.8 0 0 1-8.6-3.1 19.5 19.5 0 0 1-6-6A19.8 19.8 0 0 1 2.1 4.2 2 2 0 0 1 4.1 2h3a2 2 0 0 1 2 1.7c.1.9.4 1.8.7 2.7a2 2 0 0 1-.5 2.1L8 9.8a16 16 0 0 0 6 6l1.3-1.3a2 2 0 0 1 2.1-.4c.9.3 1.8.6 2.7.7a2 2 0 0 1 1.7 2z" /></>),
+  },
+  {
+    href: "/api/submissions/export",
+    label: "Download enquiries (spreadsheet)",
+    adminOnly: true,
+    icon: ICON(<><path d="M21 15v4a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2v-4" /><path d="m7 10 5 5 5-5" /><path d="M12 15V3" /></>),
   },
   {
     href: "/",
     label: "View the website",
-    hint: "Opens in a new tab",
     external: true,
     icon: ICON(<><circle cx="12" cy="12" r="10" /><path d="M2 12h20M12 2a15.3 15.3 0 0 1 4 10 15.3 15.3 0 0 1-4 10 15.3 15.3 0 0 1-4-10 15.3 15.3 0 0 1 4-10z" /></>),
   },
 ];
-
 
 export default async function BeforeDashboard({ user }: Props) {
   const payload = await getPayload({ config });
@@ -211,6 +198,8 @@ export default async function BeforeDashboard({ user }: Props) {
     won,
     stats,
     features,
+    enquiriesThisMonth,
+    quotesThisMonth,
   ] = await Promise.all([
     countOf("submissions", { status: { equals: "new" } }),
     countOf("quotes", { status: { equals: "new" } }),
@@ -223,22 +212,66 @@ export default async function BeforeDashboard({ user }: Props) {
     // Page views are for admins only; a failed query just leaves the charts out.
     isAdmin ? pageViewStats().catch(() => null) : Promise.resolve(null),
     payload.findGlobal({ slug: "features", depth: 0 }) as Promise<{ maintenanceMode?: boolean }>,
+    countOf("submissions", { createdAt: { greater_than_equal: monthStart.toISOString() } }),
+    countOf("quotes", { createdAt: { greater_than_equal: monthStart.toISOString() } }),
   ]);
   const openLeads = openEnquiries + openQuotes;
+  const leadsThisMonth = enquiriesThisMonth + quotesThisMonth;
   // The admin list reads `in` filters as an indexed array in the address.
   const openStageQuery = (collection: keyof typeof OPEN_STAGES) =>
     OPEN_STAGES[collection].map((stage, i) => `where[status][in][${i}]=${stage}`).join("&");
   const followUpsDue = dueEnquiries + dueQuotes;
+  const dueFilter = `where[followUp][less_than_equal]=${encodeURIComponent(endOfToday.toISOString())}`;
 
   // No session id is stored on a visitor's device any more, so this counts
   // page views rather than unique people.
   const days = stats?.days ?? [];
   const topPages = stats?.topPages ?? [];
-  const views = stats?.views ?? 0;
 
-  const hasPendingItems = newEnquiries > 0 || newQuotes > 0 || confirmedBookings > 0 || followUpsDue > 0;
   const maintenanceOn = features.maintenanceMode === true;
   const displayName = user?.name?.split(" ")[0] || user?.email?.split("@")[0] || "there";
+  const plural = (n: number, one: string, many: string) => `${n} ${n === 1 ? one : many}`;
+
+  /** Everything waiting on someone, most time-sensitive first. Empty means all caught up. */
+  const todo = [
+    followUpsDue > 0 && {
+      key: "followup",
+      tone: "urgent",
+      count: followUpsDue,
+      title: plural(followUpsDue, "follow-up due", "follow-ups due"),
+      detail: "Leads you planned to get back to by today",
+      href:
+        dueEnquiries > 0
+          ? `/admin/collections/submissions?${dueFilter}&${openStageQuery("submissions")}&sort=followUp`
+          : `/admin/collections/quotes?${dueFilter}&${openStageQuery("quotes")}&sort=followUp`,
+    },
+    newEnquiries > 0 && {
+      key: "enquiries",
+      tone: "new",
+      count: newEnquiries,
+      title: plural(newEnquiries, "new enquiry", "new enquiries"),
+      detail: "Messages and free audit requests waiting for a reply",
+      href: "/admin/collections/submissions?where[status][equals]=new",
+    },
+    newQuotes > 0 && {
+      key: "quotes",
+      tone: "new",
+      count: newQuotes,
+      title: plural(newQuotes, "new quote request", "new quote requests"),
+      detail: "People waiting for a price",
+      href: "/admin/collections/quotes?where[status][equals]=new",
+    },
+    confirmedBookings > 0 && {
+      key: "calls",
+      tone: "calm",
+      count: confirmedBookings,
+      title: plural(confirmedBookings, "upcoming call", "upcoming calls"),
+      detail: "Booked through the website",
+      href: "/admin/collections/bookings?where[status][equals]=confirmed",
+    },
+  ].filter(Boolean) as { key: string; tone: string; count: number; title: string; detail: string; href: string }[];
+
+  const shortcuts = SHORTCUTS.filter((s) => !s.adminOnly || isAdmin);
 
   return (
     <div className="zk-dash">
@@ -262,193 +295,129 @@ export default async function BeforeDashboard({ user }: Props) {
         </div>
       )}
 
-      {/* Executive Header Bar */}
-      <div className="zk-dash__head">
-        <div className="zk-dash__head-left">
-          <div className="zk-dash__title-row">
-            <h1 className="zk-dash__title">
-              <Greeting name={displayName} />
-            </h1>
-            {role && <span className="zk-dash__role">{role}</span>}
-          </div>
-          <div className="zk-dash__subtitle-row">
-            <span className="zk-dash__status">
-              <span className="zk-dash__status-dot" />
-              zirkadigitalsolutions.com
-            </span>
-            <span className="zk-dash__sep">·</span>
-            <span className="zk-dash__date">
-              {new Date().toLocaleDateString(undefined, {
-                weekday: "short",
-                month: "short",
-                day: "numeric",
-                year: "numeric",
-              })}
-            </span>
-          </div>
-        </div>
-      </div>
+      <header className="zk-dash__head">
+        <h1 className="zk-dash__title">
+          <Greeting name={displayName} />
+        </h1>
+        <p className="zk-dash__sub">
+          {new Date().toLocaleDateString(undefined, { weekday: "long", month: "long", day: "numeric" })}
+          {role && <span className="zk-dash__role">{role}</span>}
+        </p>
+      </header>
 
-      {/* Priority Action Alerts */}
-      {hasPendingItems && (
-        <div className="zk-alerts">
-          {followUpsDue > 0 && (
-            <Link
-              className="zk-alert zk-alert--followup"
-              href={
-                dueEnquiries > 0
-                  ? `/admin/collections/submissions?where[followUp][less_than_equal]=${encodeURIComponent(endOfToday.toISOString())}&${openStageQuery("submissions")}&sort=followUp`
-                  : `/admin/collections/quotes?where[followUp][less_than_equal]=${encodeURIComponent(endOfToday.toISOString())}&${openStageQuery("quotes")}&sort=followUp`
-              }
-            >
-              <span className="zk-alert__badge">{followUpsDue}</span>
-              <div className="zk-alert__content">
-                <strong>
-                  {followUpsDue} {followUpsDue === 1 ? "follow-up" : "follow-ups"} due today
-                </strong>
-                <span>
-                  {dueEnquiries > 0 && dueQuotes > 0
-                    ? `${dueEnquiries} ${dueEnquiries === 1 ? "enquiry" : "enquiries"} and ${dueQuotes} ${dueQuotes === 1 ? "quote" : "quotes"}. Time to get back in touch`
-                    : "Time to get back in touch"}
-                </span>
-              </div>
-              <span className="zk-alert__arrow">→</span>
-            </Link>
-          )}
-
-          {newEnquiries > 0 && (
-            <Link
-              className="zk-alert zk-alert--enquiry"
-              href="/admin/collections/submissions?where[status][equals]=new"
-            >
-              <span className="zk-alert__badge">{newEnquiries}</span>
-              <div className="zk-alert__content">
-                <strong>
-                  {newEnquiries} new {newEnquiries === 1 ? "contact enquiry" : "contact enquiries"}
-                </strong>
-                <span>Awaiting response — review in submissions</span>
-              </div>
-              <span className="zk-alert__arrow">→</span>
-            </Link>
-          )}
-
-          {newQuotes > 0 && (
-            <Link
-              className="zk-alert zk-alert--quote"
-              href="/admin/collections/quotes?where[status][equals]=new"
-            >
-              <span className="zk-alert__badge">{newQuotes}</span>
-              <div className="zk-alert__content">
-                <strong>
-                  {newQuotes} new {newQuotes === 1 ? "quote request" : "quote requests"}
-                </strong>
-                <span>Client looking for pricing proposal — review</span>
-              </div>
-              <span className="zk-alert__arrow">→</span>
-            </Link>
-          )}
-
-          {confirmedBookings > 0 && (
-            <Link
-              className="zk-alert zk-alert--booking"
-              href="/admin/collections/bookings?where[status][equals]=confirmed"
-            >
-              <span className="zk-alert__badge">{confirmedBookings}</span>
-              <div className="zk-alert__content">
-                <strong>
-                  {confirmedBookings} upcoming {confirmedBookings === 1 ? "consultation" : "consultations"}
-                </strong>
-                <span>Confirmed calendar bookings</span>
-              </div>
-              <span className="zk-alert__arrow">→</span>
-            </Link>
-          )}
-        </div>
-      )}
-
-      {/* Big, plainly worded shortcuts to the everyday jobs. */}
-      <section className="zk-actions-wrap" aria-labelledby="zk-actions-title">
-        <h2 id="zk-actions-title" className="zk-section-title">
-          What would you like to do?
+      <section className="zk-panel" aria-labelledby="zk-todo-title">
+        <h2 id="zk-todo-title" className="zk-section-title">
+          Needs your attention
         </h2>
-        <div className="zk-actions">
-          {ACTIONS.map((a) => (
-            <Link
-              key={a.href}
-              className="zk-action"
-              href={a.href}
-              {...(a.external ? { target: "_blank", rel: "noopener" } : {})}
-            >
-              <span className="zk-action__icon" aria-hidden="true">
-                {a.icon}
-              </span>
-              <span className="zk-action__text">
-                <strong>{a.label}</strong>
-                <span>{a.hint}</span>
-              </span>
-            </Link>
-          ))}
+        {todo.length > 0 ? (
+          <ul className="zk-todo">
+            {todo.map((t) => (
+              <li key={t.key}>
+                <Link className={`zk-todo__item zk-todo__item--${t.tone}`} href={t.href}>
+                  <span className="zk-todo__count">{t.count}</span>
+                  <span className="zk-todo__text">
+                    <strong>{t.title}</strong>
+                    <span>{t.detail}</span>
+                  </span>
+                  <span className="zk-todo__go" aria-hidden="true">
+                    Open →
+                  </span>
+                </Link>
+              </li>
+            ))}
+          </ul>
+        ) : (
+          <p className="zk-clear">
+            <span aria-hidden="true">✓</span> You&rsquo;re all caught up. New enquiries, quote requests and
+            booked calls will appear here.
+          </p>
+        )}
+      </section>
+
+      <section aria-labelledby="zk-glance-title">
+        <h2 id="zk-glance-title" className="zk-section-title">
+          At a glance
+        </h2>
+        <div className="zk-tiles">
+          <Link
+            className="zk-tile"
+            href={`/admin/collections/submissions?where[createdAt][greater_than_equal]=${encodeURIComponent(monthStart.toISOString())}`}
+          >
+            <span className="zk-tile__label">Leads this month</span>
+            <span className="zk-tile__num">{leadsThisMonth}</span>
+            <span className="zk-tile__hint">
+              {plural(enquiriesThisMonth, "enquiry", "enquiries")} · {plural(quotesThisMonth, "quote", "quotes")}
+            </span>
+          </Link>
+          <Link className="zk-tile" href={`/admin/collections/submissions?${openStageQuery("submissions")}`}>
+            <span className="zk-tile__label">Open leads</span>
+            <span className="zk-tile__num">{openLeads}</span>
+            <span className="zk-tile__hint">
+              {plural(openEnquiries, "enquiry", "enquiries")} · {plural(openQuotes, "quote", "quotes")}
+            </span>
+          </Link>
+          <Link className="zk-tile" href="/admin/collections/bookings">
+            <span className="zk-tile__label">Upcoming calls</span>
+            <span className="zk-tile__num">{confirmedBookings}</span>
+            <span className="zk-tile__hint">Booked on the website</span>
+          </Link>
+          <div className="zk-tile zk-tile--static">
+            <span className="zk-tile__label">Won this month</span>
+            <span className="zk-tile__num">{won.count}</span>
+            <span className="zk-tile__hint">
+              {won.value > 0 ? `$${won.value.toLocaleString("en-US")} in deals` : "Mark a lead Won to count it"}
+            </span>
+          </div>
         </div>
       </section>
 
-      <h2 className="zk-section-title">How things are going</h2>
+      <section aria-labelledby="zk-shortcuts-title">
+        <h2 id="zk-shortcuts-title" className="zk-section-title">
+          Shortcuts
+        </h2>
+        <ul className="zk-shortcuts">
+          {shortcuts.map((a) => {
+            const content = (
+              <>
+                <span className="zk-shortcut__icon" aria-hidden="true">
+                  {a.icon}
+                </span>
+                {a.label}
+              </>
+            );
+            // The website and the spreadsheet download are full page loads, not admin screens.
+            return (
+              <li key={a.href}>
+                {a.external || a.href.startsWith("/api/") ? (
+                  <a className="zk-shortcut" href={a.href} {...(a.external ? { target: "_blank", rel: "noopener" } : {})}>
+                    {content}
+                  </a>
+                ) : (
+                  <Link className="zk-shortcut" href={a.href}>
+                    {content}
+                  </Link>
+                )}
+              </li>
+            );
+          })}
+        </ul>
+      </section>
 
-      {/* Business Metrics Grid */}
-      <div className="zk-tiles">
-        {isAdmin && (
-          <div className="zk-tile zk-tile--static">
-            <span className="zk-tile__num">{views.toLocaleString()}</span>
-            <span className="zk-tile__label">Pages viewed</span>
-            <span className="zk-tile__hint">In the last 30 days</span>
-          </div>
-        )}
-
-        <Link className="zk-tile" href="/admin/collections/submissions">
-          <span className="zk-tile__num">{newEnquiries}</span>
-          <span className="zk-tile__label">New enquiries</span>
-          <span className="zk-tile__hint">Not answered yet</span>
-        </Link>
-
-        <Link className="zk-tile" href="/admin/collections/quotes">
-          <span className="zk-tile__num">{newQuotes}</span>
-          <span className="zk-tile__label">New quote requests</span>
-          <span className="zk-tile__hint">Not answered yet</span>
-        </Link>
-
-        <Link className="zk-tile" href="/admin/collections/bookings">
-          <span className="zk-tile__num">{confirmedBookings}</span>
-          <span className="zk-tile__label">Upcoming calls</span>
-          <span className="zk-tile__hint">Booked on the website</span>
-        </Link>
-
-        <Link className="zk-tile" href={`/admin/collections/submissions?${openStageQuery("submissions")}`}>
-          <span className="zk-tile__num">{openLeads}</span>
-          <span className="zk-tile__label">Open leads</span>
-          <span className="zk-tile__hint">
-            {openEnquiries} {openEnquiries === 1 ? "enquiry" : "enquiries"} · {openQuotes} {openQuotes === 1 ? "quote" : "quotes"}
-          </span>
-        </Link>
-
-        <div className="zk-tile zk-tile--static">
-          <span className="zk-tile__num">{won.count}</span>
-          <span className="zk-tile__label">Won this month</span>
-          <span className="zk-tile__hint">
-            {won.value > 0 ? `$${won.value.toLocaleString("en-US")} in deals` : "Mark a lead Won to count it"}
-          </span>
-        </div>
-      </div>
-
-      {/* Traffic Analytics Section */}
       {isAdmin && days.length > 0 && (
-        <div className="zk-charts">
-          <TrafficChart days={days} />
-          <TopPages rows={topPages} />
-        </div>
+        <section aria-labelledby="zk-traffic-title">
+          <h2 id="zk-traffic-title" className="zk-section-title">
+            Website visits
+          </h2>
+          <div className="zk-charts">
+            <TrafficChart days={days} />
+            <TopPages rows={topPages} />
+          </div>
+        </section>
       )}
 
       {/*
        * Payload's own grid of every collection is hidden in custom.css: with the
-       * shortcuts above and the sidebar, it was a third copy of the same links.
+       * list above and the menu, it was another copy of the same links.
        */}
     </div>
   );

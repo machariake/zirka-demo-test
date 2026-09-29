@@ -19,7 +19,7 @@ export const BookingSettings: GlobalConfig = {
   slug: "booking-settings",
   label: "Booking Availability",
   admin: {
-    group: "Bookings",
+    group: "Setup",
     description: "When people can book a free consultation. Visitors see these times in their own timezone.",
   },
   access: {

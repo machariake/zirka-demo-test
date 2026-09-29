@@ -6,7 +6,7 @@ export const Services: CollectionConfig = {
   admin: {
     useAsTitle: "name",
     defaultColumns: ["name", "order", "_status"],
-    group: "Content",
+    group: "Website",
     description: "The disciplines listed on the homepage and services page.",
   },
   access: {

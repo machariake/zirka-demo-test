@@ -17,7 +17,7 @@ export const CaseStudies: CollectionConfig = {
   admin: {
     useAsTitle: "name",
     defaultColumns: ["name", "category", "metric", "_status"],
-    group: "Content",
+    group: "Website",
     description: "Client work shown on the homepage, the work page, and each case study's own page.",
   },
   access: {

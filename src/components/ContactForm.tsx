@@ -4,6 +4,7 @@ import { useState, useTransition, type FormEvent } from "react";
 import { submitEnquiry, type ContactField } from "@/app/(frontend)/contact/actions";
 import { budgetRanges as BUDGETS } from "@/lib/data";
 import { trackEvent } from "@/lib/analytics";
+import HumanCheck from "./HumanCheck";
 
 /**
  * Inputs are uncontrolled and never reset on an error, so a mistake in one
@@ -17,6 +18,7 @@ export default function ContactForm() {
   const [formError, setFormError] = useState<string | null>(null);
   const [firstName, setFirstName] = useState("");
   const [pending, startTransition] = useTransition();
+  const [attempt, setAttempt] = useState(0);
 
   function handleSubmit(e: FormEvent<HTMLFormElement>) {
     e.preventDefault();
@@ -34,6 +36,7 @@ export default function ContactForm() {
       }
       setErrors(result.fieldErrors ?? {});
       setFormError(result.error ?? "Something went wrong. Please try again.");
+      setAttempt((n) => n + 1);
       // Take the visitor straight to the first thing that needs fixing.
       const first = Object.keys(result.fieldErrors ?? {})[0];
       if (first) (form.elements.namedItem(first) as HTMLElement | null)?.focus();
@@ -119,6 +122,8 @@ export default function ContactForm() {
         <textarea id="message" name="message" rows={5} required {...invalid("message")} />
         {errorText("message")}
       </div>
+
+      <HumanCheck resetSignal={attempt} />
 
       {formError && (
         <p className="form-error" role="alert">

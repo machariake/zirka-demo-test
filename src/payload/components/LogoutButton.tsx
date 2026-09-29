@@ -66,7 +66,7 @@ export default function LogoutButton({ variant = "sidebar", className = "" }: Pr
         <polyline points="16 17 21 12 16 7" />
         <line x1="21" y1="12" x2="9" y2="12" />
       </svg>
-      <span>{loading ? "Logging out..." : "Log out"}</span>
+      <span className="zk-header-btn__label">{loading ? "Logging out…" : "Log out"}</span>
     </button>
   );
 }

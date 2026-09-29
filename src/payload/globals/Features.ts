@@ -28,7 +28,7 @@ export const Features: GlobalConfig = {
   slug: "features",
   label: "Features",
   admin: {
-    group: "Super Admin",
+    group: "Setup",
     description: "Turn parts of the website on or off. Changes apply as soon as you save.",
     hidden: ({ user }) => (user as { role?: string } | null)?.role !== "superadmin",
   },

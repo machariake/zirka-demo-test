@@ -4,6 +4,7 @@ import { SITE_URL } from "../../lib/site";
 import { escapeHtml, mailSetup } from "../mailer";
 import { sendAutoReply } from "../auto-reply";
 import { LEAD_STAGES, leadFields } from "../fields/lead";
+import { quotesExport } from "../export";
 
 export const Quotes: CollectionConfig = {
   slug: "quotes",
@@ -11,9 +12,18 @@ export const Quotes: CollectionConfig = {
   admin: {
     useAsTitle: "name",
     defaultColumns: ["name", "company", "budget", "status", "followUp", "createdAt"],
-    group: "Enquiries",
+    group: "Leads",
     description: "Quote requests from the website, including the services each person asked about.",
+    components: {
+      beforeListTable: [
+        {
+          path: "/payload/components/ExportButton",
+          clientProps: { href: "/api/quotes/export", label: "Download all quote requests (spreadsheet)" },
+        },
+      ],
+    },
   },
+  endpoints: [quotesExport],
   access: {
     // Written by the quote form's server action through Payload's local API.
     create: () => false,

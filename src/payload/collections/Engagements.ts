@@ -3,7 +3,7 @@ import { isAdmin, isPublicOrStaff, hiddenUnlessSuperAdmin } from "../access";
 
 export const Engagements: CollectionConfig = {
   slug: "engagements",
-  labels: { singular: "Pricing Tier", plural: "Pricing Tiers" },
+  labels: { singular: "Monthly Plan", plural: "Monthly Plans" },
   admin: {
     useAsTitle: "name",
     defaultColumns: ["name", "price", "featured", "_status"],

@@ -7,7 +7,7 @@ export const TeamMembers: CollectionConfig = {
   admin: {
     useAsTitle: "name",
     defaultColumns: ["name", "role", "order", "_status"],
-    group: "Content",
+    group: "Website",
     description:
       "Real team members only — never stock, AI-generated or placeholder people (brief §3). Someone appears on the site only when they are published, have a real photo, and Features → Leadership is switched on.",
   },

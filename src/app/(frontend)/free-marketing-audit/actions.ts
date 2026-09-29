@@ -2,6 +2,8 @@
 
 import { getCms, getFeatures } from "@/lib/cms";
 import { allow, clientIp } from "@/lib/rate-limit";
+import { passesHumanCheck } from "@/lib/turnstile-server";
+import { HUMAN_CHECK_FAILED } from "@/lib/turnstile";
 import { AUDIT_GOALS } from "@/lib/audit";
 
 export type AuditField = "name" | "company" | "email" | "phone" | "website" | "goal";
@@ -77,7 +79,9 @@ export async function requestAudit(formData: FormData): Promise<AuditResult> {
 
   // Counted only once the details are valid, so someone correcting typos is
   // never locked out; a flood of well-formed requests still is.
-  if (!allow(`audit:${await clientIp()}`, 5, 10 * 60 * 1000)) {
+  const ip = await clientIp();
+  if (!(await passesHumanCheck(formData, ip))) return { ok: false, error: HUMAN_CHECK_FAILED };
+  if (!allow(`audit:${ip}`, 5, 10 * 60 * 1000)) {
     return {
       ok: false,
       error: "Several requests came from you in a short time. Please wait a few minutes, or message us on WhatsApp.",

@@ -70,7 +70,6 @@ export interface Config {
     submissions: Submission;
     quotes: Quote;
     bookings: Booking;
-    'page-views': PageView;
     projects: Project;
     posts: Post;
     services: Service;
@@ -78,13 +77,14 @@ export interface Config {
     testimonials: Testimonial;
     'team-members': TeamMember;
     faqs: Faq;
-    media: Media;
     'solution-categories': SolutionCategory;
-    'process-steps': ProcessStep;
-    values: Value;
+    media: Media;
     engagements: Engagement;
     'project-pricing': ProjectPricing;
+    'process-steps': ProcessStep;
+    values: Value;
     users: User;
+    'page-views': PageView;
     'payload-kv': PayloadKv;
     'payload-locked-documents': PayloadLockedDocument;
     'payload-preferences': PayloadPreference;
@@ -95,7 +95,6 @@ export interface Config {
     submissions: SubmissionsSelect<false> | SubmissionsSelect<true>;
     quotes: QuotesSelect<false> | QuotesSelect<true>;
     bookings: BookingsSelect<false> | BookingsSelect<true>;
-    'page-views': PageViewsSelect<false> | PageViewsSelect<true>;
     projects: ProjectsSelect<false> | ProjectsSelect<true>;
     posts: PostsSelect<false> | PostsSelect<true>;
     services: ServicesSelect<false> | ServicesSelect<true>;
@@ -103,13 +102,14 @@ export interface Config {
     testimonials: TestimonialsSelect<false> | TestimonialsSelect<true>;
     'team-members': TeamMembersSelect<false> | TeamMembersSelect<true>;
     faqs: FaqsSelect<false> | FaqsSelect<true>;
-    media: MediaSelect<false> | MediaSelect<true>;
     'solution-categories': SolutionCategoriesSelect<false> | SolutionCategoriesSelect<true>;
-    'process-steps': ProcessStepsSelect<false> | ProcessStepsSelect<true>;
-    values: ValuesSelect<false> | ValuesSelect<true>;
+    media: MediaSelect<false> | MediaSelect<true>;
     engagements: EngagementsSelect<false> | EngagementsSelect<true>;
     'project-pricing': ProjectPricingSelect<false> | ProjectPricingSelect<true>;
+    'process-steps': ProcessStepsSelect<false> | ProcessStepsSelect<true>;
+    values: ValuesSelect<false> | ValuesSelect<true>;
     users: UsersSelect<false> | UsersSelect<true>;
+    'page-views': PageViewsSelect<false> | PageViewsSelect<true>;
     'payload-kv': PayloadKvSelect<false> | PayloadKvSelect<true>;
     'payload-locked-documents': PayloadLockedDocumentsSelect<false> | PayloadLockedDocumentsSelect<true>;
     'payload-preferences': PayloadPreferencesSelect<false> | PayloadPreferencesSelect<true>;
@@ -396,20 +396,6 @@ export interface Booking {
    * Internal only.
    */
   notes?: string | null;
-  updatedAt: string;
-  createdAt: string;
-}
-/**
- * Anonymous traffic log. No IP addresses or cookies are stored.
- *
- * This interface was referenced by `Config`'s JSON-Schema
- * via the `definition` "page-views".
- */
-export interface PageView {
-  id: number;
-  path: string;
-  referrer?: string | null;
-  session?: string | null;
   updatedAt: string;
   createdAt: string;
 }
@@ -743,42 +729,6 @@ export interface SolutionCategory {
   _status?: ('draft' | 'published') | null;
 }
 /**
- * The "How we work" stages on the homepage. Order matters — they read as a sequence.
- *
- * This interface was referenced by `Config`'s JSON-Schema
- * via the `definition` "process-steps".
- */
-export interface ProcessStep {
-  id: number;
-  /**
-   * e.g. "Chart"
-   */
-  name: string;
-  description: string;
-  /**
-   * Numbering on the site follows this order.
-   */
-  order?: number | null;
-  updatedAt: string;
-  createdAt: string;
-  _status?: ('draft' | 'published') | null;
-}
-/**
- * The operating principles shown on the about page.
- *
- * This interface was referenced by `Config`'s JSON-Schema
- * via the `definition` "values".
- */
-export interface Value {
-  id: number;
-  name: string;
-  description: string;
-  order?: number | null;
-  updatedAt: string;
-  createdAt: string;
-  _status?: ('draft' | 'published') | null;
-}
-/**
  * Pricing is restricted to admins and super admins.
  *
  * This interface was referenced by `Config`'s JSON-Schema
@@ -840,6 +790,42 @@ export interface ProjectPricing {
   _status?: ('draft' | 'published') | null;
 }
 /**
+ * The "How we work" stages on the homepage. Order matters — they read as a sequence.
+ *
+ * This interface was referenced by `Config`'s JSON-Schema
+ * via the `definition` "process-steps".
+ */
+export interface ProcessStep {
+  id: number;
+  /**
+   * e.g. "Chart"
+   */
+  name: string;
+  description: string;
+  /**
+   * Numbering on the site follows this order.
+   */
+  order?: number | null;
+  updatedAt: string;
+  createdAt: string;
+  _status?: ('draft' | 'published') | null;
+}
+/**
+ * The operating principles shown on the about page.
+ *
+ * This interface was referenced by `Config`'s JSON-Schema
+ * via the `definition` "values".
+ */
+export interface Value {
+  id: number;
+  name: string;
+  description: string;
+  order?: number | null;
+  updatedAt: string;
+  createdAt: string;
+  _status?: ('draft' | 'published') | null;
+}
+/**
  * This interface was referenced by `Config`'s JSON-Schema
  * via the `definition` "users".
  */
@@ -872,6 +858,20 @@ export interface User {
     | null;
   password?: string | null;
   collection: 'users';
+}
+/**
+ * Anonymous traffic log. No IP addresses or cookies are stored.
+ *
+ * This interface was referenced by `Config`'s JSON-Schema
+ * via the `definition` "page-views".
+ */
+export interface PageView {
+  id: number;
+  path: string;
+  referrer?: string | null;
+  session?: string | null;
+  updatedAt: string;
+  createdAt: string;
 }
 /**
  * This interface was referenced by `Config`'s JSON-Schema
@@ -910,10 +910,6 @@ export interface PayloadLockedDocument {
         value: number | Booking;
       } | null)
     | ({
-        relationTo: 'page-views';
-        value: number | PageView;
-      } | null)
-    | ({
         relationTo: 'projects';
         value: number | Project;
       } | null)
@@ -942,20 +938,12 @@ export interface PayloadLockedDocument {
         value: number | Faq;
       } | null)
     | ({
-        relationTo: 'media';
-        value: number | Media;
-      } | null)
-    | ({
         relationTo: 'solution-categories';
         value: number | SolutionCategory;
       } | null)
     | ({
-        relationTo: 'process-steps';
-        value: number | ProcessStep;
-      } | null)
-    | ({
-        relationTo: 'values';
-        value: number | Value;
+        relationTo: 'media';
+        value: number | Media;
       } | null)
     | ({
         relationTo: 'engagements';
@@ -966,8 +954,20 @@ export interface PayloadLockedDocument {
         value: number | ProjectPricing;
       } | null)
     | ({
+        relationTo: 'process-steps';
+        value: number | ProcessStep;
+      } | null)
+    | ({
+        relationTo: 'values';
+        value: number | Value;
+      } | null)
+    | ({
         relationTo: 'users';
         value: number | User;
+      } | null)
+    | ({
+        relationTo: 'page-views';
+        value: number | PageView;
       } | null);
   globalSlug?: string | null;
   user: {
@@ -1081,17 +1081,6 @@ export interface BookingsSelect<T extends boolean = true> {
   topic?: T;
   visitorTimezone?: T;
   notes?: T;
-  updatedAt?: T;
-  createdAt?: T;
-}
-/**
- * This interface was referenced by `Config`'s JSON-Schema
- * via the `definition` "page-views_select".
- */
-export interface PageViewsSelect<T extends boolean = true> {
-  path?: T;
-  referrer?: T;
-  session?: T;
   updatedAt?: T;
   createdAt?: T;
 }
@@ -1270,6 +1259,20 @@ export interface FaqsSelect<T extends boolean = true> {
 }
 /**
  * This interface was referenced by `Config`'s JSON-Schema
+ * via the `definition` "solution-categories_select".
+ */
+export interface SolutionCategoriesSelect<T extends boolean = true> {
+  name?: T;
+  slug?: T;
+  description?: T;
+  services?: T;
+  order?: T;
+  updatedAt?: T;
+  createdAt?: T;
+  _status?: T;
+}
+/**
+ * This interface was referenced by `Config`'s JSON-Schema
  * via the `definition` "media_select".
  */
 export interface MediaSelect<T extends boolean = true> {
@@ -1322,44 +1325,6 @@ export interface MediaSelect<T extends boolean = true> {
 }
 /**
  * This interface was referenced by `Config`'s JSON-Schema
- * via the `definition` "solution-categories_select".
- */
-export interface SolutionCategoriesSelect<T extends boolean = true> {
-  name?: T;
-  slug?: T;
-  description?: T;
-  services?: T;
-  order?: T;
-  updatedAt?: T;
-  createdAt?: T;
-  _status?: T;
-}
-/**
- * This interface was referenced by `Config`'s JSON-Schema
- * via the `definition` "process-steps_select".
- */
-export interface ProcessStepsSelect<T extends boolean = true> {
-  name?: T;
-  description?: T;
-  order?: T;
-  updatedAt?: T;
-  createdAt?: T;
-  _status?: T;
-}
-/**
- * This interface was referenced by `Config`'s JSON-Schema
- * via the `definition` "values_select".
- */
-export interface ValuesSelect<T extends boolean = true> {
-  name?: T;
-  description?: T;
-  order?: T;
-  updatedAt?: T;
-  createdAt?: T;
-  _status?: T;
-}
-/**
- * This interface was referenced by `Config`'s JSON-Schema
  * via the `definition` "engagements_select".
  */
 export interface EngagementsSelect<T extends boolean = true> {
@@ -1394,6 +1359,30 @@ export interface ProjectPricingSelect<T extends boolean = true> {
 }
 /**
  * This interface was referenced by `Config`'s JSON-Schema
+ * via the `definition` "process-steps_select".
+ */
+export interface ProcessStepsSelect<T extends boolean = true> {
+  name?: T;
+  description?: T;
+  order?: T;
+  updatedAt?: T;
+  createdAt?: T;
+  _status?: T;
+}
+/**
+ * This interface was referenced by `Config`'s JSON-Schema
+ * via the `definition` "values_select".
+ */
+export interface ValuesSelect<T extends boolean = true> {
+  name?: T;
+  description?: T;
+  order?: T;
+  updatedAt?: T;
+  createdAt?: T;
+  _status?: T;
+}
+/**
+ * This interface was referenced by `Config`'s JSON-Schema
  * via the `definition` "users_select".
  */
 export interface UsersSelect<T extends boolean = true> {
@@ -1416,6 +1405,17 @@ export interface UsersSelect<T extends boolean = true> {
         createdAt?: T;
         expiresAt?: T;
       };
+}
+/**
+ * This interface was referenced by `Config`'s JSON-Schema
+ * via the `definition` "page-views_select".
+ */
+export interface PageViewsSelect<T extends boolean = true> {
+  path?: T;
+  referrer?: T;
+  session?: T;
+  updatedAt?: T;
+  createdAt?: T;
 }
 /**
  * This interface was referenced by `Config`'s JSON-Schema

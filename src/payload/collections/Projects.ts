@@ -13,7 +13,7 @@ export const Projects: CollectionConfig = {
   admin: {
     useAsTitle: "name",
     defaultColumns: ["name", "client", "year", "featured", "_status"],
-    group: "Content",
+    group: "Website",
     description:
       "Work you have delivered for real clients: websites, logos, campaigns and more. Shown on the Work page, and on the homepage when marked Featured. Only add genuine client work.",
   },

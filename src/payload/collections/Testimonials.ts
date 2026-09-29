@@ -6,7 +6,7 @@ export const Testimonials: CollectionConfig = {
   admin: {
     useAsTitle: "name",
     defaultColumns: ["name", "company", "featured", "_status"],
-    group: "Content",
+    group: "Website",
     description:
       "Genuine testimonials only, supplied by the client (brief §7) — never written for them. Published ones appear on the homepage when Features → Testimonial is on.",
   },

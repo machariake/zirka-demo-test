@@ -4,6 +4,7 @@ import { useEffect, useState, useTransition, type FormEvent } from "react";
 import { requestAudit, type AuditField } from "@/app/(frontend)/free-marketing-audit/actions";
 import { AUDIT_GOALS } from "@/lib/audit";
 import { trackEvent } from "@/lib/analytics";
+import HumanCheck from "./HumanCheck";
 
 const UTM_KEYS = ["utm_source", "utm_medium", "utm_campaign", "utm_content", "utm_term"] as const;
 type Attribution = Record<(typeof UTM_KEYS)[number] | "landing_page" | "referrer_host", string>;
@@ -31,6 +32,7 @@ export default function AuditForm() {
   const [sentTo, setSentTo] = useState<string | null>(null);
   const [pending, startTransition] = useTransition();
   const [attribution, setAttribution] = useState<Attribution>(EMPTY);
+  const [attempt, setAttempt] = useState(0);
 
   // Attribution from the landing URL, read after mount because the server
   // render has no window. It is held in state rather than written straight into
@@ -64,6 +66,7 @@ export default function AuditForm() {
       }
       setErrors(result.fieldErrors ?? {});
       setFormError(result.error ?? "Something went wrong.");
+      setAttempt((n) => n + 1);
       // Take the visitor straight to the first thing that needs fixing.
       const first = Object.keys(result.fieldErrors ?? {})[0];
       if (first) (form.elements.namedItem(first) as HTMLElement | null)?.focus();
@@ -214,6 +217,8 @@ export default function AuditForm() {
         <label htmlFor="audit-message">Anything else we should know? (optional)</label>
         <textarea id="audit-message" name="message" rows={4} />
       </div>
+
+      <HumanCheck resetSignal={attempt} />
 
       {formError && (
         <p className="form-error" role="alert">

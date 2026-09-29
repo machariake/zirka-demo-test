@@ -3,7 +3,7 @@ import { isStaff } from "../access";
 
 export const Media: CollectionConfig = {
   slug: "media",
-  admin: { group: "Content" },
+  admin: { group: "Website" },
   access: {
     read: () => true,
     create: isStaff,

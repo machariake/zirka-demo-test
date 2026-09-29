@@ -2,6 +2,8 @@
 
 import { getCms, getEngagements, getFeatures } from "@/lib/cms";
 import { allow, clientIp } from "@/lib/rate-limit";
+import { passesHumanCheck } from "@/lib/turnstile-server";
+import { HUMAN_CHECK_FAILED } from "@/lib/turnstile";
 
 export type QuoteField = "name" | "email" | "phone" | "services";
 export type QuoteResult = {
@@ -72,7 +74,9 @@ export async function requestQuote(formData: FormData): Promise<QuoteResult> {
 
   // Counted only once the details are valid, so someone correcting typos is
   // never locked out; a flood of well-formed requests still is.
-  if (!allow(`quote:${await clientIp()}`, 5, 30 * 60 * 1000)) {
+  const ip = await clientIp();
+  if (!(await passesHumanCheck(formData, ip))) return { ok: false, error: HUMAN_CHECK_FAILED };
+  if (!allow(`quote:${ip}`, 5, 30 * 60 * 1000)) {
     return { ok: false, error: "Too many requests in a short time. Please wait a little, or message us on WhatsApp." };
   }
 
