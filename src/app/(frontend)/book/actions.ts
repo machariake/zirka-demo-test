@@ -2,6 +2,8 @@
 
 import { getCms, getFeatures, getSettings } from "@/lib/cms";
 import { allow, clientIp } from "@/lib/rate-limit";
+import { passesHumanCheck } from "@/lib/turnstile-server";
+import { HUMAN_CHECK_FAILED } from "@/lib/turnstile";
 import { getAvailability, getBookingConfig, isSlotAvailable } from "@/lib/booking";
 import { isValidTimeZone } from "@/lib/timezone";
 import { SITE_URL } from "@/lib/site";
@@ -58,6 +60,7 @@ export async function createBooking(formData: FormData): Promise<BookingResult> 
 
   if (!name || !email) return { ok: false, error: "Please add your name and email." };
   if (!/^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(email)) return { ok: false, error: "That email address doesn't look right." };
+  if (!(await passesHumanCheck(formData, ip))) return { ok: false, error: HUMAN_CHECK_FAILED };
 
   const payload = await getCms();
 

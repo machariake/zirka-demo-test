@@ -2,6 +2,8 @@
 
 import { getCms, getFeatures } from "@/lib/cms";
 import { allow, clientIp } from "@/lib/rate-limit";
+import { passesHumanCheck } from "@/lib/turnstile-server";
+import { HUMAN_CHECK_FAILED } from "@/lib/turnstile";
 
 export type ContactField = "name" | "email" | "phone" | "message";
 export type ContactResult = {
@@ -52,6 +54,7 @@ export async function submitEnquiry(formData: FormData): Promise<ContactResult> 
   // Counted only once the details are valid, so someone correcting typos is
   // never locked out; a flood of well-formed requests still is.
   const ip = await clientIp();
+  if (!(await passesHumanCheck(formData, ip))) return { ok: false, error: HUMAN_CHECK_FAILED };
   if (!allow(`enquiry:${ip}`, 5, 10 * 60 * 1000)) {
     return {
       ok: false,

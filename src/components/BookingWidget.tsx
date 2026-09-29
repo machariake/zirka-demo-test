@@ -4,6 +4,7 @@ import { useMemo, useState, useSyncExternalStore, useTransition, type FormEvent 
 import { createBooking, refreshAvailability } from "@/app/(frontend)/book/actions";
 import type { DayAvailability } from "@/lib/booking";
 import { trackEvent } from "@/lib/analytics";
+import HumanCheck from "./HumanCheck";
 
 type Props = {
   initialDays: DayAvailability[];
@@ -47,6 +48,7 @@ export default function BookingWidget({ initialDays, businessTz, callMinutes, me
   const [error, setError] = useState<string | null>(null);
   const [done, setDone] = useState<{ start: string; end: string; name: string } | null>(null);
   const [pending, startTransition] = useTransition();
+  const [attempt, setAttempt] = useState(0);
 
   // Regroup slots by the visitor's own calendar day — a 9am Atlanta slot can be evening in Nairobi.
   const grouped = useMemo(() => {
@@ -77,6 +79,7 @@ export default function BookingWidget({ initialDays, businessTz, callMinutes, me
         return;
       }
       setError(result.error);
+      setAttempt((n) => n + 1);
       // The slot may have just gone — show what's genuinely free now.
       setDays(await refreshAvailability());
       setPickedSlot(null);
@@ -211,6 +214,8 @@ export default function BookingWidget({ initialDays, businessTz, callMinutes, me
             <label htmlFor="bk-topic">What would you like to talk about? (optional)</label>
             <textarea id="bk-topic" name="topic" rows={3} />
           </div>
+
+          <HumanCheck resetSignal={attempt} />
 
           {error && (
             <p className="form-error" role="alert">

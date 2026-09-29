@@ -2,6 +2,7 @@ import type { Metadata } from "next";
 import PageHeader from "@/components/PageHeader";
 import { getFeatures, getGaMeasurementId, getSettings } from "@/lib/cms";
 import { pageMeta } from "@/lib/seo";
+import { TURNSTILE_SITE_KEY } from "@/lib/turnstile";
 
 export const metadata: Metadata = pageMeta({
   title: "Privacy",
@@ -114,6 +115,14 @@ export default async function PrivacyPage() {
             load pages quickly. It is held in memory for a few minutes to count attempts and is
             never written to our database.
           </p>
+          {TURNSTILE_SITE_KEY && (
+            <p>
+              Our forms also use Cloudflare Turnstile to tell people from automated programs. It
+              runs on pages with a form, looks at signals from your browser rather than asking you
+              to solve puzzles, and does not set advertising cookies. Cloudflare processes this
+              under its own privacy policy.
+            </p>
+          )}
 
           <h2>Cookies</h2>
           <p>

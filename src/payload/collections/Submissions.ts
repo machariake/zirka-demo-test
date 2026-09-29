@@ -4,6 +4,7 @@ import { SITE_URL } from "../../lib/site";
 import { escapeHtml, mailSetup } from "../mailer";
 import { sendAutoReply } from "../auto-reply";
 import { LEAD_STAGES, leadFields } from "../fields/lead";
+import { submissionsExport } from "../export";
 
 export const Submissions: CollectionConfig = {
   slug: "submissions",
@@ -14,7 +15,16 @@ export const Submissions: CollectionConfig = {
     group: "Enquiries",
     description:
       "Everything sent through the website's contact and free-audit forms, in one list. Filter by Type to see audit requests alone.",
+    components: {
+      beforeListTable: [
+        {
+          path: "/payload/components/ExportButton",
+          clientProps: { href: "/api/submissions/export", label: "Download all enquiries (spreadsheet)" },
+        },
+      ],
+    },
   },
+  endpoints: [submissionsExport],
   access: {
     // Closed to the public REST API: the contact form writes through a server
     // action using Payload's local API, which is not bound by this rule.
