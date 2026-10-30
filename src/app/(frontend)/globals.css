@@ -4594,3 +4594,43 @@ summary:focus-visible,
     grid-template-columns: minmax(0, 1fr);
   }
 }
+
+/* Cookie choice for ad tags. Sits left of the WhatsApp button so neither covers the other. */
+.cookie-banner {
+  position: fixed;
+  left: 20px;
+  right: 96px;
+  bottom: 20px;
+  z-index: 61;
+  max-width: 560px;
+  display: flex;
+  flex-wrap: wrap;
+  align-items: center;
+  gap: 12px 20px;
+  padding: 16px 20px;
+  border: 1px solid var(--line);
+  border-radius: 16px;
+  background: var(--paper-raised);
+  color: var(--ink);
+  box-shadow: var(--shadow);
+}
+
+.cookie-banner p {
+  flex: 1 1 240px;
+  margin: 0;
+  font-size: 0.9rem;
+}
+
+.cookie-banner__actions {
+  display: flex;
+  gap: 8px;
+}
+
+@media (max-width: 600px) {
+  .cookie-banner {
+    left: 12px;
+    right: 12px;
+    bottom: 88px;
+    max-width: none;
+  }
+}

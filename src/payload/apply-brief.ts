@@ -25,8 +25,8 @@ await payload.updateGlobal({
 console.log("hero: Turn clicks into customers.");
 
 // --- §5 Four solution categories ----------------------------------------------
-// Existing services grouped under the brief's four headings. Strategy is left
-// uncategorised on purpose: it spans all four, and still appears on /services.
+// Existing services grouped under the brief's four headings. Strategy sits under
+// Get Leads so the homepage shows all fourteen services.
 const CATEGORIES = [
   {
     slug: "get-found",
@@ -40,7 +40,7 @@ const CATEGORIES = [
     name: "Get Leads",
     description:
       "Generate qualified opportunities and improve the path from advertising click to enquiry or customer.",
-    services: ["digital-advertising", "lead-generation-sales", "analytics-reporting"],
+    services: ["digital-marketing-strategy", "digital-advertising", "lead-generation-sales", "analytics-reporting"],
   },
   {
     slug: "build-your-brand",

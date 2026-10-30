@@ -6,6 +6,9 @@ import PageTracker from "@/components/PageTracker";
 import PreviewBadge from "@/components/PreviewBadge";
 import WhatsAppFloat from "@/components/WhatsAppFloat";
 import AutoTranslate from "@/components/AutoTranslate";
+import CookieBanner from "@/components/CookieBanner";
+import MetaPixel from "@/components/MetaPixel";
+import { ADS_ENABLED, GOOGLE_ADS_ID, META_DOMAIN_VERIFICATION, META_PIXEL_ID } from "@/lib/ads";
 import { SITE_URL } from "@/lib/site";
 import { getFeatures, getGaMeasurementId, getSiteTheme, getSiteVerification } from "@/lib/cms";
 import { themeScript } from "@/components/ThemeToggle";
@@ -54,12 +57,17 @@ const baseMetadata: Metadata = {
 export async function generateMetadata(): Promise<Metadata> {
   // Ownership codes pasted in Features → Search engines.
   const { google, bing } = await getSiteVerification();
-  if (!google && !bing) return baseMetadata;
+  // Meta's domain check comes from NEXT_PUBLIC_META_DOMAIN_VERIFICATION (lib/ads.ts).
+  const other: Record<string, string> = {
+    ...(bing ? { "msvalidate.01": bing } : {}),
+    ...(META_DOMAIN_VERIFICATION ? { "facebook-domain-verification": META_DOMAIN_VERIFICATION } : {}),
+  };
+  if (!google && !Object.keys(other).length) return baseMetadata;
   return {
     ...baseMetadata,
     verification: {
       ...(google ? { google } : {}),
-      ...(bing ? { other: { "msvalidate.01": bing } } : {}),
+      ...(Object.keys(other).length ? { other } : {}),
     },
   };
 }
@@ -86,7 +94,9 @@ export default async function RootLayout({ children }: LayoutProps<"/">) {
         {features.translateEnabled && <AutoTranslate />}
         <PageTracker />
         <PreviewBadge />
-        {gaId && <GoogleAnalytics id={gaId} />}
+        <GoogleAnalytics id={gaId} adsId={GOOGLE_ADS_ID} />
+        {META_PIXEL_ID && <MetaPixel id={META_PIXEL_ID} />}
+        {ADS_ENABLED && <CookieBanner />}
       </body>
     </html>
   );

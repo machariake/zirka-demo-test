@@ -3,6 +3,7 @@ import PageHeader from "@/components/PageHeader";
 import { getFeatures, getGaMeasurementId, getSettings } from "@/lib/cms";
 import { pageMeta } from "@/lib/seo";
 import { TURNSTILE_SITE_KEY } from "@/lib/turnstile";
+import { ADS_ENABLED, GOOGLE_ADS_ID, META_PIXEL_ID } from "@/lib/ads";
 
 export const metadata: Metadata = pageMeta({
   title: "Privacy",
@@ -14,7 +15,7 @@ export const metadata: Metadata = pageMeta({
 // Written to match what the site actually does. If the site starts collecting
 // something new (email marketing, ad pixels, third-party analytics), update this page —
 // including anything Cloudflare adds from its dashboard, which bypasses this codebase.
-// The Google Analytics wording switches on by itself when a measurement ID is saved.
+// The Google Analytics and advertising wording switches on by itself when an ID is set.
 const LAST_UPDATED = "September 2026";
 
 export default async function PrivacyPage() {
@@ -56,8 +57,8 @@ export default async function PrivacyPage() {
           </p>
           <p>
             Nothing is written to your device for this. No cookie, no visit ID, nothing kept in
-            your browser&rsquo;s storage, and we do not record your IP address. We use no
-            advertising pixels. The trade-off is ours: we cannot tell whether two page views came
+            your browser&rsquo;s storage, and we do not record your IP address.
+            {!ADS_ENABLED && " We use no advertising pixels."} The trade-off is ours: we cannot tell whether two page views came
             from the same person.
           </p>
 
@@ -76,6 +77,26 @@ export default async function PrivacyPage() {
                 analytics cookies are set. Google receives only anonymous, cookieless signals. You
                 can also block Google Analytics everywhere with Google&rsquo;s opt-out browser
                 add-on or your browser&rsquo;s privacy settings.
+              </p>
+            </>
+          )}
+
+          {ADS_ENABLED && (
+            <>
+              <h2 id="advertising">Advertising</h2>
+              <p>
+                We advertise on{" "}
+                {[GOOGLE_ADS_ID && "Google", META_PIXEL_ID && "Facebook and Instagram"].filter(Boolean).join(", ")}.
+                To see which ads lead to an enquiry, the site can tell{" "}
+                {[GOOGLE_ADS_ID && "Google", META_PIXEL_ID && "Meta"].filter(Boolean).join(" and ")} when a
+                visitor who saw an ad views a page, sends a form, or taps to call, email or WhatsApp us.
+                We never send the contents of a form, your name, email address or phone number.
+              </p>
+              <p>
+                This only happens if you press Accept on the cookie notice. Until then no
+                advertising cookies are set and nothing identifies you to the ad platforms. To
+                change your mind, clear this site&rsquo;s data in your browser and the notice
+                appears again. Each platform handles the information under its own privacy policy.
               </p>
             </>
           )}
@@ -129,6 +150,8 @@ export default async function PrivacyPage() {
             {gaId
               ? "The only cookies visitors receive are the Google Analytics cookies described above, and none at all in the EEA, UK or Switzerland. "
               : "Visitors to the public site receive no cookies from us at all. "}
+            {ADS_ENABLED &&
+              "If you accept the cookie notice, the advertising cookies described under Advertising are added. "}
             {features.translateEnabled &&
               "Reading the site in another language adds the language cookie described under Translation. "}
             Our staff receive a login cookie when they sign in to manage the site, which does not

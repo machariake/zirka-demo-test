@@ -58,6 +58,9 @@ export default async function Home() {
     getProjects({ featured: true, limit: 3 }),
   ]);
 
+  const placed = new Set(categories.flatMap((c) => c.services.map((s) => s.slug)));
+  const uncategorised = services.filter((s) => !placed.has(s.slug));
+
   // Only claim results when there is real, documented client work to show.
   const hasRealWork = work.some((w) => !w.sample);
   const whatsapp = features.showWhatsApp ? whatsappUrl(settings.whatsapp, WHATSAPP_GREETING) : null;
@@ -156,6 +159,18 @@ export default async function Home() {
               </p>
             </div>
             <SolutionCategories categories={categories} />
+            {/* A service not placed in any category still shows, so the homepage lists all of them. */}
+            {uncategorised.length > 0 && (
+              <p style={{ marginTop: 24 }}>
+                Also available:{" "}
+                {uncategorised.map((s, i) => (
+                  <span key={s.slug}>
+                    {i > 0 && ", "}
+                    <Link href={`/services/${s.slug}`}>{s.name}</Link>
+                  </span>
+                ))}
+              </p>
+            )}
             <div style={{ marginTop: 32 }}>
               <Link className="btn btn-outline" href="/services">
                 See all {services.length} services
