@@ -299,9 +299,10 @@ header.site {
 }
 
 .wordmark .mark {
-  width: auto;
-  height: 38px;
+  width: 62px;
+  height: 42px;
   flex-shrink: 0;
+  overflow: visible;
 }
 
 .foot-brand {
@@ -339,9 +340,14 @@ header.site {
 .wordmark .name {
   font-family: var(--font-display), serif;
   font-weight: 600;
-  font-size: 20px;
-  letter-spacing: 0.06em;
+  font-size: 21px;
+  letter-spacing: 0.1em;
   text-transform: uppercase;
+  /* Same copper as the mark, so the name and the Z read as one logo. */
+  background: linear-gradient(100deg, #f6d2ab 0%, #e3a571 45%, #c47c45 100%);
+  -webkit-background-clip: text;
+  background-clip: text;
+  color: transparent;
 }
 
 .wordmark .sub {
@@ -501,12 +507,17 @@ header.site {
   background: linear-gradient(90deg, transparent, rgba(255, 255, 255, 0.3), transparent);
   transform: translateX(-100%);
   pointer-events: none;
-  animation: btn-shimmer 4s ease-in-out 1.5s infinite;
+}
+
+/* One sweep when the button is pointed at, rather than a loop that never stops. */
+.btn-gold:hover::before,
+.btn-gold:focus-visible::before {
+  animation: btn-shimmer 0.9s ease-out;
 }
 
 @keyframes btn-shimmer {
-  0% { transform: translateX(-100%); }
-  40%, 100% { transform: translateX(100%); }
+  from { transform: translateX(-100%); }
+  to { transform: translateX(100%); }
 }
 
 .btn-gold:hover {
@@ -4632,5 +4643,103 @@ summary:focus-visible,
     right: 12px;
     bottom: 88px;
     max-width: none;
+  }
+}
+
+/* ---------- LOGO MARK MOTION ---------- */
+/* The Z rises, the swoosh sweeps up to the star, the star lands, then the
+   sparkles twinkle. Everything is still under reduced motion (rule above). */
+.logo-mark .lm-z {
+  animation: lm-rise 0.7s cubic-bezier(0.2, 0.8, 0.2, 1) both;
+}
+
+.logo-mark .lm-swoosh {
+  clip-path: inset(0 100% 0 0);
+  animation: lm-sweep 0.8s cubic-bezier(0.65, 0, 0.35, 1) 0.2s forwards;
+}
+
+.logo-mark .lm-star {
+  transform-box: fill-box;
+  transform-origin: center;
+  animation: lm-star 0.7s cubic-bezier(0.34, 1.56, 0.64, 1) 0.75s both;
+  transition: rotate 0.6s cubic-bezier(0.34, 1.56, 0.64, 1);
+}
+
+.wordmark:hover .lm-star,
+.wordmark:focus-visible .lm-star {
+  rotate: 72deg;
+}
+
+.logo-mark .lm-spark {
+  transform-box: fill-box;
+  transform-origin: center;
+  animation: lm-twinkle 3.6s ease-in-out 1.3s infinite;
+}
+
+.logo-mark .lm-spark:nth-of-type(2) {
+  animation-delay: 2.3s;
+}
+
+.logo-mark .lm-spark:nth-of-type(3) {
+  animation-delay: 3.1s;
+}
+
+@keyframes lm-rise {
+  from { opacity: 0; transform: translateY(6px); }
+  to { opacity: 1; transform: none; }
+}
+
+@keyframes lm-sweep {
+  to { clip-path: inset(0 0 0 0); }
+}
+
+@keyframes lm-star {
+  from { opacity: 0; transform: scale(0.2) rotate(-120deg); }
+  to { opacity: 1; transform: none; }
+}
+
+@keyframes lm-twinkle {
+  0%, 100% { opacity: 1; transform: scale(1); }
+  50% { opacity: 0.35; transform: scale(0.7); }
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .logo-mark .lm-swoosh {
+    clip-path: none;
+  }
+}
+
+/* ---------- SCROLL REVEAL ---------- */
+/* Headings and cards ease up into place as they scroll into view. Pure CSS on
+   the scroll timeline, so nothing runs on the main thread, and browsers
+   without it (or visitors asking for less motion) simply see the page as is.
+   Uses `translate`, not `transform`, so the cards' hover lift still works. */
+@supports (animation-timeline: view()) {
+  @media (prefers-reduced-motion: no-preference) {
+    .section-head,
+    .solution-card,
+    .service-card,
+    .project-card,
+    .work-card,
+    .post-card,
+    .team-card,
+    .testimonial-card,
+    .tier,
+    .step {
+      animation: reveal-up linear both;
+      animation-timeline: view();
+      animation-range: entry 0% entry 35%;
+    }
+  }
+
+  @keyframes reveal-up {
+    from {
+      opacity: 0;
+      translate: 0 28px;
+    }
+    to {
+      opacity: 1;
+      translate: 0 0;
+    }
   }
 }

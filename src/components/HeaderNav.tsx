@@ -2,7 +2,7 @@
 
 import { useEffect, useId, useRef, useState } from "react";
 import Link from "next/link";
-import Image from "next/image";
+import LogoMark from "./LogoMark";
 import { usePathname } from "next/navigation";
 import { MenuIcon, CloseIcon } from "./Icons";
 import ThemeToggle from "./ThemeToggle";
@@ -80,16 +80,7 @@ export default function HeaderNav({
       <header className="site">
         <div className="navrow">
           <Link className="wordmark notranslate" translate="no" href="/">
-            {/* Declared at display size so the optimizer serves a ~110px file, not a 1920px one. */}
-            <Image
-              className="mark"
-              src="/images/logo-mark.png"
-              alt=""
-              width={55}
-              height={38}
-              loading="eager"
-              fetchPriority="high"
-            />
+            <LogoMark className="mark" />
             <span className="lockup">
               <span className="name">Zirka</span>{" "}
               <span className="sub">Digital Solutions</span>

@@ -1,0 +1,22 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 -9 72 72">
+  <defs>
+    <linearGradient id="cu" x1="0" y1="0" x2="1" y2="1">
+      <stop offset="0" stop-color="#f6d2ab"/>
+      <stop offset="0.45" stop-color="#d08a52"/>
+      <stop offset="1" stop-color="#8f4c22"/>
+    </linearGradient>
+    <linearGradient id="ag" x1="0" y1="1" x2="1" y2="0">
+      <stop offset="0" stop-color="#d9d3ca"/>
+      <stop offset="0.5" stop-color="#ffffff"/>
+      <stop offset="1" stop-color="#cfc6ba"/>
+    </linearGradient>
+  </defs>
+  <path d="M3 30 C -2 53, 38 56, 57 17 C 38 49, 7 51, 3 30 Z" fill="url(#cu)"/>
+  <path d="M5.5 35 C 5 50, 37 52, 54.5 22 C 37 46, 10 49, 5.5 35 Z" fill="url(#ag)"/>
+  <path d="M12 8 H47 L25 36.5 H43 L39.5 43 H6 L28 14.5 H8.5 Z" fill="url(#cu)"/>
+  <path d="M12 8 H47 L45.6 9.8 H11 Z" fill="#fbe3c8" opacity="0.7"/>
+  <path transform="rotate(14 60 11)" d="M60 2 L62.4 8.6 L69.4 8.8 L63.9 13.1 L65.9 19.8 L60 15.9 L54.1 19.8 L56.1 13.1 L50.6 8.8 L57.6 8.6 Z" fill="url(#cu)"/>
+  <path d="M46 1 L47 4 L50 5 L47 6 L46 9 L45 6 L42 5 L45 4 Z" fill="url(#cu)"/>
+  <path d="M66 24 L66.8 26.4 L69.2 27.2 L66.8 28 L66 30.4 L65.2 28 L62.8 27.2 L65.2 26.4 Z" fill="url(#cu)"/>
+  <path d="M60 31 L60.6 32.9 L62.5 33.5 L60.6 34.1 L60 36 L59.4 34.1 L57.5 33.5 L59.4 32.9 Z" fill="url(#cu)"/>
+</svg>
