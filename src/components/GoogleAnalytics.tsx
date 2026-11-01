@@ -18,7 +18,8 @@ const CONSENT_REGIONS = [
  * cookie banner; a choice saved on an earlier visit is applied before any tag runs.
  */
 export default function GoogleAnalytics({ id, adsId }: { id?: string | null; adsId?: string }) {
-  const tagId = id || adsId;
+  const measurementId = id || process.env.NEXT_PUBLIC_GA_MEASUREMENT_ID || "G-SD30NWN2XE";
+  const tagId = measurementId || adsId;
   if (!tagId) return null;
   const init = `
 window.dataLayer = window.dataLayer || [];
@@ -42,7 +43,7 @@ try {
 gtag('set', 'ads_data_redaction', true);
 gtag('set', 'url_passthrough', true);
 gtag('js', new Date());
-${id ? `gtag('config', ${JSON.stringify(id)}, { allow_google_signals: false });` : ""}
+${measurementId ? `gtag('config', ${JSON.stringify(measurementId)}, { allow_google_signals: false });` : ""}
 ${adsId ? `gtag('config', ${JSON.stringify(adsId)});` : ""}
 `;
   return (

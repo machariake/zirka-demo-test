@@ -605,10 +605,11 @@ export const getGaMeasurementId = async (): Promise<string | null> => {
   try {
     const payload = await getCms();
     const f = (await payload.findGlobal({ slug: "features", depth: 0 })) as { gaMeasurementId?: string | null };
-    const id = f.gaMeasurementId?.trim().toUpperCase();
+    const id = (f.gaMeasurementId?.trim() || process.env.NEXT_PUBLIC_GA_MEASUREMENT_ID || process.env.GA_MEASUREMENT_ID || "G-SD30NWN2XE").toUpperCase();
     return id && /^G-[A-Z0-9]{4,20}$/.test(id) ? id : null;
   } catch {
-    return null;
+    const fallback = (process.env.NEXT_PUBLIC_GA_MEASUREMENT_ID || process.env.GA_MEASUREMENT_ID || "G-SD30NWN2XE").toUpperCase();
+    return /^G-[A-Z0-9]{4,20}$/.test(fallback) ? fallback : null;
   }
 };
 
