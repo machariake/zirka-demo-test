@@ -554,8 +554,10 @@ export const engagements: Engagement[] = [
 
 /** One-off pieces of work, priced per project rather than per month. */
 export const projectPricing = [
-  { name: "Landing Pages", price: "from $750" },
-  { name: "Business Websites", price: "from $1,500" },
+  { name: "Landing Pages", price: "$997" },
+  { name: "Business Websites (3-5 pages)", price: "$2,000" },
+  { name: "Large Business Website (6-10 pages)", price: "$4,000" },
+  { name: "Website Care & Maintenance", price: "$129/month" },
   { name: "E-commerce Websites", price: "from $2,500" },
   { name: "Logo/Mini Brand Identity", price: "from $600" },
   { name: "Full Brand Identity", price: "from $1,500" },

@@ -1,7 +1,7 @@
 import { getPayload, type Where } from "payload";
 import config from "@payload-config";
 import type { Service, CaseStudy, TeamMember, Faq, Engagement, Testimonial, Project, Post } from "@/payload-types";
-import { services as seedServices } from "@/lib/data";
+import { services as seedServices, projectPricing as seedProjectPricing } from "@/lib/data";
 import { isSiteTheme, type SiteThemeId } from "@/lib/site-themes";
 import { DEFAULT_EMAIL, whatsappDigits } from "@/lib/contact";
 
@@ -492,10 +492,17 @@ export const getEngagements = async () => {
 };
 
 export const getProjectPricing = async () => {
-  const docs = await findAll<{ name: string; price: string; note?: string | null }>(
-    "project-pricing"
-  );
-  return docs.map((p) => ({ name: p.name, price: p.price, note: p.note ?? "" }));
+  try {
+    const docs = await findAll<{ name: string; price: string; note?: string | null }>(
+      "project-pricing"
+    );
+    if (docs && docs.length > 0) {
+      return docs.map((p) => ({ name: p.name, price: p.price, note: p.note ?? "" }));
+    }
+  } catch (err) {
+    console.error("Failed to fetch project pricing from CMS, using fallback", err);
+  }
+  return seedProjectPricing.map((p) => ({ name: p.name, price: p.price, note: "" }));
 };
 
 export type TestimonialView = {

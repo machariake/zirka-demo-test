@@ -2,7 +2,7 @@ import type { Metadata } from "next";
 import Link from "next/link";
 import PageHeader from "@/components/PageHeader";
 import QuoteForm from "@/components/QuoteForm";
-import { getCms, getEngagements, getFeatures, getServices, getSettings } from "@/lib/cms";
+import { getCms, getEngagements, getFeatures, getProjectPricing, getServices, getSettings } from "@/lib/cms";
 import { pageMeta } from "@/lib/seo";
 import { WHATSAPP_GREETING, whatsappUrl } from "@/lib/contact";
 
@@ -16,8 +16,8 @@ export const metadata: Metadata = pageMeta({
 type Props = { searchParams: Promise<{ service?: string; plan?: string }> };
 
 export default async function QuotePage({ searchParams }: Props) {
-  const [features, settings, services, engagements, { service: preselectSlug, plan: planParam }] =
-    await Promise.all([getFeatures(), getSettings(), getServices(), getEngagements(), searchParams]);
+  const [features, settings, services, engagements, projects, { service: preselectSlug, plan: planParam }] =
+    await Promise.all([getFeatures(), getSettings(), getServices(), getEngagements(), getProjectPricing(), searchParams]);
 
   if (!features.quotesEnabled) {
     return (
@@ -65,7 +65,10 @@ export default async function QuotePage({ searchParams }: Props) {
 
   const preselected = options.filter((o) => o.slug === preselectSlug).map((o) => o.id);
   // Only a plan that is really on the Pricing page; anything else in the URL is ignored.
-  const plan = engagements.find((e) => e.name === planParam)?.name;
+  const plan =
+    engagements.find((e) => e.name === planParam)?.name ||
+    projects.find((p) => p.name === planParam)?.name ||
+    (planParam === "Business Websites" ? "Business Websites (3-5 pages)" : undefined);
 
   return (
     <>

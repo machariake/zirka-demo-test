@@ -61,6 +61,7 @@ export async function generateMetadata(): Promise<Metadata> {
   const other: Record<string, string> = {
     ...(bing ? { "msvalidate.01": bing } : {}),
     ...(META_DOMAIN_VERIFICATION ? { "facebook-domain-verification": META_DOMAIN_VERIFICATION } : {}),
+    cryptomus: "83f1d5a2",
   };
   if (!google && !Object.keys(other).length) return baseMetadata;
   return {
