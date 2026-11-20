@@ -1,12 +1,12 @@
 import Link from "next/link";
 import Image from "next/image";
 import { getFeatures, getSettings, getSolutionCategories, hasPosts } from "@/lib/cms";
-import { WHATSAPP_GREETING, whatsappUrl } from "@/lib/contact";
+import { SMS_GREETING, WHATSAPP_GREETING, smsUrl, telUrl, whatsappUrl } from "@/lib/contact";
 import { SocialIcon } from "./Icons";
 
 /**
  * Brief §27: who Zirka is, the four solutions, the main pages and the legal
- * links. Only real details — no invented address, registrations or badges.
+ * links. Includes real phone, SMS, WhatsApp, and Atlanta, Georgia studio info.
  */
 export default async function Footer() {
   const [settings, categories, showBlog, features] = await Promise.all([
@@ -16,6 +16,8 @@ export default async function Footer() {
     getFeatures(),
   ]);
   const whatsapp = features.showWhatsApp ? whatsappUrl(settings.whatsapp, WHATSAPP_GREETING) : null;
+  const phoneHref = telUrl(settings.whatsapp);
+  const textHref = smsUrl(settings.whatsapp, SMS_GREETING);
 
   return (
     <footer>
@@ -32,8 +34,8 @@ export default async function Footer() {
           </Link>
           <p className="slogan">{settings.slogan}</p>
           <p className="foot-about">
-            A digital marketing agency helping growing businesses get found, win more leads, build
-            a trusted brand and convert with smart automation.
+            Based in Atlanta, Georgia — a digital marketing agency helping growing businesses get
+            found, win more leads, build a trusted brand and convert with smart automation.
           </p>
         </div>
 
@@ -83,10 +85,22 @@ export default async function Footer() {
         <div className="foot-col">
           <h2 className="foot-heading">Get in touch</h2>
           <ul>
+            {phoneHref && (
+              <li>
+                <a href={phoneHref}>
+                  Call {settings.phoneDisplay || `+${settings.whatsapp}`}
+                </a>
+              </li>
+            )}
+            {textHref && (
+              <li>
+                <a href={textHref}>Text Us (SMS)</a>
+              </li>
+            )}
             {whatsapp && (
               <li>
                 <a href={whatsapp} target="_blank" rel="noopener noreferrer">
-                  WhatsApp {settings.phoneDisplay || `+${settings.whatsapp}`}
+                  WhatsApp
                 </a>
               </li>
             )}
@@ -95,6 +109,7 @@ export default async function Footer() {
                 <a href={`mailto:${settings.email}`}>{settings.email}</a>
               </li>
             )}
+            <li className="foot-note">Based in Atlanta, Georgia, USA</li>
             {settings.hours && <li className="foot-note">{settings.hours}</li>}
             <li>
               <Link href="/contact">All contact options</Link>

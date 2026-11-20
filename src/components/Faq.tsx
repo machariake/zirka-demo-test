@@ -5,7 +5,7 @@ export default async function Faq() {
   if (faqs.length === 0) return null;
 
   return (
-    <section id="faq" className="section--panel">
+    <section id="faq" className="section--cream">
       {/* No FAQPage schema: it was there only to chase rich results (brief §14). */}
       <div className="wrap">
         <div className="section-head">
@@ -14,8 +14,8 @@ export default async function Faq() {
             <h2>The things people ask before they call.</h2>
           </div>
           <p>
-            If your question isn&rsquo;t here, message us on WhatsApp and talk directly with a
-            Zirka strategist.
+            If your question isn&rsquo;t here, call, text, or message our Atlanta team to speak
+            directly with a Zirka strategist.
           </p>
         </div>
 

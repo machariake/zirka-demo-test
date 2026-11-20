@@ -25,11 +25,17 @@ export const organizationSchema = (s: OrgInput) => ({
   name: s.companyName,
   url: SITE_URL,
   description:
-    "Zirka Digital Solutions is a full-service digital marketing agency specializing in social media management, website development, SEO, paid advertising, WhatsApp marketing, and AI automation.",
+    "Zirka Digital Solutions is an Atlanta, Georgia digital marketing agency specializing in social media management, website development, SEO, paid advertising, and AI automation.",
   ...(s.slogan ? { slogan: s.slogan } : {}),
   ...(s.heroImage ? { image: absolute(s.heroImage) } : {}),
   logo: `${SITE_URL}/icon.png`,
-  areaServed: "Worldwide",
+  address: {
+    "@type": "PostalAddress",
+    addressLocality: "Atlanta",
+    addressRegion: "GA",
+    addressCountry: "US",
+  },
+  areaServed: ["Atlanta, Georgia", "United States", "Worldwide"],
   priceRange: "$129 - $4,000+",
   knowsAbout: [
     "Digital Marketing",
@@ -48,14 +54,14 @@ export const organizationSchema = (s: OrgInput) => ({
   ...(s.whatsapp ? { telephone: `+${s.whatsapp.replace(/\D/g, "")}` } : {}),
   ...(s.whatsapp
     ? {
-        contactPoint: {
-          "@type": "ContactPoint",
-          contactType: "sales",
-          telephone: `+${s.whatsapp.replace(/\D/g, "")}`,
-          url: `https://wa.me/${s.whatsapp.replace(/\D/g, "")}`,
-          availableLanguage: ["English"],
-        },
-      }
+      contactPoint: {
+        "@type": "ContactPoint",
+        contactType: "sales",
+        telephone: `+${s.whatsapp.replace(/\D/g, "")}`,
+        url: `https://wa.me/${s.whatsapp.replace(/\D/g, "")}`,
+        availableLanguage: ["English"],
+      },
+    }
     : {}),
 });
 
@@ -104,15 +110,15 @@ export const serviceSchema = (service: ServiceDetailView, companyName: string) =
   provider: { "@type": "Organization", "@id": ORG_ID, name: companyName },
   ...(service.capabilities.length > 0
     ? {
-        hasOfferCatalog: {
-          "@type": "OfferCatalog",
-          name: `${service.name} — what's included`,
-          itemListElement: service.capabilities.map((label) => ({
-            "@type": "Offer",
-            itemOffered: { "@type": "Service", name: label },
-          })),
-        },
-      }
+      hasOfferCatalog: {
+        "@type": "OfferCatalog",
+        name: `${service.name} — what's included`,
+        itemListElement: service.capabilities.map((label) => ({
+          "@type": "Offer",
+          itemOffered: { "@type": "Service", name: label },
+        })),
+      },
+    }
     : {}),
 });
 
@@ -154,9 +160,9 @@ export const pricingCatalogSchema = (
         url: e.checkoutUrl || `${SITE_URL}/quote?plan=${encodeURIComponent(e.name)}`,
         ...(numeric
           ? {
-              price: numeric,
-              priceCurrency: "USD",
-            }
+            price: numeric,
+            priceCurrency: "USD",
+          }
           : {}),
         itemOffered: {
           "@type": "Service",
@@ -174,9 +180,9 @@ export const pricingCatalogSchema = (
         url: p.checkoutUrl || `${SITE_URL}/quote?plan=${encodeURIComponent(p.name)}`,
         ...(numeric
           ? {
-              price: numeric,
-              priceCurrency: "USD",
-            }
+            price: numeric,
+            priceCurrency: "USD",
+          }
           : {}),
         itemOffered: {
           "@type": "Service",

@@ -6,17 +6,21 @@ import { getSettings, getFeatures } from "@/lib/cms";
 import { pageMeta } from "@/lib/seo";
 import JsonLd from "@/components/JsonLd";
 import { breadcrumbSchema, webPageSchema } from "@/lib/schema";
-import { WHATSAPP_GREETING, whatsappUrl } from "@/lib/contact";
-import { SocialIcon } from "@/components/Icons";
+import { SMS_GREETING, WHATSAPP_GREETING, smsUrl, telUrl, whatsappUrl } from "@/lib/contact";
+import { PhoneIcon, SmsIcon, SocialIcon, WhatsAppIcon } from "@/components/Icons";
 
 const CONTACT_DESCRIPTION =
-  "Contact Zirka Digital Solutions for social media management, SEO, custom website development, or a free marketing audit via WhatsApp, email, or a strategy call.";
+  "Contact Zirka Digital Solutions in Atlanta, Georgia for social media management, SEO, websites, or a free marketing audit via phone, text, WhatsApp, or email.";
 
 export const metadata: Metadata = pageMeta({
   title: "Contact",
   description: CONTACT_DESCRIPTION,
   path: "/contact",
-  keywords: ["contact Zirka Digital Solutions", "digital marketing agency WhatsApp", "free marketing audit"],
+  keywords: [
+    "contact Zirka Digital Solutions",
+    "Atlanta digital marketing agency",
+    "free marketing audit",
+  ],
 });
 
 export default async function ContactPage() {
@@ -24,6 +28,8 @@ export default async function ContactPage() {
 
   const digits = settings.whatsapp;
   const whatsapp = whatsappUrl(digits, WHATSAPP_GREETING) ?? "/contact";
+  const phoneHref = telUrl(digits);
+  const textHref = smsUrl(digits, SMS_GREETING);
 
   return (
     <>
@@ -41,13 +47,13 @@ export default async function ContactPage() {
         ])}
       />
       <PageHeader
-        eyebrow="Contact"
+        eyebrow="Contact · Atlanta, Georgia"
         title="Let's talk about your marketing."
-        lede="Choose whichever suits you: a free audit of your current marketing, a call with a strategist, or a message on WhatsApp. You'll talk directly with a Zirka strategist."
+        lede="Choose whichever works best for you: request a free marketing audit, book a strategy call, or call, text, or WhatsApp our Atlanta, Georgia team directly."
       />
 
       {/* The three routes from brief §15, in order of how much we learn up front. */}
-      <section className="section--flow contact-routes-section">
+      <section className="section--cream contact-routes-section" style={{ paddingBottom: 64 }}>
         <div className="wrap">
           <div className="contact-routes">
             <article className="contact-route contact-route--primary">
@@ -65,24 +71,42 @@ export default async function ContactPage() {
               <p>
                 {features.bookingEnabled
                   ? "Book a free 30-minute call at a time that suits you."
-                  : "Message us to arrange a call at a time that suits you."}
+                  : "Call or text us to arrange a call at a time that suits you."}
               </p>
               {features.bookingEnabled ? (
                 <Link className="btn btn-outline" href="/book">
                   Book a call
                 </Link>
               ) : (
-                <a className="btn btn-outline" href={whatsapp} target="_blank" rel="noopener noreferrer">
-                  Arrange a call
+                <a className="btn btn-outline" href={phoneHref ?? whatsapp}>
+                  <PhoneIcon />
+                  Call {settings.phoneDisplay || `+${digits}`}
                 </a>
               )}
             </article>
             <article className="contact-route">
-              <h2>Contact via WhatsApp</h2>
-              <p>Message us and talk directly with a Zirka strategist.</p>
-              <a className="btn btn-outline" href={whatsapp} target="_blank" rel="noopener noreferrer">
-                Message {settings.phoneDisplay || `+${digits}`}
-              </a>
+              <h2>Call, Text, or WhatsApp</h2>
+              <p>Reach our Atlanta, Georgia studio directly by phone call, SMS text, or WhatsApp.</p>
+              <div className="contact-route__actions">
+                {phoneHref && (
+                  <a className="btn btn-gold" href={phoneHref}>
+                    <PhoneIcon />
+                    Call
+                  </a>
+                )}
+                {textHref && (
+                  <a className="btn btn-outline" href={textHref}>
+                    <SmsIcon />
+                    Text Us
+                  </a>
+                )}
+                {features.showWhatsApp && (
+                  <a className="btn btn-outline" href={whatsapp} target="_blank" rel="noopener noreferrer">
+                    <WhatsAppIcon />
+                    WhatsApp
+                  </a>
+                )}
+              </div>
             </article>
           </div>
         </div>
@@ -96,19 +120,39 @@ export default async function ContactPage() {
               <ContactForm />
             ) : (
               <p className="success-note">
-                The message form is closed at the moment — please use WhatsApp or the details
-                alongside.
+                The message form is closed at the moment — please call, text, or email us using the
+                details alongside.
               </p>
             )}
           </div>
           <div className="contact-info">
             <h2 className="index-heading">Contact details</h2>
             <div className="info-block">
-              <h3>WhatsApp</h3>
-              <a href={whatsapp} target="_blank" rel="noopener noreferrer">
-                {settings.phoneDisplay || `+${digits}`}
-              </a>
+              <h3>Location</h3>
+              <p>Atlanta, Georgia, USA (Serving businesses nationwide &amp; worldwide)</p>
             </div>
+            {phoneHref && (
+              <div className="info-block">
+                <h3>Call or Text</h3>
+                <p>
+                  <a href={phoneHref}>{settings.phoneDisplay || `+${digits}`}</a>
+                  {textHref && (
+                    <>
+                      {" "}
+                      &middot; <a href={textHref}>Text Us (SMS)</a>
+                    </>
+                  )}
+                </p>
+              </div>
+            )}
+            {features.showWhatsApp && (
+              <div className="info-block">
+                <h3>WhatsApp</h3>
+                <a href={whatsapp} target="_blank" rel="noopener noreferrer">
+                  Message on WhatsApp
+                </a>
+              </div>
+            )}
             {settings.email && (
               <div className="info-block">
                 <h3>Email</h3>

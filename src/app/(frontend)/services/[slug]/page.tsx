@@ -416,7 +416,7 @@ export default async function ServicePage({ params }: Props) {
       {service.relatedWork.length > 0 && (
         <section className="section--flow">
           <div className="wrap">
-            <h2 className="index-heading">{hasRealWork ? "Proof" : "Related concept projects"}</h2>
+            <h2 className="index-heading">{hasRealWork ? "Proof" : "Related projects"}</h2>
             <div className="work-grid wide">
               {service.relatedWork.map((item) => (
                 <WorkCard item={item} key={item.slug} />

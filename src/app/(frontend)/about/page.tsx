@@ -9,13 +9,18 @@ import JsonLd from "@/components/JsonLd";
 import { breadcrumbSchema, webPageSchema } from "@/lib/schema";
 
 const ABOUT_DESCRIPTION =
-  "Learn how Zirka Digital Solutions helps growing businesses turn clicks into customers with senior-led SEO, social media management, websites, ads, and automation.";
+  "Zirka Digital Solutions is an Atlanta, Georgia digital marketing agency helping growing businesses turn clicks into customers with SEO, websites, social media, and automation.";
 
 export const metadata: Metadata = pageMeta({
   title: "About",
   description: ABOUT_DESCRIPTION,
   path: "/about",
-  keywords: ["about Zirka Digital Solutions", "digital marketing agency team", "growth marketing agency"],
+  keywords: [
+    "about Zirka Digital Solutions",
+    "Atlanta digital marketing agency",
+    "digital marketing agency team",
+    "growth marketing agency Atlanta GA",
+  ],
 });
 
 export default async function AboutPage() {
@@ -41,10 +46,10 @@ export default async function AboutPage() {
           { name: "About", path: "/about" },
         ])}
       />
-      <PageHeader eyebrow="About Zirka" title={settings.aboutTitle} lede={settings.aboutLede} />
+      <PageHeader eyebrow="About Zirka · Based in Atlanta, Georgia" title={settings.aboutTitle} lede={settings.aboutLede} />
 
       {settings.story.length > 0 && (
-        <section>
+        <section className="section--cream">
           <div className="wrap story">
             <div>
               <span className="eyebrow">Our story</span>
@@ -90,16 +95,17 @@ export default async function AboutPage() {
 
       {features.showLeadership && <TeamSection team={team} />}
 
-      <section className="section--panel">
+      <section className="section--offwhite">
         <div className="wrap">
           <div className="section-head">
             <div>
-              <span className="eyebrow">Why Zirka</span>
+              <span className="eyebrow">Why Zirka · Atlanta, Georgia</span>
               <h2>One connected growth system instead of disconnected vendors.</h2>
             </div>
             <p>
-              Most agencies specialize in one silo — running ads to a slow website, or posting on
-              social media with no lead capture. We build the entire customer journey together.
+              Based in Atlanta, Georgia and working with businesses nationwide, we build your entire
+              customer journey together — website, search visibility, social media, paid ads, and
+              automated follow-up under one roof.
             </p>
           </div>
           <div className="approach">

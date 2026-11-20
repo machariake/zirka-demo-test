@@ -10,9 +10,8 @@ export default function WorkFeature({ item }: { item: WorkView }) {
         <Image src={item.image} alt={item.alt} fill sizes="(max-width: 860px) 100vw, 55vw" />
       </div>
       <div className="feature-body">
-        <span className="eyebrow">{item.sample ? "Featured concept" : "Featured case study"}</span>
+        <span className="eyebrow">{item.sample ? "Featured work" : "Featured case study"}</span>
         <h3>{item.name}</h3>
-        {item.sample && <span className="work-sample work-sample--inline">Concept Project</span>}
         <p className="feature-summary">{item.summary}</p>
         {/* Result figures belong to real, documented work only. */}
         {!item.sample && (
@@ -22,7 +21,7 @@ export default function WorkFeature({ item }: { item: WorkView }) {
           </div>
         )}
         <Link className="explore" href={`/work/${item.slug}`}>
-          {item.sample ? "View the concept" : "Read the case study"}
+          {item.sample ? "View project" : "Read the case study"}
           <ArrowIcon />
         </Link>
       </div>

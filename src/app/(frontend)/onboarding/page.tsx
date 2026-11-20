@@ -3,9 +3,9 @@ import Link from "next/link";
 import PageHeader from "@/components/PageHeader";
 import OnboardingForm, { PAID_PACKAGE_OPTIONS } from "@/components/OnboardingForm";
 import JsonLd from "@/components/JsonLd";
-import { WhatsAppIcon } from "@/components/Icons";
+import { PhoneIcon, SmsIcon, WhatsAppIcon } from "@/components/Icons";
 import { getFeatures, getSettings } from "@/lib/cms";
-import { whatsappUrl } from "@/lib/contact";
+import { SMS_GREETING, smsUrl, telUrl, whatsappUrl } from "@/lib/contact";
 import { breadcrumbSchema, webPageSchema } from "@/lib/schema";
 import { pageMeta } from "@/lib/seo";
 
@@ -40,6 +40,13 @@ export default async function OnboardingPage({ searchParams }: Props) {
         `Hi Zirka! I just completed payment${defaultPackage ? ` for ${defaultPackage}` : ""} and I'm ready to start onboarding.`
       )
     : null;
+  const phoneHref = telUrl(settings.whatsapp);
+  const textHref = smsUrl(
+    settings.whatsapp,
+    defaultPackage
+      ? `Hi Zirka! I just paid for ${defaultPackage} and I'm ready to start onboarding.`
+      : SMS_GREETING
+  );
 
   return (
     <>
@@ -99,20 +106,32 @@ export default async function OnboardingPage({ searchParams }: Props) {
             <aside className="contact-aside">
               <div className="service-aside__card">
                 <span className="eyebrow">Fast track</span>
-                <h2>Prefer to kick off directly on WhatsApp or a call?</h2>
+                <h2>Prefer to call, text, or chat to kick off?</h2>
                 <p>
-                  You can message our team right now with your Stripe receipt email or book a
+                  Reach our Atlanta, Georgia team directly with your Stripe receipt email, or book a
                   15-minute kickoff call so we can collect your brand assets live.
                 </p>
+                {phoneHref && (
+                  <a className="btn btn-gold" href={phoneHref}>
+                    <PhoneIcon />
+                    Call {settings.phoneDisplay}
+                  </a>
+                )}
+                {textHref && (
+                  <a className="btn btn-outline" href={textHref}>
+                    <SmsIcon />
+                    Text Us (SMS)
+                  </a>
+                )}
                 {directWhatsApp && (
                   <a
-                    className="btn btn-gold"
+                    className="btn btn-outline"
                     href={directWhatsApp}
                     target="_blank"
                     rel="noopener noreferrer"
                   >
                     <WhatsAppIcon />
-                    Start on WhatsApp Now
+                    Start on WhatsApp
                   </a>
                 )}
                 {features.bookingEnabled && (

@@ -12,8 +12,7 @@ export default function WorkCard({ item, showSummary }: { item: WorkView; showSu
         sizes="(max-width: 480px) 100vw, (max-width: 860px) 50vw, 33vw"
       />
       <span className="work-tag">{item.category}</span>
-      {/* A concept is labelled, and never shows a result figure (brief §4). */}
-      {item.sample && <span className="work-sample">Concept Project</span>}
+      {/* Keep illustrative metrics hidden until verified client results are published. */}
       <div className="work-info">
         <h3>{item.name}</h3>
         {!item.sample && <span className="work-metric">{item.metric}</span>}

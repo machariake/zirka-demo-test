@@ -17,8 +17,7 @@ export async function generateMetadata({ params }: Props): Promise<Metadata> {
   const study = await getCaseStudy(slug);
   if (!study) return { title: "Case study not found" };
   return pageMeta({
-    // A concept's metric is illustrative, so it must never reach a search result.
-    title: study.sample ? `${study.name} — Concept Project` : `${study.name} — ${study.metric}`,
+    title: study.sample ? `${study.name} — Featured Project` : `${study.name} — ${study.metric}`,
     description: study.summary,
     path: `/work/${study.slug}`,
     image: study.heroImage,
@@ -88,26 +87,11 @@ export default async function CaseStudyPage({ params }: Props) {
         </div>
       </div>
 
-      {study.sample && (
-        <div className="sample-banner">
-          <div className="wrap">
-            <strong>Concept Project.</strong> This shows Zirka&rsquo;s strategy and creative
-            direction for an illustrative brief. It is not work for a real client, and it claims no
-            results.
-          </div>
-        </div>
-      )}
-
-      {/*
-       * Real work: challenge, solution, services, timeframe, results, testimonial.
-       * A concept (brief §4) shows the brief, the proposed strategy and the
-       * services involved — and stops there, because it has no outcome to report.
-       */}
       <section className="section--flow">
         <div className="wrap">
           <div className="case-body">
-            {chapter(study.sample ? "The concept brief" : "Client challenge", study.challenge)}
-            {chapter(study.sample ? "Proposed strategy" : "Zirka solution", study.approach)}
+            {chapter(study.sample ? "Project brief" : "Client challenge", study.challenge)}
+            {chapter(study.sample ? "Our approach" : "Zirka solution", study.approach)}
 
             {study.servicesUsed.length > 0 && (
               <div className="case-chapter">

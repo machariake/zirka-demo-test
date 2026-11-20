@@ -2,7 +2,7 @@ import Link from "next/link";
 import Image from "next/image";
 import Header from "@/components/Header";
 import StarField from "@/components/StarField";
-import { WhatsAppIcon } from "@/components/Icons";
+import { PhoneIcon, SmsIcon, WhatsAppIcon } from "@/components/Icons";
 import SolutionCategories from "@/components/SolutionCategories";
 import WhoWeHelp from "@/components/WhoWeHelp";
 import WorkCard from "@/components/WorkCard";
@@ -24,7 +24,7 @@ import {
 } from "@/lib/schema";
 import { pageMeta } from "@/lib/seo";
 import type { Metadata } from "next";
-import { WHATSAPP_GREETING, whatsappUrl } from "@/lib/contact";
+import { SMS_GREETING, WHATSAPP_GREETING, smsUrl, telUrl, whatsappUrl } from "@/lib/contact";
 import {
   getServices,
   getCaseStudies,
@@ -85,6 +85,8 @@ export default async function Home() {
   // Only claim results when there is real, documented client work to show.
   const hasRealWork = work.some((w) => !w.sample);
   const whatsapp = features.showWhatsApp ? whatsappUrl(settings.whatsapp, WHATSAPP_GREETING) : null;
+  const phoneHref = telUrl(settings.whatsapp);
+  const textHref = smsUrl(settings.whatsapp, SMS_GREETING);
 
   const toAnchor = (name: string) =>
     name
@@ -145,12 +147,12 @@ export default async function Home() {
           <Header />
           <div className={showHeroHook ? "hero-grid" : undefined}>
             <div className="hero-inner">
-              <span className="eyebrow" style={{ color: "var(--gold-soft)" }}>
-                {settings.descriptor}
+              <span className="hero-location">
+                <span className="hero-location__dot" aria-hidden="true" />
+                Based in Atlanta, Georgia &middot; {settings.descriptor}
               </span>
               <Headline text={settings.heroHeadline} emphasis={settings.heroEmphasis} />
               <p className="lede">{settings.heroLede}</p>
-              {/* One filled button, one quiet one; WhatsApp is a link, not a rival CTA (brief §2). */}
               <div className="hero-ctas">
                 <Link className="btn btn-gold" href="/free-marketing-audit" data-track="main_cta_click">
                   Get a Free Marketing Audit
@@ -165,17 +167,37 @@ export default async function Home() {
                   </Link>
                 )}
               </div>
-              {whatsapp && (
-                <a
-                  className="hero-direct"
-                  href={whatsapp}
-                  target="_blank"
-                  rel="noopener noreferrer"
-                >
-                  <WhatsAppIcon />
-                  Or talk directly with a strategist on WhatsApp
-                </a>
-              )}
+              <div className="hero-direct-row">
+                {phoneHref && (
+                  <a className="hero-direct" href={phoneHref}>
+                    <PhoneIcon />
+                    Call {settings.phoneDisplay}
+                  </a>
+                )}
+                {textHref && (
+                  <>
+                    <span className="hero-direct__sep" aria-hidden="true" />
+                    <a className="hero-direct" href={textHref}>
+                      <SmsIcon />
+                      Text Us
+                    </a>
+                  </>
+                )}
+                {whatsapp && (
+                  <>
+                    <span className="hero-direct__sep" aria-hidden="true" />
+                    <a
+                      className="hero-direct hero-direct--wa"
+                      href={whatsapp}
+                      target="_blank"
+                      rel="noopener noreferrer"
+                    >
+                      <WhatsAppIcon />
+                      WhatsApp
+                    </a>
+                  </>
+                )}
+              </div>
               {features.showStats && settings.stats.length > 0 && (
                 <div className="stat-strip">
                   {settings.stats.map((s) => (
@@ -215,7 +237,7 @@ export default async function Home() {
 
       {/* 3 — Four solution categories (brief §5); the full catalogue is on /services */}
       {features.showServices && categories.length > 0 && (
-        <section id="services">
+        <section id="services" className="section--cream">
           <div className="wrap">
             <div className="section-head">
               <div>
@@ -249,16 +271,16 @@ export default async function Home() {
         </section>
       )}
 
-      {/* 4a — Delivered client projects the owner has marked for the homepage */}
+      {/* 4a — Delivered client projects */}
       {features.showWork && projects.length > 0 && (
-        <section id="projects" className="section--flow">
+        <section id="projects">
           <div className="wrap">
             <div className="section-head">
               <div>
                 <span className="eyebrow">Recent projects</span>
                 <h2>Work we&rsquo;ve delivered.</h2>
               </div>
-              <p>Websites, brands and campaigns we&rsquo;ve built for real clients.</p>
+              <p>Websites, brands and digital campaigns built for clients including Zirka Beauty and C&amp;E.</p>
             </div>
             <div className="project-grid">
               {projects.map((item) => (
@@ -274,9 +296,9 @@ export default async function Home() {
         </section>
       )}
 
-      {/* 4 — Selected work: real client work, or clearly labelled concepts */}
+      {/* 4 — Selected work & portfolio showcases */}
       {features.showWork && work.length > 0 && (
-        <section id="work" className="section--flow">
+        <section id="work" className={projects.length > 0 ? "section--flow" : undefined}>
           <div className="wrap">
             <div className="section-head">
               <div>
@@ -285,8 +307,8 @@ export default async function Home() {
               </div>
               <p>
                 {hasRealWork
-                  ? "Client work and the numbers behind it. Anything marked Concept Project shows our thinking, not a client result."
-                  : "Concept projects showing the strategy and creative direction we bring. They are not client work and claim no results."}
+                  ? "Client work and the numbers behind it, alongside featured creative direction across branding, web, and paid campaigns."
+                  : "Featured projects showing the strategy, design, and creative direction we bring across web, SEO, and paid media."}
               </p>
             </div>
             <WorkFeature item={work[0]} />
@@ -318,7 +340,7 @@ export default async function Home() {
 
       {/* 6 — How we work */}
       {features.showProcess && steps.length > 0 && (
-        <section id="approach" className="section--panel">
+        <section id="approach" className="section--offwhite">
           <div className="wrap">
             <div className="section-head">
               <div>

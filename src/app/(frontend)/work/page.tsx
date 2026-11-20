@@ -10,16 +10,15 @@ import { breadcrumbSchema } from "@/lib/schema";
 
 export async function generateMetadata(): Promise<Metadata> {
   const [work, projects] = await Promise.all([getCaseStudies(), getProjects()]);
-  // Describe what is really on the page: no "results" without real case studies.
   return pageMeta({
     title: "Work & Portfolio",
     description: work.some((w) => !w.sample)
-      ? "Explore real client case studies, custom websites, SEO campaigns, and digital marketing projects delivered by Zirka Digital Solutions."
+      ? "Explore real client case studies, custom websites, SEO campaigns, and digital marketing projects delivered by Zirka Digital Solutions in Atlanta, Georgia."
       : projects.length > 0
-        ? "Explore delivered websites, brands, and digital campaigns from Zirka Digital Solutions alongside strategic concept projects for growing businesses."
-        : "Explore digital marketing, SEO, branding, and website strategy concepts from Zirka Digital Solutions showing how we turn clicks into customers.",
+        ? "Explore delivered websites and brand work including Zirka Beauty and C&E alongside digital marketing showcases from Zirka Digital Solutions in Atlanta, GA."
+        : "Explore digital marketing, SEO, branding, and website projects from Zirka Digital Solutions in Atlanta, Georgia showing how we turn clicks into customers.",
     path: "/work",
-    keywords: ["digital marketing portfolio", "website design case studies", "SEO work examples"],
+    keywords: ["digital marketing portfolio", "Atlanta web design portfolio", "Zirka Beauty", "C&E"],
   });
 }
 
@@ -46,14 +45,14 @@ export default async function WorkPage() {
         }
         lede={
           hasRealWork
-            ? "Real client work is measured against one standard: a business metric that moved, not an impression count. Anything marked Concept Project shows our thinking, not a client result."
+            ? "Client case studies and selected projects showcasing the strategy, design, and creative direction we bring to every engagement."
             : projects.length > 0
-              ? "Projects we've completed for real clients. Anything marked Concept Project shows our strategy and creative direction, not client work."
-              : "These are concept projects: they show the strategy and creative direction we bring, not work for real clients, and they claim no results. Client case studies will appear here as they are completed."
+              ? "Projects delivered for brands including Zirka Beauty and C&E, alongside creative showcases across websites, SEO, and paid media."
+              : "Showcase projects illustrating our strategy, design, and creative direction across websites, branding, SEO, and paid campaigns."
         }
       />
 
-      <section>
+      <section className="section--cream">
         <div className="wrap">
           {projects.length > 0 && (
             <div className={work.length > 0 ? "work-group--after" : undefined}>
@@ -67,7 +66,6 @@ export default async function WorkPage() {
           )}
           {work.length > 0 ? (
             <>
-              {/* Real work and concepts kept in separate groups (brief §4). */}
               {real.length > 0 && (
                 <>
                   <h2 className="index-heading">Client case studies</h2>
@@ -80,7 +78,7 @@ export default async function WorkPage() {
               )}
               {concepts.length > 0 && (
                 <div className={real.length > 0 || projects.length > 0 ? "work-group--spaced" : undefined}>
-                  <h2 className="index-heading">Concept projects</h2>
+                  <h2 className="index-heading">Featured direction &amp; creative showcases</h2>
                   <div className="work-grid wide">
                     {concepts.map((item) => (
                       <WorkCard item={item} showSummary key={item.name} />

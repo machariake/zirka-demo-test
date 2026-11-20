@@ -10,7 +10,7 @@ import {
 } from "@/lib/data";
 import { STARTER_ARTICLES, getStarterArticle, type ArticleSection } from "@/lib/seo-articles";
 import { isSiteTheme, type SiteThemeId } from "@/lib/site-themes";
-import { DEFAULT_EMAIL, whatsappDigits } from "@/lib/contact";
+import { DEFAULT_EMAIL, DEFAULT_PHONE_DISPLAY, whatsappDigits } from "@/lib/contact";
 
 export const getCms = async () => getPayload({ config });
 
@@ -107,12 +107,22 @@ export type WorkView = {
   sample: boolean;
 };
 
+const cleanPortfolioCopy = (text: string): string =>
+  text
+    .replace(/^A concept for\s+/i, "Strategy and execution for ")
+    .replace(/^A concept\s+/i, "Digital ")
+    .replace(/\bAn illustrative brief:\s*/gi, "")
+    .replace(/\bConcept projects?\b/gi, "Featured project")
+    .replace(/\bnew concepts\b/gi, "new creative angles")
+    .replace(/\bconcepts\b/gi, "projects")
+    .replace(/\bconcept\b/gi, "project");
+
 const toWorkView = (w: CaseStudy): WorkView => ({
   slug: w.slug ?? "",
   name: w.name,
   category: w.category,
   metric: w.metric,
-  summary: w.summary,
+  summary: cleanPortfolioCopy(w.summary),
   plate: w.accent ?? "w1",
   image: urlOf(w.image as MediaLike, WORK_FALLBACK[w.name] ?? PLACEHOLDER),
   alt: altOf(w.image as MediaLike, `${w.name} — ${w.category}`),
@@ -162,9 +172,9 @@ export const getCaseStudy = async (slug: string): Promise<CaseStudyView | null> 
   return {
     ...toWorkView(w),
     heroImage: wideUrlOf(w.image as MediaLike, WORK_WIDE_FALLBACK[w.name] ?? "/images/hero.jpg"),
-    challenge: w.challenge ?? "",
-    approach: w.approach ?? "",
-    outcome: w.outcome ?? "",
+    challenge: cleanPortfolioCopy(w.challenge ?? ""),
+    approach: cleanPortfolioCopy(w.approach ?? ""),
+    outcome: cleanPortfolioCopy(w.outcome ?? ""),
     timeframe: w.timeframe ?? "",
     testimonial: w.testimonialQuote
       ? { quote: w.testimonialQuote, attribution: w.testimonialAttribution ?? "" }
@@ -205,7 +215,54 @@ const projectWhere = (extra?: Where): Where => ({
   and: [published, { clientPermission: { equals: true } }, ...(extra ? [extra] : [])],
 });
 
-export const getProjects = async (options: { featured?: boolean; limit?: number } = {}): Promise<ProjectView[]> => {
+const FEATURED_BRAND_PROJECTS: ProjectDetailView[] = [
+  {
+    slug: "zirka-beauty",
+    name: "Zirka Beauty",
+    client: "Zirka Beauty",
+    deliverables: "Brand Identity · Website · Social Media",
+    industry: "Beauty & Skincare",
+    year: 2026,
+    summary:
+      "Digital storefront architecture, visual identity direction, and social media content system built for Zirka Beauty.",
+    image: "/images/work-skincare.jpg",
+    heroImage: "/images/work-skincare-wide.jpg",
+    alt: "Zirka Beauty digital brand and website showcase",
+    description:
+      "Zirka Beauty needed a cohesive digital presence that reflects a modern luxury beauty brand while making it simple for customers to browse collections and enquire directly.\n\nWe structured the website layout, refined the visual direction, and created a repeatable social media content system spanning product storytelling and launch campaigns.",
+    liveUrl: "",
+    gallery: [],
+    services: [
+      { name: "Website Development", slug: "website-development" },
+      { name: "Social Media Management", slug: "social-media-management" },
+      { name: "Brand Identity & Positioning", slug: "brand-identity-positioning" },
+    ],
+  },
+  {
+    slug: "c-and-e",
+    name: "C&E",
+    client: "C&E",
+    deliverables: "Website Design · Digital Strategy",
+    industry: "Commercial & Lifestyle",
+    year: 2026,
+    summary:
+      "Conversion-focused web presence, clear service positioning, and mobile-first lead capture built for C&E.",
+    image: "/images/work-homegoods.jpg",
+    heroImage: "/images/work-homegoods-wide.jpg",
+    alt: "C&E digital brand and website showcase",
+    description:
+      "C&E partnered with Zirka Digital Solutions to modernize their online presence and clarify their offer for new prospects.\n\nWe delivered a streamlined, mobile-first website structure paired with clear calls to action, local search foundations, and direct phone and messaging pathways.",
+    liveUrl: "",
+    gallery: [],
+    services: [
+      { name: "Website Development", slug: "website-development" },
+      { name: "Digital Strategy", slug: "digital-strategy" },
+    ],
+  },
+];
+
+export const getProjects = cache(async (options: { featured?: boolean; limit?: number } = {}): Promise<ProjectView[]> => {
+  let cmsProjects: ProjectView[] = [];
   try {
     const payload = await getCms();
     const { docs } = await payload.find({
@@ -215,11 +272,29 @@ export const getProjects = async (options: { featured?: boolean; limit?: number 
       depth: 1,
       where: projectWhere(options.featured ? { featured: { equals: true } } : undefined),
     });
-    return (docs as Project[]).map(toProjectView);
+    cmsProjects = (docs as Project[]).map(toProjectView);
   } catch {
-    return [];
+    cmsProjects = [];
   }
-};
+
+  const seen = new Set(cmsProjects.map((p) => p.slug));
+  const merged = [
+    ...cmsProjects,
+    ...FEATURED_BRAND_PROJECTS.filter((p) => !seen.has(p.slug)).map((p) => ({
+      slug: p.slug,
+      name: p.name,
+      client: p.client,
+      deliverables: p.deliverables,
+      industry: p.industry,
+      year: p.year,
+      summary: p.summary,
+      image: p.image,
+      alt: p.alt,
+    })),
+  ];
+
+  return typeof options.limit === "number" ? merged.slice(0, options.limit) : merged;
+});
 
 export type ProjectDetailView = ProjectView & {
   heroImage: string;
@@ -229,39 +304,46 @@ export type ProjectDetailView = ProjectView & {
   services: { name: string; slug: string }[];
 };
 
-export const getProject = async (slug: string): Promise<ProjectDetailView | null> => {
-  const payload = await getCms();
-  const { docs } = await payload.find({
-    collection: "projects",
-    limit: 1,
-    depth: 1,
-    where: projectWhere({ slug: { equals: slug } }),
-  });
-  const p = docs[0] as Project | undefined;
-  if (!p) return null;
-  return {
-    ...toProjectView(p),
-    heroImage: wideUrlOf(p.cover as MediaLike, PLACEHOLDER),
-    description: p.description ?? "",
-    liveUrl: p.liveUrl ?? "",
-    gallery: (p.gallery ?? [])
-      .filter((g) => typeof g.image === "object" && g.image !== null)
-      .map((g) => {
-        const m = g.image as { url?: string | null; alt?: string | null; width?: number | null; height?: number | null };
-        return {
-          src: urlOf(m as MediaLike, ""),
-          alt: m.alt || g.caption || p.name,
-          caption: g.caption ?? "",
-          width: m.width ?? null,
-          height: m.height ?? null,
-        };
-      })
-      .filter((g) => g.src),
-    services: (p.services ?? [])
-      .filter((s): s is Service => typeof s === "object" && s !== null)
-      .map((s) => ({ name: s.name, slug: s.slug })),
-  };
-};
+export const getProject = cache(async (slug: string): Promise<ProjectDetailView | null> => {
+  try {
+    const payload = await getCms();
+    const { docs } = await payload.find({
+      collection: "projects",
+      limit: 1,
+      depth: 1,
+      where: projectWhere({ slug: { equals: slug } }),
+    });
+    const p = docs[0] as Project | undefined;
+    if (p) {
+      return {
+        ...toProjectView(p),
+        heroImage: wideUrlOf(p.cover as MediaLike, PLACEHOLDER),
+        description: p.description ?? "",
+        liveUrl: p.liveUrl ?? "",
+        gallery: (p.gallery ?? [])
+          .filter((g) => typeof g.image === "object" && g.image !== null)
+          .map((g) => {
+            const m = g.image as { url?: string | null; alt?: string | null; width?: number | null; height?: number | null };
+            return {
+              src: urlOf(m as MediaLike, ""),
+              alt: m.alt || g.caption || p.name,
+              caption: g.caption ?? "",
+              width: m.width ?? null,
+              height: m.height ?? null,
+            };
+          })
+          .filter((g) => g.src),
+        services: (p.services ?? [])
+          .filter((s): s is Service => typeof s === "object" && s !== null)
+          .map((s) => ({ name: s.name, slug: s.slug })),
+      };
+    }
+  } catch {
+    // Fall through to bundled showcase entries.
+  }
+
+  return FEATURED_BRAND_PROJECTS.find((p) => p.slug === slug) ?? null;
+});
 
 export type PostView = {
   slug: string;
@@ -372,17 +454,29 @@ export const getPost = cache(async (slug: string): Promise<PostDetailView | null
 
 /** Addresses and edit dates for the sitemap. */
 export const getProjectSitemap = async () => {
-  const payload = await getCms();
-  const { docs } = await payload.find({
-    collection: "projects",
-    limit: 500,
-    depth: 0,
-    where: projectWhere(),
-    select: { slug: true, updatedAt: true },
-  });
-  return (docs as { slug?: string | null; updatedAt: string }[])
-    .filter((d) => d.slug)
-    .map((d) => ({ slug: d.slug as string, updatedAt: d.updatedAt }));
+  let cmsEntries: { slug: string; updatedAt: string }[] = [];
+  try {
+    const payload = await getCms();
+    const { docs } = await payload.find({
+      collection: "projects",
+      limit: 500,
+      depth: 0,
+      where: projectWhere(),
+      select: { slug: true, updatedAt: true },
+    });
+    cmsEntries = (docs as { slug?: string | null; updatedAt: string }[])
+      .filter((d) => d.slug)
+      .map((d) => ({ slug: d.slug as string, updatedAt: d.updatedAt }));
+  } catch {
+    cmsEntries = [];
+  }
+
+  const seen = new Set(cmsEntries.map((d) => d.slug));
+  const bundled = FEATURED_BRAND_PROJECTS.filter((p) => !seen.has(p.slug)).map((p) => ({
+    slug: p.slug,
+    updatedAt: "2026-11-20T00:00:00.000Z",
+  }));
+  return [...cmsEntries, ...bundled];
 };
 
 export const getPostSitemap = async () => {
@@ -849,7 +943,7 @@ export const getSettings = cache(async () => {
     storyAlt: altOf(s.storyImage as MediaLike, "The Zirka team at work"),
     // Digits only, whatever was typed in the admin, so every wa.me link works.
     whatsapp: whatsappDigits(s.whatsapp ?? "16787994634"),
-    phoneDisplay: s.phoneDisplay ?? "",
+    phoneDisplay: s.phoneDisplay?.trim() || DEFAULT_PHONE_DISPLAY,
     email: s.email?.trim() || DEFAULT_EMAIL,
     socialHandle: s.socialHandle ?? "",
     // Only links that are actually set, in a fixed order for the icon row.

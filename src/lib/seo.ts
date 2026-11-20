@@ -10,6 +10,8 @@ const DEFAULT_IMAGE = {
 };
 
 const DEFAULT_KEYWORDS = [
+  "Atlanta digital marketing agency",
+  "digital marketing agency Atlanta GA",
   "digital marketing agency",
   "social media management",
   "website development",

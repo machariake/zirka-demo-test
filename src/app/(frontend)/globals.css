@@ -919,6 +919,49 @@ textarea:focus-visible {
   text-decoration-color: var(--gold-soft);
 }
 
+.hero-direct-row {
+  display: flex;
+  flex-wrap: wrap;
+  align-items: center;
+  gap: 10px 18px;
+  margin-top: -8px;
+  animation: hero-fade-in 0.6s ease-out 0.25s both;
+}
+
+.hero-direct-row .hero-direct {
+  margin-top: 0;
+  animation: none;
+}
+
+.hero-direct__sep {
+  width: 1px;
+  height: 14px;
+  background: rgba(242, 239, 230, 0.25);
+}
+
+.hero-direct--wa svg {
+  color: #f3c4a4;
+}
+
+.hero-location {
+  display: inline-flex;
+  align-items: center;
+  gap: 8px;
+  width: fit-content;
+  font-size: 12px;
+  font-weight: 500;
+  letter-spacing: 0.08em;
+  text-transform: uppercase;
+  color: rgba(245, 242, 230, 0.85);
+}
+
+.hero-location__dot {
+  width: 6px;
+  height: 6px;
+  border-radius: 50%;
+  background: var(--gold-soft);
+}
+
 .stat-strip {
   margin-top: 16px;
   display: grid;
@@ -1016,6 +1059,37 @@ section {
 .section--close {
   padding-top: 0;
   padding-bottom: 0;
+}
+
+/* Explicit light surfaces so alternating bands stay warm cream / soft off-white even in dark mode. */
+.section--cream {
+  --paper: #f6f3ea;
+  --paper-raised: #fffdf7;
+  --ink: #0e2a20;
+  --ink-rgb: 14, 42, 32;
+  --slate: #4f5d56;
+  --gold: #9c5c33;
+  --gold-soft: #b87333;
+  --line: rgba(14, 42, 32, 0.14);
+  --shadow: 0 1px 2px rgba(14, 42, 32, 0.06), 0 12px 32px -16px rgba(14, 42, 32, 0.18);
+  background: #f6f3ea;
+  color: #0e2a20;
+  border-block: 1px solid rgba(14, 42, 32, 0.1);
+}
+
+.section--offwhite {
+  --paper: #fffdf7;
+  --paper-raised: #f6f3ea;
+  --ink: #0e2a20;
+  --ink-rgb: 14, 42, 32;
+  --slate: #4f5d56;
+  --gold: #9c5c33;
+  --gold-soft: #b87333;
+  --line: rgba(14, 42, 32, 0.14);
+  --shadow: 0 1px 2px rgba(14, 42, 32, 0.06), 0 12px 32px -16px rgba(14, 42, 32, 0.16);
+  background: #fffdf7;
+  color: #0e2a20;
+  border-block: 1px solid rgba(14, 42, 32, 0.1);
 }
 
 .section-head {
@@ -5232,11 +5306,12 @@ body {
   width: 56px;
   height: 56px;
   border-radius: 50%;
-  /* WhatsApp green, a shade darker than the logo's so the white mark keeps 3:1 contrast. */
-  background: #17964a;
-  color: #fff;
-  box-shadow: 0 8px 24px -8px rgba(0, 0, 0, 0.45);
-  transition: transform 0.2s ease, box-shadow 0.2s ease;
+  /* Warm peach / rose gold matching Zirka's accent palette with high-contrast dark ink. */
+  background: linear-gradient(135deg, #f3c4a4 0%, #dfa473 52%, #c9865b 100%);
+  color: #1c1305;
+  border: 1px solid rgba(255, 255, 255, 0.35);
+  box-shadow: 0 10px 28px -8px rgba(184, 115, 51, 0.6), 0 4px 12px -4px rgba(0, 0, 0, 0.35);
+  transition: transform 0.2s ease, box-shadow 0.2s ease, filter 0.2s ease;
 }
 
 .wa-float svg {
@@ -5438,6 +5513,38 @@ body {
   width: fit-content;
 }
 
+.contact-route__actions {
+  margin-top: auto;
+  display: flex;
+  flex-wrap: wrap;
+  gap: 8px;
+}
+
+.contact-route__actions .btn {
+  margin-top: 0;
+  padding: 10px 14px;
+  font-size: 13px;
+}
+
+.cta-band .contact {
+  display: flex;
+  flex-wrap: wrap;
+  align-items: center;
+  gap: 8px 14px;
+}
+
+.cta-band .contact a {
+  color: rgba(245, 242, 230, 0.88);
+  text-decoration: underline;
+  text-decoration-color: rgba(223, 164, 115, 0.45);
+  text-underline-offset: 3px;
+}
+
+.cta-band .contact a:hover {
+  color: #fff;
+  text-decoration-color: var(--gold-soft);
+}
+
 @media (max-width: 860px) {
   .contact-routes {
     grid-template-columns: 1fr;
@@ -5445,6 +5552,10 @@ body {
   .contact-route .btn {
     width: 100%;
     justify-content: center;
+  }
+  .contact-route__actions .btn {
+    width: auto;
+    flex: 1 1 auto;
   }
 }
 
@@ -5507,7 +5618,12 @@ summary:focus-visible,
 }
 
 /* ---------- DELIVERED PROJECTS ---------- */
-.project-grid,
+.project-grid {
+  display: grid;
+  grid-template-columns: repeat(auto-fit, minmax(300px, 1fr));
+  gap: 22px;
+}
+
 .post-grid {
   display: grid;
   grid-template-columns: repeat(3, minmax(0, 1fr));

@@ -1,12 +1,12 @@
 import Link from "next/link";
 import { getSettings, getFeatures } from "@/lib/cms";
-import { WHATSAPP_GREETING, whatsappUrl } from "@/lib/contact";
+import { SMS_GREETING, WHATSAPP_GREETING, smsUrl, telUrl, whatsappUrl } from "@/lib/contact";
 
 /**
  * The closing call to action on most pages (brief §10): the free audit as the
  * one primary action, and a direct line to a strategist as the alternative for
- * people who would rather talk first. WhatsApp stays in the small contact line
- * rather than becoming a third button.
+ * people who would rather talk first. Call, text, and WhatsApp links sit in the
+ * contact strip below the buttons.
  */
 export default async function CtaBand({
   heading = "Find your biggest marketing opportunities.",
@@ -15,9 +15,9 @@ export default async function CtaBand({
 }) {
   const [settings, features] = await Promise.all([getSettings(), getFeatures()]);
 
-  // "Talk to a Strategist" goes to the booking calendar when it's open,
-  // otherwise straight to WhatsApp.
   const whatsapp = features.showWhatsApp ? whatsappUrl(settings.whatsapp, WHATSAPP_GREETING) : null;
+  const phoneHref = telUrl(settings.whatsapp);
+  const textHref = smsUrl(settings.whatsapp, SMS_GREETING);
   const strategistHref = features.bookingEnabled ? "/book" : (whatsapp ?? "/contact");
   const external = strategistHref.startsWith("http");
 
@@ -42,15 +42,18 @@ export default async function CtaBand({
               )}
             </div>
             <span className="contact">
-              {whatsapp ? (
-                <>
-                  WhatsApp{" "}
-                  <a href={whatsapp} target="_blank" rel="noopener noreferrer">
-                    {settings.phoneDisplay || settings.whatsapp}
-                  </a>
-                </>
-              ) : (
-                settings.phoneDisplay
+              {phoneHref && (
+                <a href={phoneHref}>
+                  Call {settings.phoneDisplay || `+${settings.whatsapp}`}
+                </a>
+              )}
+              {textHref && (
+                <a href={textHref}>Text Us</a>
+              )}
+              {whatsapp && (
+                <a href={whatsapp} target="_blank" rel="noopener noreferrer">
+                  WhatsApp
+                </a>
               )}
             </span>
           </div>
