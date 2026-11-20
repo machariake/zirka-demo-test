@@ -3,6 +3,7 @@ import Link from "next/link";
 import PageHeader from "@/components/PageHeader";
 import CtaBand from "@/components/CtaBand";
 import ServiceCard from "@/components/ServiceCard";
+import ShareButton from "@/components/ShareButton";
 import JsonLd from "@/components/JsonLd";
 import { getServices, getSolutionCategories } from "@/lib/cms";
 import { breadcrumbSchema } from "@/lib/schema";
@@ -43,7 +44,7 @@ export default async function ServicesPage() {
           <h2 className="index-heading">All services</h2>
           <ol className="service-index">
             {services.map((service, i) => (
-              <li key={service.slug}>
+              <li key={service.slug} className="service-index__row">
                 <Link href={`/services/${service.slug}`}>
                   <span className="service-index__num">{String(i + 1).padStart(2, "0")}</span>
                   <span className="service-index__name">{service.name}</span>
@@ -51,6 +52,12 @@ export default async function ServicesPage() {
                     {service.capabilities.length} included
                   </span>
                 </Link>
+                <ShareButton
+                  title={service.name}
+                  text={service.short}
+                  path={`/services/${service.slug}`}
+                  variant="icon"
+                />
               </li>
             ))}
           </ol>

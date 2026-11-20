@@ -2,6 +2,7 @@ import Link from "next/link";
 import Image from "next/image";
 import type { ServiceView } from "@/lib/cms";
 import { ServiceIcon, ArrowIcon } from "./Icons";
+import ShareButton from "./ShareButton";
 
 export default function ServiceCard({ service }: { service: ServiceView }) {
   return (
@@ -23,10 +24,18 @@ export default function ServiceCard({ service }: { service: ServiceView }) {
             <span className="tag tag--more">+{service.capabilities.length - 4} more</span>
           )}
         </div>
-        <Link className="explore" href={`/services/${service.slug}`}>
-          Learn More<span className="sr-only"> about {service.name}</span>
-          <ArrowIcon />
-        </Link>
+        <div className="service-card__footer">
+          <Link className="explore" href={`/services/${service.slug}`}>
+            Learn More<span className="sr-only"> about {service.name}</span>
+            <ArrowIcon />
+          </Link>
+          <ShareButton
+            title={service.name}
+            text={service.short}
+            path={`/services/${service.slug}`}
+            variant="compact"
+          />
+        </div>
       </div>
     </article>
   );

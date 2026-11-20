@@ -21,6 +21,7 @@ import {
 import { whatsappUrl } from "@/lib/contact";
 import { relatedServices } from "@/lib/related";
 import ServiceCard from "@/components/ServiceCard";
+import ShareButton from "@/components/ShareButton";
 import { serviceSchema, breadcrumbSchema } from "@/lib/schema";
 import { pageMeta } from "@/lib/seo";
 
@@ -110,6 +111,14 @@ export default async function ServicePage({ params }: Props) {
               <Link className="btn btn-ghost" href={`/quote?service=${service.slug}`}>
                 Get a quote for this service
               </Link>
+              <ShareButton
+                title={service.name}
+                text={service.short}
+                path={`/services/${service.slug}`}
+                variant="compact"
+                align="left"
+                label="Share service"
+              />
             </div>
           </div>
         </div>
@@ -170,6 +179,13 @@ export default async function ServicePage({ params }: Props) {
                         Buy now
                         <ArrowIcon />
                       </a>
+                      <ShareButton
+                        title="Starter Visibility ($299/mo)"
+                        text="Social Media Management — Starter Visibility plan at $299/mo"
+                        path="/pricing#plan-starter-visibility"
+                        checkoutUrl="https://buy.stripe.com/aFacN79gD9rSbLBejz1gs02"
+                        variant="icon"
+                      />
                     </span>
                   </li>
                   <li>
@@ -186,6 +202,13 @@ export default async function ServicePage({ params }: Props) {
                         Buy now
                         <ArrowIcon />
                       </a>
+                      <ShareButton
+                        title="Business Growth ($599/mo)"
+                        text="Social Media Management — Business Growth plan at $599/mo"
+                        path="/pricing#plan-business-growth"
+                        checkoutUrl="https://buy.stripe.com/dRm00lgJ57jK3f50sJ1gs01"
+                        variant="icon"
+                      />
                     </span>
                   </li>
                   <li>
@@ -202,6 +225,13 @@ export default async function ServicePage({ params }: Props) {
                         Buy now
                         <ArrowIcon />
                       </a>
+                      <ShareButton
+                        title="Premium Digital Growth ($900/mo)"
+                        text="Social Media Management — Premium Digital Growth plan at $900/mo"
+                        path="/pricing#plan-premium-digital-growth"
+                        checkoutUrl="https://buy.stripe.com/8x200lakH7jKbLB4IZ1gs00"
+                        variant="icon"
+                      />
                     </span>
                   </li>
                 </ul>
@@ -226,6 +256,13 @@ export default async function ServicePage({ params }: Props) {
                         Buy now
                         <ArrowIcon />
                       </a>
+                      <ShareButton
+                        title="Landing Page ($997)"
+                        text="Custom high-converting Landing Page package at $997"
+                        path="/pricing#pkg-landing-page"
+                        checkoutUrl="https://buy.stripe.com/4gM7sN3WjeMc7vl2AR1gs06"
+                        variant="icon"
+                      />
                     </span>
                   </li>
                   <li>
@@ -242,6 +279,13 @@ export default async function ServicePage({ params }: Props) {
                         Buy now
                         <ArrowIcon />
                       </a>
+                      <ShareButton
+                        title="Business Website (3–5 pages) — $2,000"
+                        text="Business Website (3–5 custom pages) package at $2,000"
+                        path="/pricing#pkg-business-website-3-5-pages"
+                        checkoutUrl="https://buy.stripe.com/3cI9AV64r47y6rh2AR1gs05"
+                        variant="icon"
+                      />
                     </span>
                   </li>
                   <li>
@@ -258,6 +302,13 @@ export default async function ServicePage({ params }: Props) {
                         Buy now
                         <ArrowIcon />
                       </a>
+                      <ShareButton
+                        title="Large Business Website (6–10 pages) — $4,000"
+                        text="Large Business Website (6–10 custom pages) package at $4,000"
+                        path="/pricing#pkg-large-business-website-6-10-pages"
+                        checkoutUrl="https://buy.stripe.com/fZudRb1Ob8nO9Dtdfv1gs04"
+                        variant="icon"
+                      />
                     </span>
                   </li>
                   <li>
@@ -274,6 +325,13 @@ export default async function ServicePage({ params }: Props) {
                         Buy now
                         <ArrowIcon />
                       </a>
+                      <ShareButton
+                        title="Website Care ($129/mo)"
+                        text="Monthly Website Care & maintenance plan at $129/mo"
+                        path="/pricing#pkg-website-care"
+                        checkoutUrl="https://buy.stripe.com/cNi3cx3WjfQgg1R5N31gs03"
+                        variant="icon"
+                      />
                     </span>
                   </li>
                 </ul>
@@ -308,6 +366,12 @@ export default async function ServicePage({ params }: Props) {
                   Ask a strategist on WhatsApp
                 </a>
               )}
+              <ShareButton
+                title={service.name}
+                text={service.short}
+                path={`/services/${service.slug}`}
+                variant="bar"
+              />
             </div>
           </aside>
         </div>

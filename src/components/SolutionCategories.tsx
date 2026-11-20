@@ -1,6 +1,7 @@
 import Link from "next/link";
 import type { SolutionCategoryView } from "@/lib/cms";
 import { ArrowIcon } from "./Icons";
+import ShareButton from "./ShareButton";
 
 /**
  * The four solution categories — the homepage's main explanation of what Zirka
@@ -26,10 +27,18 @@ export default function SolutionCategories({ categories }: { categories: Solutio
               ))}
             </ul>
           )}
-          <Link className="explore" href={`/services#${c.slug}`}>
-            Learn More<span className="sr-only"> about {c.name}</span>
-            <ArrowIcon />
-          </Link>
+          <div className="service-card__footer">
+            <Link className="explore" href={`/services#${c.slug}`}>
+              Learn More<span className="sr-only"> about {c.name}</span>
+              <ArrowIcon />
+            </Link>
+            <ShareButton
+              title={`${c.name} — Zirka Digital Solutions`}
+              text={c.description}
+              path={`/services#${c.slug}`}
+              variant="compact"
+            />
+          </div>
         </article>
       ))}
     </div>

@@ -1,6 +1,14 @@
 import Link from "next/link";
 import { getEngagements, getProjectPricing, getSettings } from "@/lib/cms";
 import { ArrowIcon } from "./Icons";
+import ShareButton from "./ShareButton";
+
+function toAnchorSlug(value: string): string {
+  return value
+    .toLowerCase()
+    .replace(/[^a-z0-9]+/g, "-")
+    .replace(/^-+|-+$/g, "");
+}
 
 type WebsitePackageMeta = {
   tag: string;
@@ -102,58 +110,70 @@ export default async function Engagements({ withProjects = false }: { withProjec
             </div>
 
             <div className="tier-grid">
-              {engagements.map((tier) => (
-                <article className={`tier${tier.featured ? " featured" : ""}`} key={tier.name}>
-                  {tier.featured && <span className="tier-badge">Most popular</span>}
-                  <h3>{tier.name}</h3>
-                  <div className="tier-price">
-                    <span className="amount">{tier.price}</span>
-                    <span className="cadence">{tier.cadence}</span>
-                  </div>
-                  <p className="tier-summary">{tier.summary}</p>
-                  {tier.includes.length > 0 && (
-                    <ul className="tier-list">
-                      {tier.includes.map((line) => (
-                        <li key={line}>{line}</li>
-                      ))}
-                    </ul>
-                  )}
-                  <div className="tier-actions">
-                    {tier.checkoutUrl ? (
-                      <>
-                        <a
-                          className={`btn ${tier.featured ? "btn-gold" : "btn-outline"} tier-cta`}
-                          href={tier.checkoutUrl}
-                          target="_blank"
-                          rel="noopener noreferrer"
-                          data-track="pricing_cta_click"
-                        >
-                          Start {tier.name.replace(/^Zirka\s+/, "")}
-                          <ArrowIcon />
-                        </a>
+              {engagements.map((tier) => {
+                const planId = `plan-${toAnchorSlug(tier.name)}`;
+                return (
+                  <article className={`tier${tier.featured ? " featured" : ""}`} id={planId} key={tier.name}>
+                    {tier.featured && <span className="tier-badge">Most popular</span>}
+                    <div className="tier-card__top">
+                      <h3>{tier.name}</h3>
+                      <ShareButton
+                        title={`${tier.name} (${tier.price} ${tier.cadence})`}
+                        text={tier.summary}
+                        path={`/pricing#${planId}`}
+                        checkoutUrl={tier.checkoutUrl || undefined}
+                        variant="icon"
+                      />
+                    </div>
+                    <div className="tier-price">
+                      <span className="amount">{tier.price}</span>
+                      <span className="cadence">{tier.cadence}</span>
+                    </div>
+                    <p className="tier-summary">{tier.summary}</p>
+                    {tier.includes.length > 0 && (
+                      <ul className="tier-list">
+                        {tier.includes.map((line) => (
+                          <li key={line}>{line}</li>
+                        ))}
+                      </ul>
+                    )}
+                    <div className="tier-actions">
+                      {tier.checkoutUrl ? (
+                        <>
+                          <a
+                            className={`btn ${tier.featured ? "btn-gold" : "btn-outline"} tier-cta`}
+                            href={tier.checkoutUrl}
+                            target="_blank"
+                            rel="noopener noreferrer"
+                            data-track="pricing_cta_click"
+                          >
+                            Start {tier.name.replace(/^Zirka\s+/, "")}
+                            <ArrowIcon />
+                          </a>
+                          <Link
+                            className="tier-quote-link"
+                            href={`/quote?plan=${encodeURIComponent(tier.name)}`}
+                            data-track="pricing_cta_click"
+                          >
+                            Or request a custom quote
+                          </Link>
+                        </>
+                      ) : (
                         <Link
-                          className="tier-quote-link"
+                          className={`btn ${tier.featured ? "btn-gold" : "btn-outline"} tier-cta`}
                           href={`/quote?plan=${encodeURIComponent(tier.name)}`}
                           data-track="pricing_cta_click"
                         >
-                          Or request a custom quote
+                          {tier.price.toLowerCase().includes("custom")
+                            ? "Request a quote"
+                            : `Start with ${tier.name.replace(/^Zirka\s+/, "")}`}
+                          <ArrowIcon />
                         </Link>
-                      </>
-                    ) : (
-                      <Link
-                        className={`btn ${tier.featured ? "btn-gold" : "btn-outline"} tier-cta`}
-                        href={`/quote?plan=${encodeURIComponent(tier.name)}`}
-                        data-track="pricing_cta_click"
-                      >
-                        {tier.price.toLowerCase().includes("custom")
-                          ? "Request a quote"
-                          : `Start with ${tier.name.replace(/^Zirka\s+/, "")}`}
-                        <ArrowIcon />
-                      </Link>
-                    )}
-                  </div>
-                </article>
-              ))}
+                      )}
+                    </div>
+                  </article>
+                );
+              })}
             </div>
 
             <p className="tier-note">
@@ -189,14 +209,25 @@ export default async function Engagements({ withProjects = false }: { withProjec
                   const cadence =
                     meta?.cadence ??
                     (p.price.toLowerCase().includes("/mo") ? "per month" : "one-time payment");
+                  const pkgId = `pkg-${toAnchorSlug(p.name)}`;
 
                   return (
                     <article
                       className={`website-card${featured ? " featured" : ""}`}
+                      id={pkgId}
                       key={p.name}
                     >
                       {featured && <span className="tier-badge">Most popular</span>}
-                      <span className="website-card__tag">{meta?.tag ?? "Fixed package"}</span>
+                      <div className="tier-card__top">
+                        <span className="website-card__tag">{meta?.tag ?? "Fixed package"}</span>
+                        <ShareButton
+                          title={`${p.name} — ${p.price}`}
+                          text={meta?.description ?? p.note ?? `${p.name} package from Zirka Digital Solutions`}
+                          path={`/pricing#${pkgId}`}
+                          checkoutUrl={p.checkoutUrl || undefined}
+                          variant="icon"
+                        />
+                      </div>
                       <h3>{meta?.title ?? p.name}</h3>
                       <div className="tier-price">
                         <span className="amount">{displayPrice}</span>
@@ -248,25 +279,34 @@ export default async function Engagements({ withProjects = false }: { withProjec
                 </div>
 
                 <ul className="addon-list">
-                  {customProjects.map((p) => (
-                    <li key={p.name}>
-                      <span className="addon-list__name">
-                        {p.name}
-                        {p.note && <span className="addon-list__note">{p.note}</span>}
-                      </span>
-                      <span className="addon-list__actions">
-                        <span className="addon-list__price">{p.price}</span>
-                        <Link
-                          className="btn btn-outline addon-list__cta"
-                          href={`/quote?plan=${encodeURIComponent(p.name)}`}
-                          data-track="pricing_cta_click"
-                        >
-                          Get a quote
-                          <ArrowIcon />
-                        </Link>
-                      </span>
-                    </li>
-                  ))}
+                  {customProjects.map((p) => {
+                    const serviceId = `service-${toAnchorSlug(p.name)}`;
+                    return (
+                      <li id={serviceId} key={p.name}>
+                        <span className="addon-list__name">
+                          {p.name}
+                          {p.note && <span className="addon-list__note">{p.note}</span>}
+                        </span>
+                        <span className="addon-list__actions">
+                          <span className="addon-list__price">{p.price}</span>
+                          <Link
+                            className="btn btn-outline addon-list__cta"
+                            href={`/quote?plan=${encodeURIComponent(p.name)}`}
+                            data-track="pricing_cta_click"
+                          >
+                            Get a quote
+                            <ArrowIcon />
+                          </Link>
+                          <ShareButton
+                            title={`${p.name} (${p.price})`}
+                            text={`${p.name} — ${p.price} from Zirka Digital Solutions`}
+                            path={`/pricing#${serviceId}`}
+                            variant="icon"
+                          />
+                        </span>
+                      </li>
+                    );
+                  })}
                 </ul>
               </div>
             )}

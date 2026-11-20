@@ -909,14 +909,19 @@ section {
 }
 
 .service-card {
+  position: relative;
   background: var(--paper-raised);
   border: 1px solid var(--line);
   border-radius: 20px;
-  overflow: hidden;
+  overflow: visible;
   box-shadow: none;
   display: flex;
   flex-direction: column;
   transition: transform 0.35s cubic-bezier(0.23, 1, 0.32, 1), box-shadow 0.35s ease, border-color 0.35s ease;
+}
+
+.service-card .plate {
+  border-radius: 19px 19px 0 0;
 }
 
 .service-card:hover {
@@ -1595,6 +1600,17 @@ section {
 
 .service-index li {
   border-bottom: 1px solid var(--line);
+}
+
+.service-index__row {
+  display: flex;
+  align-items: center;
+  gap: 10px;
+}
+
+.service-index__row > a {
+  flex: 1;
+  min-width: 0;
 }
 
 .service-index a {
@@ -2911,6 +2927,212 @@ section {
 
 .project-price-list__quote:hover {
   color: var(--gold);
+}
+
+/* ---------- SHARE CONTROLS ---------- */
+.service-card__footer {
+  margin-top: auto;
+  padding-top: 10px;
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 12px;
+}
+
+.service-card__footer .explore {
+  margin-top: 0;
+  padding-top: 0;
+}
+
+.tier-card__top {
+  display: flex;
+  align-items: flex-start;
+  justify-content: space-between;
+  gap: 12px;
+}
+
+.tier,
+.website-card,
+.addon-list li {
+  scroll-margin-top: 96px;
+}
+
+.tier:target,
+.website-card:target {
+  border-color: var(--gold-soft);
+  box-shadow: 0 0 0 2px var(--gold-glow), 0 18px 40px -20px var(--gold-glow);
+}
+
+.addon-list li:target {
+  background: color-mix(in srgb, var(--gold) 8%, transparent);
+  padding-inline: 12px;
+  margin-inline: -12px;
+  border-radius: 12px;
+}
+
+.service-card:has(.share-control.is-open),
+.solution-card:has(.share-control.is-open),
+.tier:has(.share-control.is-open),
+.website-card:has(.share-control.is-open),
+.addon-list li:has(.share-control.is-open),
+.service-index__row:has(.share-control.is-open),
+.project-price-list li:has(.share-control.is-open) {
+  z-index: 30;
+  position: relative;
+}
+
+.share-control {
+  position: relative;
+  display: inline-flex;
+  align-items: center;
+  flex-shrink: 0;
+}
+
+.share-trigger {
+  display: inline-flex;
+  align-items: center;
+  gap: 6px;
+  padding: 6px 12px;
+  border-radius: 999px;
+  border: 1px solid var(--line);
+  background: transparent;
+  color: var(--slate);
+  font-family: var(--font-body), sans-serif;
+  font-size: 12.5px;
+  font-weight: 600;
+  cursor: pointer;
+  transition: color 0.18s ease, border-color 0.18s ease, background-color 0.18s ease;
+}
+
+.share-trigger:hover,
+.share-control.is-open .share-trigger {
+  color: var(--gold);
+  border-color: var(--gold-soft);
+  background: color-mix(in srgb, var(--gold) 10%, transparent);
+}
+
+.hero-ctas .share-trigger {
+  padding: 11px 18px;
+  font-size: 14px;
+  border-color: var(--hero-line);
+  color: var(--hero-paper);
+}
+
+.service-hero__inner .hero-ctas .share-control {
+  margin-top: 8px;
+}
+
+.service-hero__inner .hero-ctas .share-menu {
+  top: auto;
+  bottom: calc(100% + 8px);
+}
+
+.hero-ctas .share-trigger:hover,
+.hero-ctas .share-control.is-open .share-trigger {
+  background: rgba(245, 242, 230, 0.08);
+  border-color: var(--gold-soft);
+  color: var(--gold-soft);
+}
+
+.share-trigger--icon {
+  width: 32px;
+  height: 32px;
+  padding: 0;
+  justify-content: center;
+}
+
+.share-menu {
+  position: absolute;
+  top: calc(100% + 8px);
+  z-index: 60;
+  min-width: 215px;
+  padding: 6px;
+  border-radius: 14px;
+  background: var(--paper-raised);
+  border: 1px solid var(--line);
+  box-shadow: 0 20px 44px -12px rgba(0, 0, 0, 0.45);
+  display: flex;
+  flex-direction: column;
+  gap: 2px;
+}
+
+.share-menu--right {
+  right: 0;
+}
+
+.share-menu--left {
+  left: 0;
+}
+
+.share-menu__item {
+  display: flex;
+  align-items: center;
+  gap: 10px;
+  width: 100%;
+  padding: 9px 12px;
+  border: 0;
+  border-radius: 10px;
+  background: transparent;
+  color: var(--ink);
+  font-family: var(--font-body), sans-serif;
+  font-size: 13px;
+  font-weight: 500;
+  text-decoration: none;
+  text-align: left;
+  cursor: pointer;
+  transition: background-color 0.15s ease, color 0.15s ease;
+}
+
+.share-menu__item:hover {
+  background: color-mix(in srgb, var(--gold) 12%, transparent);
+  color: var(--gold);
+}
+
+.share-bar {
+  margin-top: 16px;
+  padding-top: 16px;
+  border-top: 1px solid var(--line);
+  display: flex;
+  flex-direction: column;
+  gap: 10px;
+}
+
+.share-bar__label {
+  font-family: var(--font-mono), monospace;
+  font-size: 11px;
+  letter-spacing: 0.12em;
+  text-transform: uppercase;
+  color: var(--slate);
+}
+
+.share-bar__buttons {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 8px;
+}
+
+.share-chip {
+  display: inline-flex;
+  align-items: center;
+  gap: 6px;
+  padding: 6px 11px;
+  border-radius: 999px;
+  border: 1px solid var(--line);
+  background: transparent;
+  color: var(--ink);
+  font-family: var(--font-body), sans-serif;
+  font-size: 12px;
+  font-weight: 500;
+  text-decoration: none;
+  cursor: pointer;
+  transition: border-color 0.15s ease, color 0.15s ease, background-color 0.15s ease;
+}
+
+.share-chip:hover,
+.share-chip.is-copied {
+  border-color: var(--gold-soft);
+  color: var(--gold);
+  background: color-mix(in srgb, var(--gold) 10%, transparent);
 }
 
 /* ---------- "How our pricing works" ---------- */
