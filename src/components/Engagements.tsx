@@ -1,6 +1,7 @@
 import Link from "next/link";
-import { getEngagements, getProjectPricing, getSettings } from "@/lib/cms";
-import { ArrowIcon } from "./Icons";
+import { getEngagements, getFeatures, getProjectPricing, getSettings } from "@/lib/cms";
+import { whatsappUrl } from "@/lib/contact";
+import { ArrowIcon, WhatsAppIcon } from "./Icons";
 import ShareButton from "./ShareButton";
 
 function toAnchorSlug(value: string): string {
@@ -83,15 +84,19 @@ const WEBSITE_PACKAGE_META: Record<string, WebsitePackageMeta> = {
  * rest, so the two pages are not near-copies of each other.
  */
 export default async function Engagements({ withProjects = false }: { withProjects?: boolean }) {
-  const [engagements, projects, settings] = await Promise.all([
+  const [engagements, projects, settings, features] = await Promise.all([
     getEngagements(),
     withProjects ? getProjectPricing() : Promise.resolve([]),
     getSettings(),
+    getFeatures(),
   ]);
   if (engagements.length === 0 && projects.length === 0) return null;
 
   const directPackages = projects.filter((p) => Boolean(p.checkoutUrl));
   const customProjects = projects.filter((p) => !p.checkoutUrl);
+  const onboardingWhatsApp = features.showWhatsApp
+    ? whatsappUrl(settings.whatsapp, "Hi Zirka! I just paid for a package and I'm ready to get started.")
+    : null;
 
   return (
     <section id="pricing">
@@ -314,6 +319,75 @@ export default async function Engagements({ withProjects = false }: { withProjec
             <p className="tier-note">{settings.projectPricingNote}</p>
           </div>
         )}
+
+        <div className="delivery-panel" id="how-delivery-works">
+          <div className="delivery-panel__head">
+            <div>
+              <span className="eyebrow">After you pay</span>
+              <h3>How you get your service once paid</h3>
+            </div>
+            <p>
+              Every Stripe checkout kicks off a simple, guided process — you are never left
+              wondering what happens next.
+            </p>
+          </div>
+
+          <div className="delivery-steps">
+            <div className="delivery-step">
+              <span className="delivery-step__num">01</span>
+              <h4>Instant Stripe Receipt</h4>
+              <p>
+                Pay securely via Stripe and receive an instant email confirmation and official
+                receipt.
+              </p>
+            </div>
+            <div className="delivery-step">
+              <span className="delivery-step__num">02</span>
+              <h4>2-Minute Onboarding</h4>
+              <p>
+                Submit your business details, goals, and brand links on our onboarding page (or send
+                them via WhatsApp).
+              </p>
+            </div>
+            <div className="delivery-step">
+              <span className="delivery-step__num">03</span>
+              <h4>Kickoff Within 24 Hours</h4>
+              <p>
+                Your dedicated strategist reviews your brief and confirms your timeline and access
+                within 1 business day.
+              </p>
+            </div>
+            <div className="delivery-step">
+              <span className="delivery-step__num">04</span>
+              <h4>Build, Launch &amp; Reports</h4>
+              <p>
+                Websites launch with full handover &amp; training; Social Media and Website Care
+                plans run monthly with clear reports.
+              </p>
+            </div>
+          </div>
+
+          <div className="delivery-panel__cta">
+            <span>Already paid on Stripe? Submit your details so we can start right away.</span>
+            <div className="delivery-panel__buttons">
+              <Link className="btn btn-gold" href="/onboarding">
+                Start Client Onboarding
+                <ArrowIcon />
+              </Link>
+              {onboardingWhatsApp && (
+                <a
+                  className="btn btn-outline"
+                  href={onboardingWhatsApp}
+                  target="_blank"
+                  rel="noopener noreferrer"
+                >
+                  <WhatsAppIcon />
+                  Message on WhatsApp
+                </a>
+              )}
+            </div>
+          </div>
+        </div>
       </div>
     </section>
   );

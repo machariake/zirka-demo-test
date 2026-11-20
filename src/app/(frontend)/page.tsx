@@ -11,6 +11,7 @@ import ProjectCard from "@/components/ProjectCard";
 import Testimonial from "@/components/Testimonial";
 import VideoSection from "@/components/VideoSection";
 import Engagements from "@/components/Engagements";
+import HeroPackagesHook, { type QuickPackage } from "@/components/HeroPackagesHook";
 import Faq from "@/components/Faq";
 import CtaBand from "@/components/CtaBand";
 import JsonLd from "@/components/JsonLd";
@@ -26,6 +27,8 @@ import {
   getFeatures,
   getSolutionCategories,
   getProjects,
+  getEngagements,
+  getProjectPricing,
 } from "@/lib/cms";
 
 export const metadata: Metadata = pageMeta({
@@ -48,15 +51,18 @@ function Headline({ text, emphasis }: { text: string; emphasis: string }) {
 }
 
 export default async function Home() {
-  const [settings, services, work, steps, features, categories, projects] = await Promise.all([
-    getSettings(),
-    getServices(),
-    getCaseStudies(),
-    getProcessSteps(),
-    getFeatures(),
-    getSolutionCategories(),
-    getProjects({ featured: true, limit: 3 }),
-  ]);
+  const [settings, services, work, steps, features, categories, projects, engagements, projectPrices] =
+    await Promise.all([
+      getSettings(),
+      getServices(),
+      getCaseStudies(),
+      getProcessSteps(),
+      getFeatures(),
+      getSolutionCategories(),
+      getProjects({ featured: true, limit: 3 }),
+      getEngagements(),
+      getProjectPricing(),
+    ]);
 
   const placed = new Set(categories.flatMap((c) => c.services.map((s) => s.slug)));
   const uncategorised = services.filter((s) => !placed.has(s.slug));
@@ -64,6 +70,38 @@ export default async function Home() {
   // Only claim results when there is real, documented client work to show.
   const hasRealWork = work.some((w) => !w.sample);
   const whatsapp = features.showWhatsApp ? whatsappUrl(settings.whatsapp, WHATSAPP_GREETING) : null;
+
+  const toAnchor = (name: string) =>
+    name
+      .toLowerCase()
+      .replace(/[^a-z0-9]+/g, "-")
+      .replace(/^-+|-+$/g, "");
+
+  const quickSocial: QuickPackage[] = engagements
+    .filter((e) => Boolean(e.checkoutUrl))
+    .map((e) => ({
+      name: e.name,
+      price: `${e.price}/mo`,
+      sublabel: e.includes.slice(0, 2).join(" · ") || e.summary,
+      checkoutUrl: e.checkoutUrl,
+      anchor: `#plan-${toAnchor(e.name)}`,
+      featured: e.featured,
+    }));
+
+  const quickWebsites: QuickPackage[] = projectPrices
+    .filter((p) => Boolean(p.checkoutUrl))
+    .map((p) => ({
+      name: p.name,
+      price: p.price,
+      sublabel: p.price.toLowerCase().includes("/mo")
+        ? "Backups, security & monthly updates"
+        : "Custom design, mobile-ready & SEO",
+      checkoutUrl: p.checkoutUrl,
+      anchor: `#pkg-${toAnchor(p.name)}`,
+      featured: p.name.toLowerCase().includes("3–5") || p.name.toLowerCase().includes("3-5"),
+    }));
+
+  const showHeroHook = features.showPricing && (quickSocial.length > 0 || quickWebsites.length > 0);
 
   return (
     <>
@@ -85,41 +123,52 @@ export default async function Home() {
         <StarField />
         <div className="wrap">
           <Header />
-          <div className="hero-inner">
-            <span className="eyebrow" style={{ color: "var(--gold-soft)" }}>
-              {settings.descriptor}
-            </span>
-            <Headline text={settings.heroHeadline} emphasis={settings.heroEmphasis} />
-            <p className="lede">{settings.heroLede}</p>
-            {/* One filled button, one quiet one; WhatsApp is a link, not a rival CTA (brief §2). */}
-            <div className="hero-ctas">
-              <Link className="btn btn-gold" href="/free-marketing-audit" data-track="main_cta_click">
-                Get a Free Marketing Audit
-              </Link>
-              <Link className="btn btn-ghost" href="/work">
-                See Our Work
-              </Link>
-            </div>
-            {whatsapp && (
-              <a
-                className="hero-direct"
-                href={whatsapp}
-                target="_blank"
-                rel="noopener noreferrer"
-              >
-                <WhatsAppIcon />
-                Or talk directly with a strategist on WhatsApp
-              </a>
-            )}
-            {features.showStats && settings.stats.length > 0 && (
-              <div className="stat-strip">
-                {settings.stats.map((s) => (
-                  <div className="stat" key={s.label}>
-                    <span className="num">{s.num}</span>
-                    <span className="label">{s.label}</span>
-                  </div>
-                ))}
+          <div className={showHeroHook ? "hero-grid" : undefined}>
+            <div className="hero-inner">
+              <span className="eyebrow" style={{ color: "var(--gold-soft)" }}>
+                {settings.descriptor}
+              </span>
+              <Headline text={settings.heroHeadline} emphasis={settings.heroEmphasis} />
+              <p className="lede">{settings.heroLede}</p>
+              {/* One filled button, one quiet one; WhatsApp is a link, not a rival CTA (brief §2). */}
+              <div className="hero-ctas">
+                <Link className="btn btn-gold" href="/free-marketing-audit" data-track="main_cta_click">
+                  Get a Free Marketing Audit
+                </Link>
+                {features.showPricing ? (
+                  <a className="btn btn-ghost" href="#pricing">
+                    See Packages &amp; Prices
+                  </a>
+                ) : (
+                  <Link className="btn btn-ghost" href="/work">
+                    See Our Work
+                  </Link>
+                )}
               </div>
+              {whatsapp && (
+                <a
+                  className="hero-direct"
+                  href={whatsapp}
+                  target="_blank"
+                  rel="noopener noreferrer"
+                >
+                  <WhatsAppIcon />
+                  Or talk directly with a strategist on WhatsApp
+                </a>
+              )}
+              {features.showStats && settings.stats.length > 0 && (
+                <div className="stat-strip">
+                  {settings.stats.map((s) => (
+                    <div className="stat" key={s.label}>
+                      <span className="num">{s.num}</span>
+                      <span className="label">{s.label}</span>
+                    </div>
+                  ))}
+                </div>
+              )}
+            </div>
+            {showHeroHook && (
+              <HeroPackagesHook socialPlans={quickSocial} websitePackages={quickWebsites} />
             )}
           </div>
         </div>
