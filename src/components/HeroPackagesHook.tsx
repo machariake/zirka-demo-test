@@ -29,7 +29,7 @@ export default function HeroPackagesHook({
       <div className="hero-hook__head">
         <span className="hero-hook__badge">
           <span className="hero-hook__dot" aria-hidden="true" />
-          Order online &middot; Start in 24h
+          Black Nov &middot; Start in 24h
         </span>
         <h2>Pick a package &amp; get started today.</h2>
       </div>

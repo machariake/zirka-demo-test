@@ -1,5 +1,6 @@
 import type { Metadata } from "next";
 import { Urbanist } from "next/font/google";
+import BlackNovBanner from "@/components/BlackNovBanner";
 import Footer from "@/components/Footer";
 import GoogleAnalytics from "@/components/GoogleAnalytics";
 import PageTracker from "@/components/PageTracker";
@@ -89,6 +90,7 @@ export default async function RootLayout({ children }: LayoutProps<"/">) {
         <a className="skip-link" href="#content">
           Skip to content
         </a>
+        <BlackNovBanner />
         <main id="main">{children}</main>
         <Footer />
         <WhatsAppFloat />
