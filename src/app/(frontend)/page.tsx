@@ -280,7 +280,10 @@ export default async function Home() {
                 <span className="eyebrow">Recent projects</span>
                 <h2>Work we&rsquo;ve delivered.</h2>
               </div>
-              <p>Websites, brands and digital campaigns built for clients including Zirka Beauty and C&amp;E.</p>
+              <p>
+                Websites and digital brands built for clients including Zirka Beauty and C&amp;E
+                Helping Hands Agency &mdash; open any project to view and scroll through the design.
+              </p>
             </div>
             <div className="project-grid">
               {projects.map((item) => (

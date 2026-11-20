@@ -224,13 +224,18 @@ const FEATURED_BRAND_PROJECTS: ProjectDetailView[] = [
     industry: "Beauty & Skincare",
     year: 2026,
     summary:
-      "Digital storefront architecture, visual identity direction, and social media content system built for Zirka Beauty.",
-    image: "/images/work-skincare.jpg",
-    heroImage: "/images/work-skincare-wide.jpg",
-    alt: "Zirka Beauty digital brand and website showcase",
+      "Luxury human-hair wig and beauty storefront built with guided collection discovery, concierge ordering, and seamless mobile browsing.",
+    image: "/images/projects/zirka-beauty-card.jpg",
+    heroImage: "/images/projects/zirka-beauty-card.jpg",
+    alt: "Zirka Beauty luxury hair storefront website design",
     description:
-      "Zirka Beauty needed a cohesive digital presence that reflects a modern luxury beauty brand while making it simple for customers to browse collections and enquire directly.\n\nWe structured the website layout, refined the visual direction, and created a repeatable social media content system spanning product storytelling and launch campaigns.",
+      "Zirka Beauty needed a refined luxury e-commerce storefront showcasing HD lace, glueless units, bundles, frontals, and closures while keeping personal concierge ordering effortless.\n\nWe structured intuitive category browsing, bag and wishlist support, search discovery, and a deep emerald and cream aesthetic across desktop and mobile.",
     liveUrl: "",
+    preview: {
+      label: "Zirka Beauty · Interactive Website Preview",
+      desktopSrc: "/images/projects/zirka-beauty-desktop.jpg",
+      mobileSrc: "/images/projects/zirka-beauty-mobile.jpg",
+    },
     gallery: [],
     services: [
       { name: "Website Development", slug: "website-development" },
@@ -240,19 +245,24 @@ const FEATURED_BRAND_PROJECTS: ProjectDetailView[] = [
   },
   {
     slug: "c-and-e",
-    name: "C&E",
-    client: "C&E",
-    deliverables: "Website Design · Digital Strategy",
-    industry: "Commercial & Lifestyle",
+    name: "C&E Helping Hands Agency",
+    client: "C&E Helping Hands Agency LLC",
+    deliverables: "Website Design · Accessibility · Lead Capture",
+    industry: "Healthcare & Home Care",
     year: 2026,
     summary:
-      "Conversion-focused web presence, clear service positioning, and mobile-first lead capture built for C&E.",
-    image: "/images/work-homegoods.jpg",
-    heroImage: "/images/work-homegoods-wide.jpg",
-    alt: "C&E digital brand and website showcase",
+      "Compassionate in-home care website featuring structured care services, language accessibility, and high-trust family inquiry flows.",
+    image: "/images/projects/ce-card.jpg",
+    heroImage: "/images/projects/ce-card.jpg",
+    alt: "C&E Helping Hands Agency home care website design",
     description:
-      "C&E partnered with Zirka Digital Solutions to modernize their online presence and clarify their offer for new prospects.\n\nWe delivered a streamlined, mobile-first website structure paired with clear calls to action, local search foundations, and direct phone and messaging pathways.",
+      "C&E Helping Hands Agency LLC needed an approachable, credible website to help families explore in-home support services—covering Personal Care Assistance, Companion Care, Medication Reminders, Respite Care, and Mobility Assistance.\n\nWe designed a warm, accessible multi-section layout with language switching, clear service breakdowns, direct phone contact, and streamlined care request flows.",
     liveUrl: "",
+    preview: {
+      label: "C&E Helping Hands Agency · Interactive Website Preview",
+      desktopSrc: "/images/projects/ce-desktop.jpg",
+      mobileSrc: "/images/projects/ce-mobile.jpg",
+    },
     gallery: [],
     services: [
       { name: "Website Development", slug: "website-development" },
@@ -300,6 +310,7 @@ export type ProjectDetailView = ProjectView & {
   heroImage: string;
   description: string;
   liveUrl: string;
+  preview?: { label: string; desktopSrc: string; mobileSrc: string } | null;
   gallery: { src: string; alt: string; caption: string; width: number | null; height: number | null }[];
   services: { name: string; slug: string }[];
 };

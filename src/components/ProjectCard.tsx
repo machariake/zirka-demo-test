@@ -1,6 +1,7 @@
 import Image from "next/image";
 import Link from "next/link";
 import type { ProjectView } from "@/lib/cms";
+import { ArrowIcon } from "./Icons";
 
 /** A delivered client project: what we made, for whom, and when. No result figures. */
 export default function ProjectCard({ item, showSummary }: { item: ProjectView; showSummary?: boolean }) {
@@ -17,6 +18,10 @@ export default function ProjectCard({ item, showSummary }: { item: ProjectView; 
           {item.year ? ` · ${item.year}` : ""}
         </span>
         {showSummary && <p>{item.summary}</p>}
+        <span className="project-card__cta">
+          View &amp; scroll website
+          <ArrowIcon />
+        </span>
       </div>
     </Link>
   );

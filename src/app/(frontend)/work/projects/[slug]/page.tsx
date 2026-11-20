@@ -5,6 +5,7 @@ import { notFound } from "next/navigation";
 import Header from "@/components/Header";
 import CtaBand from "@/components/CtaBand";
 import JsonLd from "@/components/JsonLd";
+import WebsitePreview from "@/components/WebsitePreview";
 import { ArrowIcon } from "@/components/Icons";
 import { getProject } from "@/lib/cms";
 import { pageMeta } from "@/lib/seo";
@@ -75,9 +76,18 @@ export default async function ProjectPage({ params }: Props) {
         </div>
       </div>
 
-      <section className="section--flow">
+      <section className="section--cream">
         <div className="wrap">
-          <div className="case-body">
+          {project.preview && (
+            <WebsitePreview
+              title={project.name}
+              label={project.preview.label}
+              desktopSrc={project.preview.desktopSrc}
+              mobileSrc={project.preview.mobileSrc}
+            />
+          )}
+
+          <div className="case-body" style={project.preview ? { marginTop: 48 } : undefined}>
             <dl className="project-details">
               {details.map((d) => (
                 <div key={d.label}>

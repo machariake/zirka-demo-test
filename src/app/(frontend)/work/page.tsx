@@ -47,7 +47,7 @@ export default async function WorkPage() {
           hasRealWork
             ? "Client case studies and selected projects showcasing the strategy, design, and creative direction we bring to every engagement."
             : projects.length > 0
-              ? "Projects delivered for brands including Zirka Beauty and C&E, alongside creative showcases across websites, SEO, and paid media."
+              ? "Projects delivered for brands including Zirka Beauty and C&E Helping Hands Agency — click any project to view and scroll through the full site preview."
               : "Showcase projects illustrating our strategy, design, and creative direction across websites, branding, SEO, and paid campaigns."
         }
       />
