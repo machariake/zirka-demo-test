@@ -4,6 +4,8 @@ import JsonLd from "@/components/JsonLd";
 import { getFeatures, getGaMeasurementId, getSettings } from "@/lib/cms";
 import { breadcrumbSchema, webPageSchema } from "@/lib/schema";
 import { pageMeta } from "@/lib/seo";
+import { TURNSTILE_SITE_KEY } from "@/lib/turnstile";
+import { ADS_ENABLED, GOOGLE_ADS_ID, META_PIXEL_ID } from "@/lib/ads";
 
 const PRIVACY_DESCRIPTION =
   "Read how Zirka Digital Solutions collects, uses, and protects your website and enquiry data, including analytics, cookies, and your privacy choices.";
@@ -11,15 +13,6 @@ const PRIVACY_DESCRIPTION =
 export const metadata: Metadata = pageMeta({
   title: "Privacy",
   description: PRIVACY_DESCRIPTION,
-  path: "/privacy",
-});
-import { TURNSTILE_SITE_KEY } from "@/lib/turnstile";
-import { ADS_ENABLED, GOOGLE_ADS_ID, META_PIXEL_ID } from "@/lib/ads";
-
-export const metadata: Metadata = pageMeta({
-  title: "Privacy",
-  description:
-    "What information Zirka Digital Solutions collects through this website, why, how long it is kept, and the choices you have.",
   path: "/privacy",
 });
 
