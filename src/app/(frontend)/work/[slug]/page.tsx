@@ -80,6 +80,7 @@ export default async function CaseStudyPage({ params }: Props) {
             </Link>
             <span className="eyebrow" style={{ color: "var(--gold-soft)" }}>
               {study.category}
+              {study.sample ? " · CPT" : ""}
             </span>
             <h1>{study.name}</h1>
             <p className="lede">{study.summary}</p>

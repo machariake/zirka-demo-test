@@ -12,6 +12,7 @@ export default function WorkFeature({ item }: { item: WorkView }) {
       <div className="feature-body">
         <span className="eyebrow">{item.sample ? "Featured work" : "Featured case study"}</span>
         <h3>{item.name}</h3>
+        {item.sample && <span className="work-sample work-sample--inline">CPT</span>}
         <p className="feature-summary">{item.summary}</p>
         {/* Result figures belong to real, documented work only. */}
         {!item.sample && (
