@@ -7,6 +7,14 @@ import { ArrowIcon } from "./Icons";
 export default function ProjectCard({ item, showSummary }: { item: ProjectView; showSummary?: boolean }) {
   return (
     <Link className="project-card" href={`/work/projects/${item.slug}`}>
+      <div className="project-card__chrome" aria-hidden="true">
+        <span className="project-card__dots">
+          <i />
+          <i />
+          <i />
+        </span>
+        <span className="project-card__badge">Interactive Preview</span>
+      </div>
       <div className="project-card__media">
         <Image src={item.image} alt={item.alt} fill sizes="(max-width: 600px) 100vw, (max-width: 960px) 50vw, 33vw" />
       </div>
@@ -19,7 +27,7 @@ export default function ProjectCard({ item, showSummary }: { item: ProjectView; 
         </span>
         {showSummary && <p>{item.summary}</p>}
         <span className="project-card__cta">
-          View &amp; scroll website
+          Open &amp; scroll website
           <ArrowIcon />
         </span>
       </div>
