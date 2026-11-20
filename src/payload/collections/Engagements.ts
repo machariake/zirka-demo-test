@@ -21,14 +21,20 @@ export const Engagements: CollectionConfig = {
   versions: { drafts: true },
   defaultSort: "order",
   fields: [
-    { name: "name", type: "text", required: true, admin: { description: 'e.g. "Zirka Growth"' } },
-    { name: "price", type: "text", required: true, admin: { description: 'e.g. "From $950" or "Custom Quote"' } },
+    { name: "name", type: "text", required: true, admin: { description: 'e.g. "Business Growth"' } },
+    { name: "price", type: "text", required: true, admin: { description: 'e.g. "$599" or "Custom Quote"' } },
     {
       name: "cadence",
       type: "text",
       required: true,
       defaultValue: "per month",
       admin: { description: 'e.g. "per month" or "one-off scope"' },
+    },
+    {
+      name: "checkoutUrl",
+      label: "Stripe checkout link",
+      type: "text",
+      admin: { description: 'Optional direct payment URL (e.g. "https://buy.stripe.com/...").' },
     },
     { name: "summary", type: "textarea", required: true },
     {

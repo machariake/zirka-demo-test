@@ -21,12 +21,12 @@ export default async function Engagements({ withProjects = false }: { withProjec
           <>
             <div className="section-head">
               <div>
-                <span className="eyebrow">Monthly plans</span>
+                <span className="eyebrow">Social Media Management · Monthly plans</span>
                 <h2>Simple pricing, no surprises.</h2>
               </div>
               <p>
-                Pick the plan that sounds like your business. Prices start from the figure shown —
-                we confirm the exact number with you before any work begins.
+                Pick the plan that sounds like your business. Get started instantly via secure
+                Stripe checkout, or request a custom quote before any work begins.
               </p>
             </div>
 
@@ -47,17 +47,40 @@ export default async function Engagements({ withProjects = false }: { withProjec
                       ))}
                     </ul>
                   )}
-                  {/* Carries the plan to the quote form so the visitor never has to restate it. */}
-                  <Link
-                    className={`btn ${tier.featured ? "btn-gold" : "btn-outline"} tier-cta`}
-                    href={`/quote?plan=${encodeURIComponent(tier.name)}`}
-                    data-track="pricing_cta_click"
-                  >
-                    {tier.price.toLowerCase().includes("custom")
-                      ? "Request a quote"
-                      : `Start with ${tier.name.replace(/^Zirka\s+/, "")}`}
-                    <ArrowIcon />
-                  </Link>
+                  <div className="tier-actions">
+                    {tier.checkoutUrl ? (
+                      <>
+                        <a
+                          className={`btn ${tier.featured ? "btn-gold" : "btn-outline"} tier-cta`}
+                          href={tier.checkoutUrl}
+                          target="_blank"
+                          rel="noopener noreferrer"
+                          data-track="pricing_cta_click"
+                        >
+                          Start {tier.name.replace(/^Zirka\s+/, "")}
+                          <ArrowIcon />
+                        </a>
+                        <Link
+                          className="tier-quote-link"
+                          href={`/quote?plan=${encodeURIComponent(tier.name)}`}
+                          data-track="pricing_cta_click"
+                        >
+                          Or request a custom quote
+                        </Link>
+                      </>
+                    ) : (
+                      <Link
+                        className={`btn ${tier.featured ? "btn-gold" : "btn-outline"} tier-cta`}
+                        href={`/quote?plan=${encodeURIComponent(tier.name)}`}
+                        data-track="pricing_cta_click"
+                      >
+                        {tier.price.toLowerCase().includes("custom")
+                          ? "Request a quote"
+                          : `Start with ${tier.name.replace(/^Zirka\s+/, "")}`}
+                        <ArrowIcon />
+                      </Link>
+                    )}
+                  </div>
                 </article>
               ))}
             </div>
@@ -77,12 +100,12 @@ export default async function Engagements({ withProjects = false }: { withProjec
           <div className="project-pricing">
             <div className="section-head">
               <div>
-                <span className="eyebrow">One-off projects</span>
-                <h2>Need a single piece of work?</h2>
+                <span className="eyebrow">Websites &amp; one-off projects</span>
+                <h2>Need a website or a single piece of work?</h2>
               </div>
               <p>
-                Not every business needs a monthly plan. These are priced per project, with no
-                retainer attached.
+                Not every business needs a monthly marketing retainer. Order your website package or
+                website care plan directly online, or request a quote for custom projects.
               </p>
             </div>
 
@@ -93,7 +116,29 @@ export default async function Engagements({ withProjects = false }: { withProjec
                     {p.name}
                     {p.note && <span className="project-price-list__note">{p.note}</span>}
                   </span>
-                  <span className="project-price-list__price">{p.price}</span>
+                  <span className="project-price-list__actions">
+                    <span className="project-price-list__price">{p.price}</span>
+                    {p.checkoutUrl ? (
+                      <a
+                        className="btn btn-gold project-price-list__cta"
+                        href={p.checkoutUrl}
+                        target="_blank"
+                        rel="noopener noreferrer"
+                        data-track="pricing_cta_click"
+                      >
+                        Buy now
+                        <ArrowIcon />
+                      </a>
+                    ) : (
+                      <Link
+                        className="project-price-list__quote"
+                        href={`/quote?plan=${encodeURIComponent(p.name)}`}
+                        data-track="pricing_cta_click"
+                      >
+                        Get a quote
+                      </Link>
+                    )}
+                  </span>
                 </li>
               ))}
             </ul>

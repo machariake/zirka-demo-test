@@ -30,13 +30,19 @@ export const ProjectPricing: CollectionConfig = {
       name: "name",
       type: "text",
       required: true,
-      admin: { description: 'e.g. "Business Websites"' },
+      admin: { description: 'e.g. "Business Website (3–5 pages)"' },
     },
     {
       name: "price",
       type: "text",
       required: true,
-      admin: { description: 'e.g. "from $1,500"' },
+      admin: { description: 'e.g. "$2,000"' },
+    },
+    {
+      name: "checkoutUrl",
+      label: "Stripe checkout link",
+      type: "text",
+      admin: { description: 'Optional direct payment URL (e.g. "https://buy.stripe.com/...").' },
     },
     {
       name: "note",

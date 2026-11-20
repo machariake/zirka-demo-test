@@ -1,6 +1,6 @@
 "use server";
 
-import { getCms, getEngagements, getFeatures } from "@/lib/cms";
+import { getCms, getEngagements, getFeatures, getProjectPricing } from "@/lib/cms";
 import { allow, clientIp } from "@/lib/rate-limit";
 import { passesHumanCheck } from "@/lib/turnstile-server";
 import { HUMAN_CHECK_FAILED } from "@/lib/turnstile";
@@ -33,7 +33,9 @@ export async function requestQuote(formData: FormData): Promise<QuoteResult> {
   // Only a plan that is really on the Pricing page is kept.
   const requestedPlan = field(formData, "plan");
   const plan = requestedPlan
-    ? ((await getEngagements()).find((e) => e.name === requestedPlan)?.name ?? "")
+    ? ((await getEngagements()).find((e) => e.name === requestedPlan)?.name ??
+      (await getProjectPricing()).find((p) => p.name === requestedPlan)?.name ??
+      "")
     : "";
 
   // Only accept ids that match real, published services.

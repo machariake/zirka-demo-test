@@ -2572,8 +2572,16 @@ section {
 }
 
 /* A full-width button pinned to the card's foot, so every plan's action lines up. */
-.tier .tier-cta {
+.tier-actions {
   margin-top: auto;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: 10px;
+  width: 100%;
+}
+
+.tier .tier-cta {
   justify-content: center;
   width: 100%;
 }
@@ -2581,6 +2589,18 @@ section {
 .tier .tier-cta svg {
   width: 14px;
   height: 14px;
+}
+
+.tier-quote-link {
+  font-size: 0.82rem;
+  color: var(--slate);
+  text-decoration: underline;
+  text-underline-offset: 3px;
+  transition: color 0.15s ease;
+}
+
+.tier-quote-link:hover {
+  color: var(--gold);
 }
 
 .tier-note {
@@ -2606,7 +2626,7 @@ section {
 
 .project-price-list li {
   display: flex;
-  align-items: baseline;
+  align-items: center;
   justify-content: space-between;
   gap: 16px;
   padding: 16px 0;
@@ -2626,11 +2646,43 @@ section {
   color: var(--slate);
 }
 
+.project-price-list__actions {
+  display: inline-flex;
+  align-items: center;
+  gap: 14px;
+  flex-shrink: 0;
+}
+
 .project-price-list__price {
   font-family: var(--font-mono), monospace;
   font-size: 0.95rem;
   color: var(--gold);
   white-space: nowrap;
+}
+
+.project-price-list__cta {
+  padding: 7px 14px;
+  font-size: 12.5px;
+  white-space: nowrap;
+}
+
+.project-price-list__cta svg {
+  width: 12px;
+  height: 12px;
+}
+
+.project-price-list__quote {
+  font-size: 12.5px;
+  font-weight: 600;
+  color: var(--slate);
+  text-decoration: underline;
+  text-underline-offset: 3px;
+  white-space: nowrap;
+  transition: color 0.15s ease;
+}
+
+.project-price-list__quote:hover {
+  color: var(--gold);
 }
 
 /* ---------- "How our pricing works" ---------- */

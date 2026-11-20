@@ -152,6 +152,134 @@ export default async function ServicePage({ params }: Props) {
               </div>
             )}
 
+            {service.slug === "social-media-management" && (
+              <div className="service-page__block">
+                <h2>Packages &amp; pricing</h2>
+                <ul className="project-price-list">
+                  <li>
+                    <span className="project-price-list__name">Starter Visibility</span>
+                    <span className="project-price-list__actions">
+                      <span className="project-price-list__price">$299/mo</span>
+                      <a
+                        className="btn btn-gold project-price-list__cta"
+                        href="https://buy.stripe.com/aFacN79gD9rSbLBejz1gs02"
+                        target="_blank"
+                        rel="noopener noreferrer"
+                        data-track="pricing_cta_click"
+                      >
+                        Buy now
+                        <ArrowIcon />
+                      </a>
+                    </span>
+                  </li>
+                  <li>
+                    <span className="project-price-list__name">Business Growth</span>
+                    <span className="project-price-list__actions">
+                      <span className="project-price-list__price">$599/mo</span>
+                      <a
+                        className="btn btn-gold project-price-list__cta"
+                        href="https://buy.stripe.com/dRm00lgJ57jK3f50sJ1gs01"
+                        target="_blank"
+                        rel="noopener noreferrer"
+                        data-track="pricing_cta_click"
+                      >
+                        Buy now
+                        <ArrowIcon />
+                      </a>
+                    </span>
+                  </li>
+                  <li>
+                    <span className="project-price-list__name">Premium Digital Growth</span>
+                    <span className="project-price-list__actions">
+                      <span className="project-price-list__price">$900/mo</span>
+                      <a
+                        className="btn btn-gold project-price-list__cta"
+                        href="https://buy.stripe.com/8x200lakH7jKbLB4IZ1gs00"
+                        target="_blank"
+                        rel="noopener noreferrer"
+                        data-track="pricing_cta_click"
+                      >
+                        Buy now
+                        <ArrowIcon />
+                      </a>
+                    </span>
+                  </li>
+                </ul>
+              </div>
+            )}
+
+            {service.slug === "website-development" && (
+              <div className="service-page__block">
+                <h2>Packages &amp; pricing</h2>
+                <ul className="project-price-list">
+                  <li>
+                    <span className="project-price-list__name">Landing Page</span>
+                    <span className="project-price-list__actions">
+                      <span className="project-price-list__price">$997</span>
+                      <a
+                        className="btn btn-gold project-price-list__cta"
+                        href="https://buy.stripe.com/4gM7sN3WjeMc7vl2AR1gs06"
+                        target="_blank"
+                        rel="noopener noreferrer"
+                        data-track="pricing_cta_click"
+                      >
+                        Buy now
+                        <ArrowIcon />
+                      </a>
+                    </span>
+                  </li>
+                  <li>
+                    <span className="project-price-list__name">Business Website (3–5 pages)</span>
+                    <span className="project-price-list__actions">
+                      <span className="project-price-list__price">$2,000</span>
+                      <a
+                        className="btn btn-gold project-price-list__cta"
+                        href="https://buy.stripe.com/3cI9AV64r47y6rh2AR1gs05"
+                        target="_blank"
+                        rel="noopener noreferrer"
+                        data-track="pricing_cta_click"
+                      >
+                        Buy now
+                        <ArrowIcon />
+                      </a>
+                    </span>
+                  </li>
+                  <li>
+                    <span className="project-price-list__name">Large Business Website (6–10 pages)</span>
+                    <span className="project-price-list__actions">
+                      <span className="project-price-list__price">$4,000</span>
+                      <a
+                        className="btn btn-gold project-price-list__cta"
+                        href="https://buy.stripe.com/fZudRb1Ob8nO9Dtdfv1gs04"
+                        target="_blank"
+                        rel="noopener noreferrer"
+                        data-track="pricing_cta_click"
+                      >
+                        Buy now
+                        <ArrowIcon />
+                      </a>
+                    </span>
+                  </li>
+                  <li>
+                    <span className="project-price-list__name">Website Care</span>
+                    <span className="project-price-list__actions">
+                      <span className="project-price-list__price">$129/mo</span>
+                      <a
+                        className="btn btn-gold project-price-list__cta"
+                        href="https://buy.stripe.com/cNi3cx3WjfQgg1R5N31gs03"
+                        target="_blank"
+                        rel="noopener noreferrer"
+                        data-track="pricing_cta_click"
+                      >
+                        Buy now
+                        <ArrowIcon />
+                      </a>
+                    </span>
+                  </li>
+                </ul>
+              </div>
+            )}
+
             {hasVideo(service.video) && (
               <div className="service-page__block">
                 <VideoEmbed video={service.video} title={service.video.title} />

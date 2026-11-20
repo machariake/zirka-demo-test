@@ -68,7 +68,9 @@ export default async function QuotePage({ searchParams }: Props) {
   const plan =
     engagements.find((e) => e.name === planParam)?.name ||
     projects.find((p) => p.name === planParam)?.name ||
-    (planParam === "Business Websites" ? "Business Websites (3-5 pages)" : undefined);
+    (planParam === "Business Websites" || planParam === "Business Websites (3-5 pages)"
+      ? "Business Website (3–5 pages)"
+      : undefined);
 
   return (
     <>

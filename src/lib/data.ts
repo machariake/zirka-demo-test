@@ -488,15 +488,17 @@ export type Engagement = {
   summary: string;
   includes: string[];
   featured?: boolean;
+  checkoutUrl?: string;
 };
 
 export const engagements: Engagement[] = [
   {
-    name: "Zirka Starter",
-    price: "From $950",
+    name: "Starter Visibility",
+    price: "$299",
     cadence: "per month",
+    checkoutUrl: "https://buy.stripe.com/aFacN79gD9rSbLBejz1gs02",
     summary:
-      "Best for a small business that needs a steady, professional presence but has nobody running it.",
+      "Best for a small business that needs a steady, professional social media presence and consistent visibility.",
     includes: [
       "2 social media platforms",
       "12 custom posts/month",
@@ -507,11 +509,12 @@ export const engagements: Engagement[] = [
     ],
   },
   {
-    name: "Zirka Growth",
-    price: "From $1,850",
+    name: "Business Growth",
+    price: "$599",
     cadence: "per month",
+    checkoutUrl: "https://buy.stripe.com/dRm00lgJ57jK3f50sJ1gs01",
     summary:
-      "Best for a business ready to spend on ads and see exactly what comes back.",
+      "Best for a growing business ready to scale content, community engagement, and inbound leads.",
     includes: [
       "Up to 3 social platforms",
       "16–20 content pieces/month",
@@ -525,10 +528,12 @@ export const engagements: Engagement[] = [
     featured: true,
   },
   {
-    name: "Zirka Scale",
-    price: "From $3,500",
+    name: "Premium Digital Growth",
+    price: "$900",
     cadence: "per month",
-    summary: "Best for a business growing on several channels at once.",
+    checkoutUrl: "https://buy.stripe.com/8x200lakH7jKbLB4IZ1gs00",
+    summary:
+      "Best for an established business growing on several channels at once with full-funnel marketing.",
     includes: [
       "Multi-channel digital marketing",
       "20–30 content assets/month",
@@ -552,12 +557,35 @@ export const engagements: Engagement[] = [
   },
 ];
 
-/** One-off pieces of work, priced per project rather than per month. */
-export const projectPricing = [
-  { name: "Landing Pages", price: "$997" },
-  { name: "Business Websites (3-5 pages)", price: "$2,000" },
-  { name: "Large Business Website (6-10 pages)", price: "$4,000" },
-  { name: "Website Care & Maintenance", price: "$129/month" },
+export type ProjectPriceItem = {
+  name: string;
+  price: string;
+  note?: string;
+  checkoutUrl?: string;
+};
+
+/** One-off pieces of work and website packages. */
+export const projectPricing: ProjectPriceItem[] = [
+  {
+    name: "Landing Page",
+    price: "$997",
+    checkoutUrl: "https://buy.stripe.com/4gM7sN3WjeMc7vl2AR1gs06",
+  },
+  {
+    name: "Business Website (3–5 pages)",
+    price: "$2,000",
+    checkoutUrl: "https://buy.stripe.com/3cI9AV64r47y6rh2AR1gs05",
+  },
+  {
+    name: "Large Business Website (6–10 pages)",
+    price: "$4,000",
+    checkoutUrl: "https://buy.stripe.com/fZudRb1Ob8nO9Dtdfv1gs04",
+  },
+  {
+    name: "Website Care",
+    price: "$129/mo",
+    checkoutUrl: "https://buy.stripe.com/cNi3cx3WjfQgg1R5N31gs03",
+  },
   { name: "E-commerce Websites", price: "from $2,500" },
   { name: "Logo/Mini Brand Identity", price: "from $600" },
   { name: "Full Brand Identity", price: "from $1,500" },
@@ -566,23 +594,54 @@ export const projectPricing = [
   { name: "AI/WhatsApp Automation", price: "from $750" },
 ];
 
+/**
+ * Fallback lookup for Stripe checkout links by plan or package name (including
+ * prior names in case a database record hasn't been re-seeded yet).
+ */
+const STRIPE_CHECKOUT_BY_NAME: Record<string, string> = {
+  "starter visibility": "https://buy.stripe.com/aFacN79gD9rSbLBejz1gs02",
+  "zirka starter": "https://buy.stripe.com/aFacN79gD9rSbLBejz1gs02",
+  "business growth": "https://buy.stripe.com/dRm00lgJ57jK3f50sJ1gs01",
+  "zirka growth": "https://buy.stripe.com/dRm00lgJ57jK3f50sJ1gs01",
+  "premium digital growth": "https://buy.stripe.com/8x200lakH7jKbLB4IZ1gs00",
+  "zirka scale": "https://buy.stripe.com/8x200lakH7jKbLB4IZ1gs00",
+  "landing page": "https://buy.stripe.com/4gM7sN3WjeMc7vl2AR1gs06",
+  "landing pages": "https://buy.stripe.com/4gM7sN3WjeMc7vl2AR1gs06",
+  "business website (3–5 pages)": "https://buy.stripe.com/3cI9AV64r47y6rh2AR1gs05",
+  "business website (3-5 pages)": "https://buy.stripe.com/3cI9AV64r47y6rh2AR1gs05",
+  "business websites (3–5 pages)": "https://buy.stripe.com/3cI9AV64r47y6rh2AR1gs05",
+  "business websites (3-5 pages)": "https://buy.stripe.com/3cI9AV64r47y6rh2AR1gs05",
+  "business websites": "https://buy.stripe.com/3cI9AV64r47y6rh2AR1gs05",
+  "large business website (6–10 pages)": "https://buy.stripe.com/fZudRb1Ob8nO9Dtdfv1gs04",
+  "large business website (6-10 pages)": "https://buy.stripe.com/fZudRb1Ob8nO9Dtdfv1gs04",
+  "website care": "https://buy.stripe.com/cNi3cx3WjfQgg1R5N31gs03",
+  "website care & maintenance": "https://buy.stripe.com/cNi3cx3WjfQgg1R5N31gs03",
+};
+
+export function resolveCheckoutUrl(name: string, configuredUrl?: string | null): string {
+  const trimmed = configuredUrl?.trim();
+  if (trimmed) return trimmed;
+  return STRIPE_CHECKOUT_BY_NAME[name.trim().toLowerCase()] ?? "";
+}
+
 export const projectPricingNote =
   "Final pricing depends on project scope and requirements.";
 
 /**
  * Shared by the quote form and the contact form so the two can never disagree.
- * The breaks line up with the plan boundaries ($950 Starter, $1,850 Growth,
- * $3,500 Scale), so an answer says which plan the enquiry is really about.
- * The last option is for one-off websites and logos, which have no monthly fee.
+ * The breaks line up with the plan boundaries ($299 Starter Visibility,
+ * $599 Business Growth, $900 Premium Digital Growth), so an answer says which
+ * plan the enquiry is really about. The last option is for one-off websites
+ * and logos, which have no monthly fee.
  *
  * If the plan prices change, change these with them.
  */
 export const budgetRanges = [
   "Not sure yet",
-  "Under $950 a month",
-  "$950 – $1,850 a month",
-  "$1,850 – $3,500 a month",
-  "$3,500+ a month",
+  "Under $299 a month",
+  "$299 – $599 a month",
+  "$599 – $900 a month",
+  "$900+ a month",
   "One-off project, not monthly",
 ];
 

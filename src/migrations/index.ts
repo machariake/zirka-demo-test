@@ -12,6 +12,7 @@ import * as migration_20260928_195733_social_links_and_email from './20260928_19
 import * as migration_20260928_201100_floating_whatsapp_and_translation from './20260928_201100_floating_whatsapp_and_translation';
 import * as migration_20260928_235141_social_account_links from './20260928_235141_social_account_links';
 import * as migration_20261114_191500_update_one_off_website_pricing from './20261114_191500_update_one_off_website_pricing';
+import * as migration_20261120_011500_social_media_and_website_stripe_pricing from './20261120_011500_social_media_and_website_stripe_pricing';
 
 export const migrations = [
   {
@@ -83,5 +84,10 @@ export const migrations = [
     up: migration_20261114_191500_update_one_off_website_pricing.up,
     down: migration_20261114_191500_update_one_off_website_pricing.down,
     name: '20261114_191500_update_one_off_website_pricing'
+  },
+  {
+    up: migration_20261120_011500_social_media_and_website_stripe_pricing.up,
+    down: migration_20261120_011500_social_media_and_website_stripe_pricing.down,
+    name: '20261120_011500_social_media_and_website_stripe_pricing'
   },
 ];

@@ -737,17 +737,21 @@ export interface SolutionCategory {
 export interface Engagement {
   id: number;
   /**
-   * e.g. "Zirka Growth"
+   * e.g. "Business Growth"
    */
   name: string;
   /**
-   * e.g. "From $950" or "Custom Quote"
+   * e.g. "$599" or "Custom Quote"
    */
   price: string;
   /**
    * e.g. "per month" or "one-off scope"
    */
   cadence: string;
+  /**
+   * Optional direct payment URL (e.g. "https://buy.stripe.com/...").
+   */
+  checkoutUrl?: string | null;
   summary: string;
   includes?:
     | {
@@ -773,13 +777,17 @@ export interface Engagement {
 export interface ProjectPricing {
   id: number;
   /**
-   * e.g. "Business Websites"
+   * e.g. "Business Website (3–5 pages)"
    */
   name: string;
   /**
-   * e.g. "from $1,500"
+   * e.g. "$2,000"
    */
   price: string;
+  /**
+   * Optional direct payment URL (e.g. "https://buy.stripe.com/...").
+   */
+  checkoutUrl?: string | null;
   /**
    * Optional one-line clarification shown under the name.
    */
@@ -1331,6 +1339,7 @@ export interface EngagementsSelect<T extends boolean = true> {
   name?: T;
   price?: T;
   cadence?: T;
+  checkoutUrl?: T;
   summary?: T;
   includes?:
     | T
@@ -1351,6 +1360,7 @@ export interface EngagementsSelect<T extends boolean = true> {
 export interface ProjectPricingSelect<T extends boolean = true> {
   name?: T;
   price?: T;
+  checkoutUrl?: T;
   note?: T;
   order?: T;
   updatedAt?: T;

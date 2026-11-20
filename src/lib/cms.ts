@@ -1,7 +1,12 @@
 import { getPayload, type Where } from "payload";
 import config from "@payload-config";
 import type { Service, CaseStudy, TeamMember, Faq, Engagement, Testimonial, Project, Post } from "@/payload-types";
-import { services as seedServices, projectPricing as seedProjectPricing } from "@/lib/data";
+import {
+  services as seedServices,
+  engagements as seedEngagements,
+  projectPricing as seedProjectPricing,
+  resolveCheckoutUrl,
+} from "@/lib/data";
 import { isSiteTheme, type SiteThemeId } from "@/lib/site-themes";
 import { DEFAULT_EMAIL, whatsappDigits } from "@/lib/contact";
 
@@ -479,30 +484,84 @@ export const getValues = async () => {
   return docs.map((v) => ({ name: v.name, description: v.description }));
 };
 
+const LEGACY_ENGAGEMENT_MAP: Record<string, { name: string; price: string }> = {
+  "zirka starter": { name: "Starter Visibility", price: "$299" },
+  "zirka growth": { name: "Business Growth", price: "$599" },
+  "zirka scale": { name: "Premium Digital Growth", price: "$900" },
+};
+
+const LEGACY_PROJECT_MAP: Record<string, { name: string; price: string }> = {
+  "landing pages": { name: "Landing Page", price: "$997" },
+  "business websites": { name: "Business Website (3–5 pages)", price: "$2,000" },
+  "business websites (3-5 pages)": { name: "Business Website (3–5 pages)", price: "$2,000" },
+  "business website (3-5 pages)": { name: "Business Website (3–5 pages)", price: "$2,000" },
+  "large business website (6-10 pages)": { name: "Large Business Website (6–10 pages)", price: "$4,000" },
+  "website care & maintenance": { name: "Website Care", price: "$129/mo" },
+};
+
 export const getEngagements = async () => {
-  const docs = await findAll<Engagement>("engagements");
-  return docs.map((e) => ({
+  try {
+    const docs = await findAll<Engagement>("engagements");
+    if (docs && docs.length > 0) {
+      return docs.map((e) => {
+        const legacy = LEGACY_ENGAGEMENT_MAP[e.name.trim().toLowerCase()];
+        const name = legacy ? legacy.name : e.name;
+        const price = legacy ? legacy.price : e.price;
+        return {
+          name,
+          price,
+          cadence: e.cadence,
+          summary: e.summary,
+          includes: (e.includes ?? []).map((i) => i.label),
+          featured: Boolean(e.featured),
+          checkoutUrl: resolveCheckoutUrl(name, e.checkoutUrl),
+        };
+      });
+    }
+  } catch (err) {
+    console.error("Failed to fetch engagements from CMS, using fallback", err);
+  }
+  return seedEngagements.map((e) => ({
     name: e.name,
     price: e.price,
     cadence: e.cadence,
     summary: e.summary,
-    includes: (e.includes ?? []).map((i) => i.label),
+    includes: e.includes,
     featured: Boolean(e.featured),
+    checkoutUrl: resolveCheckoutUrl(e.name, e.checkoutUrl),
   }));
 };
 
 export const getProjectPricing = async () => {
   try {
-    const docs = await findAll<{ name: string; price: string; note?: string | null }>(
-      "project-pricing"
-    );
+    const docs = await findAll<{
+      name: string;
+      price: string;
+      note?: string | null;
+      checkoutUrl?: string | null;
+    }>("project-pricing");
     if (docs && docs.length > 0) {
-      return docs.map((p) => ({ name: p.name, price: p.price, note: p.note ?? "" }));
+      return docs.map((p) => {
+        const legacy = LEGACY_PROJECT_MAP[p.name.trim().toLowerCase()];
+        const name = legacy ? legacy.name : p.name;
+        const price = legacy ? legacy.price : p.price;
+        return {
+          name,
+          price,
+          note: p.note ?? "",
+          checkoutUrl: resolveCheckoutUrl(name, p.checkoutUrl),
+        };
+      });
     }
   } catch (err) {
     console.error("Failed to fetch project pricing from CMS, using fallback", err);
   }
-  return seedProjectPricing.map((p) => ({ name: p.name, price: p.price, note: "" }));
+  return seedProjectPricing.map((p) => ({
+    name: p.name,
+    price: p.price,
+    note: p.note ?? "",
+    checkoutUrl: resolveCheckoutUrl(p.name, p.checkoutUrl),
+  }));
 };
 
 export type TestimonialView = {

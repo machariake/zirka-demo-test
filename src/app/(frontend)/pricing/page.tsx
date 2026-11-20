@@ -11,7 +11,7 @@ import { pageMeta } from "@/lib/seo";
 export const metadata: Metadata = pageMeta({
   title: "Pricing",
   description:
-    "Zirka Digital Solutions pricing: monthly marketing plans from $950, and one-off projects including websites, branding, SEO audits and automation.",
+    "Zirka Digital Solutions pricing: social media management plans from $299/mo, website packages from $997, and one-off projects including branding, SEO audits and automation.",
   path: "/pricing",
 });
 
@@ -54,8 +54,9 @@ export default async function PricingPage() {
               <div>
                 <dt>Advertising budget is separate</dt>
                 <dd>
-                  On the Growth and Scale plans, what you spend with Meta or Google on advertising
-                  is separate from our fee. Our fee covers planning and running those campaigns.
+                  On the Business Growth and Premium Digital Growth plans, what you spend with Meta
+                  or Google on advertising is separate from our fee. Our fee covers planning and
+                  running those campaigns.
                 </dd>
               </div>
               <div>

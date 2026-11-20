@@ -112,6 +112,7 @@ import {
           name: e.name,
           price: e.price,
           cadence: e.cadence,
+          checkoutUrl: e.checkoutUrl ?? "",
           summary: e.summary,
           includes: e.includes.map((label) => ({ label })),
           order: i,
@@ -126,7 +127,7 @@ import {
     for (const [i, p] of projectPricing.entries()) {
       await payload.create({
         collection: "project-pricing",
-        data: { ...published, name: p.name, price: p.price, order: i },
+        data: { ...published, name: p.name, price: p.price, checkoutUrl: p.checkoutUrl ?? "", order: i },
       });
     }
     console.log(`seeded ${projectPricing.length} project prices`);
