@@ -1,13 +1,17 @@
 import type { Metadata } from "next";
 import PageHeader from "@/components/PageHeader";
 import LegalBody from "@/components/LegalBody";
+import JsonLd from "@/components/JsonLd";
 import { getLegal } from "@/lib/cms";
+import { breadcrumbSchema, webPageSchema } from "@/lib/schema";
 import { pageMeta } from "@/lib/seo";
+
+const REFUNDS_DESCRIPTION =
+  "Read the Zirka Digital Solutions refund policy in plain language, including how deposits, monthly retainers, and completed deliverables are handled.";
 
 export const metadata: Metadata = pageMeta({
   title: "Refund policy",
-  description:
-    "Our refund policy in plain language: when work carried out by Zirka Digital Solutions is refundable, and when it isn't.",
+  description: REFUNDS_DESCRIPTION,
   path: "/refunds",
 });
 
@@ -16,6 +20,19 @@ export default async function RefundsPage() {
 
   return (
     <>
+      <JsonLd
+        data={webPageSchema({
+          title: "Refund Policy | Zirka Digital Solutions",
+          description: REFUNDS_DESCRIPTION,
+          path: "/refunds",
+        })}
+      />
+      <JsonLd
+        data={breadcrumbSchema([
+          { name: "Home", path: "/" },
+          { name: "Refund Policy", path: "/refunds" },
+        ])}
+      />
       <PageHeader eyebrow="Refund policy" title="Deposits and refunds." lede={legal.refundsIntro} />
       <section>
         <div className="wrap prose">

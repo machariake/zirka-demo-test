@@ -3,14 +3,19 @@ import { notFound } from "next/navigation";
 import PageHeader from "@/components/PageHeader";
 import PostCard from "@/components/PostCard";
 import CtaBand from "@/components/CtaBand";
+import JsonLd from "@/components/JsonLd";
 import { getPosts } from "@/lib/cms";
+import { breadcrumbSchema, webPageSchema } from "@/lib/schema";
 import { pageMeta } from "@/lib/seo";
 
+const BLOG_DESCRIPTION =
+  "Actionable guides on social media management, SEO, website development, Meta & Google Ads, and AI automation from Zirka Digital Solutions.";
+
 export const metadata: Metadata = pageMeta({
-  title: "Blog",
-  description:
-    "Practical advice on advertising, SEO, social media, branding and automation from the strategists at Zirka Digital Solutions.",
+  title: "Blog & Marketing Guides",
+  description: BLOG_DESCRIPTION,
   path: "/blog",
+  keywords: ["digital marketing blog", "SEO checklist", "social media pricing", "website guide"],
 });
 
 export default async function BlogPage() {
@@ -20,6 +25,19 @@ export default async function BlogPage() {
 
   return (
     <>
+      <JsonLd
+        data={webPageSchema({
+          title: "Blog & Marketing Guides | Zirka Digital Solutions",
+          description: BLOG_DESCRIPTION,
+          path: "/blog",
+        })}
+      />
+      <JsonLd
+        data={breadcrumbSchema([
+          { name: "Home", path: "/" },
+          { name: "Blog", path: "/blog" },
+        ])}
+      />
       <PageHeader
         eyebrow="Blog"
         title="Marketing advice you can use."

@@ -12,13 +12,14 @@ export async function generateMetadata(): Promise<Metadata> {
   const [work, projects] = await Promise.all([getCaseStudies(), getProjects()]);
   // Describe what is really on the page: no "results" without real case studies.
   return pageMeta({
-    title: "Work",
+    title: "Work & Portfolio",
     description: work.some((w) => !w.sample)
-      ? "Client case studies from Zirka Digital Solutions — the challenge, what we did and the result — alongside projects we've delivered."
+      ? "Explore real client case studies, custom websites, SEO campaigns, and digital marketing projects delivered by Zirka Digital Solutions."
       : projects.length > 0
-        ? "Websites, brands and campaigns Zirka Digital Solutions has delivered for real clients, plus concept projects showing how we think."
-        : "Concept projects from Zirka Digital Solutions showing the strategy and creative direction we bring to digital marketing work.",
+        ? "Explore delivered websites, brands, and digital campaigns from Zirka Digital Solutions alongside strategic concept projects for growing businesses."
+        : "Explore digital marketing, SEO, branding, and website strategy concepts from Zirka Digital Solutions showing how we turn clicks into customers.",
     path: "/work",
+    keywords: ["digital marketing portfolio", "website design case studies", "SEO work examples"],
   });
 }
 

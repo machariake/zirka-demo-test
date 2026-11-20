@@ -22,7 +22,7 @@ import { whatsappUrl } from "@/lib/contact";
 import { relatedServices } from "@/lib/related";
 import ServiceCard from "@/components/ServiceCard";
 import ShareButton from "@/components/ShareButton";
-import { serviceSchema, breadcrumbSchema } from "@/lib/schema";
+import { breadcrumbSchema, faqSchema, serviceSchema } from "@/lib/schema";
 import { pageMeta } from "@/lib/seo";
 
 type Props = { params: Promise<{ slug: string }> };
@@ -80,6 +80,7 @@ export default async function ServicePage({ params }: Props) {
           { name: service.name, path: `/services/${service.slug}` },
         ])}
       />
+      {service.faqs.length > 0 && <JsonLd data={faqSchema(service.faqs)} />}
 
       <div className={`service-hero ${service.plate}`}>
         <Image

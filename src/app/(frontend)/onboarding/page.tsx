@@ -2,15 +2,19 @@ import type { Metadata } from "next";
 import Link from "next/link";
 import PageHeader from "@/components/PageHeader";
 import OnboardingForm, { PAID_PACKAGE_OPTIONS } from "@/components/OnboardingForm";
+import JsonLd from "@/components/JsonLd";
 import { WhatsAppIcon } from "@/components/Icons";
 import { getFeatures, getSettings } from "@/lib/cms";
 import { whatsappUrl } from "@/lib/contact";
+import { breadcrumbSchema, webPageSchema } from "@/lib/schema";
 import { pageMeta } from "@/lib/seo";
+
+const ONBOARDING_DESCRIPTION =
+  "Completed your Stripe payment with Zirka Digital Solutions? Submit your 2-minute client onboarding brief so your strategist kicks off within 24 hours.";
 
 export const metadata: Metadata = pageMeta({
   title: "Client Onboarding",
-  description:
-    "Completed your Stripe payment with Zirka Digital Solutions? Submit your quick 2-minute onboarding details so our team can kick off your service within 24 hours.",
+  description: ONBOARDING_DESCRIPTION,
   path: "/onboarding",
 });
 
@@ -39,6 +43,19 @@ export default async function OnboardingPage({ searchParams }: Props) {
 
   return (
     <>
+      <JsonLd
+        data={webPageSchema({
+          title: "Client Onboarding | Zirka Digital Solutions",
+          description: ONBOARDING_DESCRIPTION,
+          path: "/onboarding",
+        })}
+      />
+      <JsonLd
+        data={breadcrumbSchema([
+          { name: "Home", path: "/" },
+          { name: "Client Onboarding", path: "/onboarding" },
+        ])}
+      />
       <PageHeader
         eyebrow="Payment confirmed · Next steps"
         title="Let&rsquo;s kick off your service."

@@ -3,32 +3,52 @@ import PageHeader from "@/components/PageHeader";
 import Engagements from "@/components/Engagements";
 import CtaBand from "@/components/CtaBand";
 import JsonLd from "@/components/JsonLd";
-import { breadcrumbSchema } from "@/lib/schema";
-import { getFeatures } from "@/lib/cms";
+import { breadcrumbSchema, pricingCatalogSchema, webPageSchema } from "@/lib/schema";
+import { getEngagements, getFeatures, getProjectPricing } from "@/lib/cms";
 import { notFound } from "next/navigation";
 import { pageMeta } from "@/lib/seo";
 
+const PRICING_DESCRIPTION =
+  "Zirka Digital Solutions pricing: social media management plans from $299/mo, website packages from $997, and one-off SEO, branding and automation projects.";
+
 export const metadata: Metadata = pageMeta({
   title: "Pricing",
-  description:
-    "Zirka Digital Solutions pricing: social media management plans from $299/mo, website packages from $997, and one-off projects including branding, SEO audits and automation.",
+  description: PRICING_DESCRIPTION,
   path: "/pricing",
+  keywords: [
+    "social media management pricing",
+    "website design pricing",
+    "landing page package",
+    "marketing agency retainer",
+  ],
 });
 
 export default async function PricingPage() {
   // The same switch that hides pricing on the homepage hides this page, so the
   // team never ends up with a live page the rest of the site no longer links to.
-  const features = await getFeatures();
+  const [features, engagements, projectPrices] = await Promise.all([
+    getFeatures(),
+    getEngagements(),
+    getProjectPricing(),
+  ]);
   if (!features.showPricing) notFound();
 
   return (
     <>
+      <JsonLd
+        data={webPageSchema({
+          title: "Pricing | Zirka Digital Solutions",
+          description: PRICING_DESCRIPTION,
+          path: "/pricing",
+        })}
+      />
       <JsonLd
         data={breadcrumbSchema([
           { name: "Home", path: "/" },
           { name: "Pricing", path: "/pricing" },
         ])}
       />
+      <JsonLd data={pricingCatalogSchema(engagements, projectPrices)} />
 
       <PageHeader
         eyebrow="Pricing"

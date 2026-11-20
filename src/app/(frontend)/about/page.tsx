@@ -6,13 +6,16 @@ import TeamSection from "@/components/TeamSection";
 import { getTeam, getValues, getFeatures, getSettings } from "@/lib/cms";
 import { pageMeta } from "@/lib/seo";
 import JsonLd from "@/components/JsonLd";
-import { breadcrumbSchema } from "@/lib/schema";
+import { breadcrumbSchema, webPageSchema } from "@/lib/schema";
+
+const ABOUT_DESCRIPTION =
+  "Learn how Zirka Digital Solutions helps growing businesses turn clicks into customers with senior-led SEO, social media management, websites, ads, and automation.";
 
 export const metadata: Metadata = pageMeta({
   title: "About",
-  description:
-    "Who Zirka Digital Solutions is, how we work and what we stand for: a digital marketing agency for growing businesses.",
+  description: ABOUT_DESCRIPTION,
   path: "/about",
+  keywords: ["about Zirka Digital Solutions", "digital marketing agency team", "growth marketing agency"],
 });
 
 export default async function AboutPage() {
@@ -25,6 +28,13 @@ export default async function AboutPage() {
 
   return (
     <>
+      <JsonLd
+        data={webPageSchema({
+          title: "About | Zirka Digital Solutions",
+          description: ABOUT_DESCRIPTION,
+          path: "/about",
+        })}
+      />
       <JsonLd
         data={breadcrumbSchema([
           { name: "Home", path: "/" },
@@ -79,6 +89,55 @@ export default async function AboutPage() {
       )}
 
       {features.showLeadership && <TeamSection team={team} />}
+
+      <section className="section--panel">
+        <div className="wrap">
+          <div className="section-head">
+            <div>
+              <span className="eyebrow">Why Zirka</span>
+              <h2>One connected growth system instead of disconnected vendors.</h2>
+            </div>
+            <p>
+              Most agencies specialize in one silo — running ads to a slow website, or posting on
+              social media with no lead capture. We build the entire customer journey together.
+            </p>
+          </div>
+          <div className="approach">
+            <div className="step">
+              <span className="idx">01</span>
+              <h3>Search &amp; Local Visibility</h3>
+              <p>
+                Technical SEO, on-page optimization, and Google Business Profile management so high-intent
+                buyers find your business first on Google Search and Google Maps.
+              </p>
+            </div>
+            <div className="step">
+              <span className="idx">02</span>
+              <h3>Social Media &amp; Content</h3>
+              <p>
+                Consistent, branded content across Instagram, Facebook, LinkedIn, and TikTok paired with
+                paid social campaigns designed to generate real enquiries.
+              </p>
+            </div>
+            <div className="step">
+              <span className="idx">03</span>
+              <h3>High-Converting Websites</h3>
+              <p>
+                Fast, mobile-first landing pages and business websites engineered for speed, clear
+                messaging, and effortless Stripe checkout or lead capture.
+              </p>
+            </div>
+            <div className="step">
+              <span className="idx">04</span>
+              <h3>WhatsApp &amp; AI Automation</h3>
+              <p>
+                Automated response workflows and lead qualification systems that answer questions within
+                seconds, capture after-hours prospects, and book calls directly.
+              </p>
+            </div>
+          </div>
+        </div>
+      </section>
 
       <CtaBand heading="Want to work together?" />
     </>

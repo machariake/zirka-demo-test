@@ -28,7 +28,7 @@ const urbanist = Urbanist({
  * Rebuilding at most once a minute means edits made in admin appear on the live
  * site shortly after saving, without a page hitting the database on every visit.
  */
-export const revalidate = 60;
+export const revalidate = 300;
 
 const description =
   "Zirka Digital Solutions is a digital marketing agency running performance media, SEO, social, and web experience for growing brands.";
@@ -84,6 +84,8 @@ export default async function RootLayout({ children }: LayoutProps<"/">) {
       suppressHydrationWarning
     >
       <head>
+        <link rel="preconnect" href="https://www.googletagmanager.com" />
+        <link rel="dns-prefetch" href="https://www.googletagmanager.com" />
         <script dangerouslySetInnerHTML={{ __html: themeScript }} />
       </head>
       <body suppressHydrationWarning>

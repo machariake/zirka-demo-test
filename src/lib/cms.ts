@@ -1,3 +1,4 @@
+import { cache } from "react";
 import { getPayload, type Where } from "payload";
 import config from "@payload-config";
 import type { Service, CaseStudy, TeamMember, Faq, Engagement, Testimonial, Project, Post } from "@/payload-types";
@@ -7,6 +8,7 @@ import {
   projectPricing as seedProjectPricing,
   resolveCheckoutUrl,
 } from "@/lib/data";
+import { STARTER_ARTICLES, getStarterArticle, type ArticleSection } from "@/lib/seo-articles";
 import { isSiteTheme, type SiteThemeId } from "@/lib/site-themes";
 import { DEFAULT_EMAIL, whatsappDigits } from "@/lib/contact";
 
@@ -87,10 +89,10 @@ const toServiceView = (s: Service): ServiceView => ({
   alt: altOf(s.image as MediaLike, s.name),
 });
 
-export const getServices = async (): Promise<ServiceView[]> => {
+export const getServices = cache(async (): Promise<ServiceView[]> => {
   const docs = await findAll<Service>("services");
   return docs.map(toServiceView);
-};
+});
 
 export type WorkView = {
   slug: string;
@@ -288,45 +290,85 @@ const postWhere = (extra?: Where): Where => ({
   and: [published, { publishedAt: { less_than_equal: new Date().toISOString() } }, ...(extra ? [extra] : [])],
 });
 
-export const getPosts = async (limit = 100): Promise<PostView[]> => {
+export const getPosts = cache(async (limit = 100): Promise<PostView[]> => {
+  let cmsPosts: PostView[] = [];
   try {
     const payload = await getCms();
     const { docs } = await payload.find({ collection: "posts", limit, sort: "-publishedAt", depth: 1, where: postWhere() });
-    return (docs as Post[]).map(toPostView);
+    cmsPosts = (docs as Post[]).map(toPostView);
   } catch {
-    return [];
+    cmsPosts = [];
   }
-};
 
-export const hasPosts = async () => (await getPosts(1)).length > 0;
+  const seen = new Set(cmsPosts.map((p) => p.slug));
+  const starterViews: PostView[] = STARTER_ARTICLES.filter((a) => !seen.has(a.slug)).map((a) => ({
+    slug: a.slug,
+    title: a.title,
+    excerpt: a.excerpt,
+    topic: a.topic,
+    publishedAt: a.publishedAt,
+    image: a.image,
+    alt: a.alt,
+    author: a.author,
+  }));
+
+  return [...cmsPosts, ...starterViews].slice(0, limit);
+});
+
+export const hasPosts = cache(async () => (await getPosts(1)).length > 0);
 
 export type PostDetailView = PostView & {
-  content: Post["content"];
+  content: Post["content"] | null;
+  sections?: ArticleSection[];
   heroImage: string | null;
   seoTitle: string;
   seoDescription: string;
   updatedAt: string;
 };
 
-export const getPost = async (slug: string): Promise<PostDetailView | null> => {
-  const payload = await getCms();
-  const { docs } = await payload.find({
-    collection: "posts",
-    limit: 1,
-    depth: 1,
-    where: postWhere({ slug: { equals: slug } }),
-  });
-  const p = docs[0] as Post | undefined;
-  if (!p) return null;
+export const getPost = cache(async (slug: string): Promise<PostDetailView | null> => {
+  try {
+    const payload = await getCms();
+    const { docs } = await payload.find({
+      collection: "posts",
+      limit: 1,
+      depth: 1,
+      where: postWhere({ slug: { equals: slug } }),
+    });
+    const p = docs[0] as Post | undefined;
+    if (p) {
+      return {
+        ...toPostView(p),
+        content: p.content,
+        heroImage: wideUrlOf(p.cover as MediaLike, "") || null,
+        seoTitle: p.seo?.title ?? "",
+        seoDescription: p.seo?.description ?? "",
+        updatedAt: p.updatedAt,
+      };
+    }
+  } catch {
+    // Fall through to starter articles.
+  }
+
+  const starter = getStarterArticle(slug);
+  if (!starter) return null;
   return {
-    ...toPostView(p),
-    content: p.content,
-    heroImage: wideUrlOf(p.cover as MediaLike, "") || null,
-    seoTitle: p.seo?.title ?? "",
-    seoDescription: p.seo?.description ?? "",
-    updatedAt: p.updatedAt,
+    slug: starter.slug,
+    title: starter.title,
+    excerpt: starter.excerpt,
+    topic: starter.topic,
+    publishedAt: starter.publishedAt,
+    image: starter.image,
+    alt: starter.alt,
+    author: starter.author,
+    content: null,
+    sections: starter.sections,
+    heroImage: starter.image,
+    seoTitle: starter.seoTitle,
+    seoDescription: starter.seoDescription,
+    updatedAt: starter.updatedAt,
   };
-};
+});
 
 /** Addresses and edit dates for the sitemap. */
 export const getProjectSitemap = async () => {
@@ -344,17 +386,30 @@ export const getProjectSitemap = async () => {
 };
 
 export const getPostSitemap = async () => {
-  const payload = await getCms();
-  const { docs } = await payload.find({
-    collection: "posts",
-    limit: 1000,
-    depth: 0,
-    where: postWhere(),
-    select: { slug: true, updatedAt: true },
-  });
-  return (docs as { slug?: string | null; updatedAt: string }[])
-    .filter((d) => d.slug)
-    .map((d) => ({ slug: d.slug as string, updatedAt: d.updatedAt }));
+  let cmsEntries: { slug: string; updatedAt: string }[] = [];
+  try {
+    const payload = await getCms();
+    const { docs } = await payload.find({
+      collection: "posts",
+      limit: 1000,
+      depth: 0,
+      where: postWhere(),
+      select: { slug: true, updatedAt: true },
+    });
+    cmsEntries = (docs as { slug?: string | null; updatedAt: string }[])
+      .filter((d) => d.slug)
+      .map((d) => ({ slug: d.slug as string, updatedAt: d.updatedAt }));
+  } catch {
+    cmsEntries = [];
+  }
+
+  const seen = new Set(cmsEntries.map((d) => d.slug));
+  const starterEntries = STARTER_ARTICLES.filter((a) => !seen.has(a.slug)).map((a) => ({
+    slug: a.slug,
+    updatedAt: a.updatedAt,
+  }));
+
+  return [...cmsEntries, ...starterEntries];
 };
 
 export type ServiceDetailView = ServiceView & {
@@ -465,10 +520,10 @@ export const getCaseStudySitemap = async () => {
     .map((d) => ({ slug: d.slug as string, updatedAt: d.updatedAt }));
 };
 
-export const getFaqs = async () => {
+export const getFaqs = cache(async () => {
   const docs = await findAll<Faq>("faqs");
   return docs.map((f) => ({ q: f.question, a: f.answer }));
-};
+});
 
 export const getProcessSteps = async () => {
   const docs = await findAll<{ name: string; description: string }>("process-steps");
@@ -499,7 +554,7 @@ const LEGACY_PROJECT_MAP: Record<string, { name: string; price: string }> = {
   "website care & maintenance": { name: "Website Care", price: "$129/mo" },
 };
 
-export const getEngagements = async () => {
+export const getEngagements = cache(async () => {
   try {
     const docs = await findAll<Engagement>("engagements");
     if (docs && docs.length > 0) {
@@ -530,9 +585,9 @@ export const getEngagements = async () => {
     featured: Boolean(e.featured),
     checkoutUrl: resolveCheckoutUrl(e.name, e.checkoutUrl),
   }));
-};
+});
 
-export const getProjectPricing = async () => {
+export const getProjectPricing = cache(async () => {
   try {
     const docs = await findAll<{
       name: string;
@@ -562,7 +617,7 @@ export const getProjectPricing = async () => {
     note: p.note ?? "",
     checkoutUrl: resolveCheckoutUrl(p.name, p.checkoutUrl),
   }));
-};
+});
 
 export type TestimonialView = {
   quote: string;
@@ -631,7 +686,7 @@ const FEATURE_DEFAULTS = {
 export type FeatureFlags = typeof FEATURE_DEFAULTS;
 
 /** The site theme chosen in Features → Theme; Emerald when unset or unknown. */
-export const getSiteTheme = async (): Promise<SiteThemeId> => {
+export const getSiteTheme = cache(async (): Promise<SiteThemeId> => {
   try {
     const payload = await getCms();
     const f = (await payload.findGlobal({ slug: "features", depth: 0 })) as { siteTheme?: string | null };
@@ -639,7 +694,7 @@ export const getSiteTheme = async (): Promise<SiteThemeId> => {
   } catch {
     return "emerald";
   }
-};
+});
 
 /** When audit findings are promised, from Features → Enquiry alerts; null when not set. */
 export const getAuditReplyTime = async (): Promise<string | null> => {
@@ -667,7 +722,7 @@ export const getSiteVerification = async (): Promise<{ google: string | null; bi
 };
 
 /** The owner's GA4 measurement ID from Features → Visitor analytics, or null when unset. */
-export const getGaMeasurementId = async (): Promise<string | null> => {
+export const getGaMeasurementId = cache(async (): Promise<string | null> => {
   try {
     const payload = await getCms();
     const f = (await payload.findGlobal({ slug: "features", depth: 0 })) as { gaMeasurementId?: string | null };
@@ -677,7 +732,7 @@ export const getGaMeasurementId = async (): Promise<string | null> => {
     const fallback = (process.env.NEXT_PUBLIC_GA_MEASUREMENT_ID || process.env.GA_MEASUREMENT_ID || "G-SD30NWN2XE").toUpperCase();
     return /^G-[A-Z0-9]{4,20}$/.test(fallback) ? fallback : null;
   }
-};
+});
 
 /**
  * Until the Features page is first saved its values are empty, so an unset
@@ -685,7 +740,7 @@ export const getGaMeasurementId = async (): Promise<string | null> => {
  * Read through the local API, which is how the public site reads this
  * super-admin-only global without exposing it.
  */
-export const getFeatures = async (): Promise<FeatureFlags> => {
+export const getFeatures = cache(async (): Promise<FeatureFlags> => {
   const payload = await getCms();
   const f = (await payload.findGlobal({ slug: "features", depth: 0 })) as unknown as Record<string, unknown>;
   const flags = { ...FEATURE_DEFAULTS };
@@ -693,7 +748,7 @@ export const getFeatures = async (): Promise<FeatureFlags> => {
     if (typeof f[key] === "boolean") flags[key] = f[key] as boolean;
   }
   return flags;
-};
+});
 
 /** What the maintenance notice says, as set under Features → Maintenance. */
 export const getMaintenance = async () => {
@@ -716,7 +771,7 @@ export type SolutionCategoryView = {
 };
 
 /** The four solution categories (brief §5), each with its published services. */
-export const getSolutionCategories = async (): Promise<SolutionCategoryView[]> => {
+export const getSolutionCategories = cache(async (): Promise<SolutionCategoryView[]> => {
   const docs = await findAll<{
     name: string;
     slug: string;
@@ -732,7 +787,7 @@ export const getSolutionCategories = async (): Promise<SolutionCategoryView[]> =
       .filter((s): s is Service => typeof s === "object" && s !== null && s._status === "published")
       .map((s) => ({ name: s.name, slug: s.slug, short: s.short })),
   }));
-};
+});
 
 export type LegalContent = {
   entity: string;
@@ -762,7 +817,7 @@ export const getLegal = async (): Promise<LegalContent> => {
   };
 };
 
-export const getSettings = async () => {
+export const getSettings = cache(async () => {
   const payload = await getCms();
   const s = await payload.findGlobal({ slug: "site-settings", depth: 1 });
   return {
@@ -820,4 +875,4 @@ export const getSettings = async () => {
     projectPricingNote:
       s.projectPricingNote || "Final pricing depends on project scope and requirements.",
   };
-};
+});

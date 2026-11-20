@@ -5,15 +5,18 @@ import ContactForm from "@/components/ContactForm";
 import { getSettings, getFeatures } from "@/lib/cms";
 import { pageMeta } from "@/lib/seo";
 import JsonLd from "@/components/JsonLd";
-import { breadcrumbSchema } from "@/lib/schema";
+import { breadcrumbSchema, webPageSchema } from "@/lib/schema";
 import { WHATSAPP_GREETING, whatsappUrl } from "@/lib/contact";
 import { SocialIcon } from "@/components/Icons";
 
+const CONTACT_DESCRIPTION =
+  "Contact Zirka Digital Solutions for social media management, SEO, custom website development, or a free marketing audit via WhatsApp, email, or a strategy call.";
+
 export const metadata: Metadata = pageMeta({
   title: "Contact",
-  description:
-    "Get in touch with Zirka Digital Solutions. Tell us what you're trying to solve, or request a free marketing audit.",
+  description: CONTACT_DESCRIPTION,
   path: "/contact",
+  keywords: ["contact Zirka Digital Solutions", "digital marketing agency WhatsApp", "free marketing audit"],
 });
 
 export default async function ContactPage() {
@@ -24,6 +27,13 @@ export default async function ContactPage() {
 
   return (
     <>
+      <JsonLd
+        data={webPageSchema({
+          title: "Contact | Zirka Digital Solutions",
+          description: CONTACT_DESCRIPTION,
+          path: "/contact",
+        })}
+      />
       <JsonLd
         data={breadcrumbSchema([
           { name: "Home", path: "/" },

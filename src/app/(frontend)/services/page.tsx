@@ -6,14 +6,23 @@ import ServiceCard from "@/components/ServiceCard";
 import ShareButton from "@/components/ShareButton";
 import JsonLd from "@/components/JsonLd";
 import { getServices, getSolutionCategories } from "@/lib/cms";
-import { breadcrumbSchema } from "@/lib/schema";
+import { breadcrumbSchema, servicesCatalogSchema, webPageSchema } from "@/lib/schema";
 import { pageMeta } from "@/lib/seo";
+
+const SERVICES_DESCRIPTION =
+  "Explore 14 digital marketing services from Zirka Digital Solutions: social media management, custom website development, SEO, paid ads, branding, and AI automation.";
 
 export const metadata: Metadata = pageMeta({
   title: "Services",
-  description:
-    "Digital advertising, social media, websites, SEO, content, WhatsApp marketing, AI automation and more — every service Zirka Digital Solutions offers.",
+  description: SERVICES_DESCRIPTION,
   path: "/services",
+  keywords: [
+    "digital marketing services",
+    "social media management",
+    "website development",
+    "local SEO services",
+    "WhatsApp marketing",
+  ],
 });
 
 export default async function ServicesPage() {
@@ -27,11 +36,19 @@ export default async function ServicesPage() {
   return (
     <>
       <JsonLd
+        data={webPageSchema({
+          title: "Services | Zirka Digital Solutions",
+          description: SERVICES_DESCRIPTION,
+          path: "/services",
+        })}
+      />
+      <JsonLd
         data={breadcrumbSchema([
           { name: "Home", path: "/" },
           { name: "Services", path: "/services" },
         ])}
       />
+      {services.length > 0 && <JsonLd data={servicesCatalogSchema(services)} />}
 
       <PageHeader
         eyebrow="What we do"

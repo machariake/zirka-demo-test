@@ -22,6 +22,7 @@ export default async function sitemap(): Promise<MetadataRoute.Sitemap> {
     ...(features.quotesEnabled
       ? [{ url: `${SITE_URL}/quote`, changeFrequency: "monthly" as const, priority: 0.9 }]
       : []),
+    { url: `${SITE_URL}/onboarding`, changeFrequency: "monthly", priority: 0.6 },
     { url: `${SITE_URL}/privacy`, changeFrequency: "yearly", priority: 0.2 },
     { url: `${SITE_URL}/terms`, changeFrequency: "yearly", priority: 0.2 },
     { url: `${SITE_URL}/refunds`, changeFrequency: "yearly", priority: 0.2 },

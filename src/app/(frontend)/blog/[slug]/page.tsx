@@ -8,11 +8,16 @@ import CtaBand from "@/components/CtaBand";
 import JsonLd from "@/components/JsonLd";
 import PostCard, { formatPostDate } from "@/components/PostCard";
 import { ArrowIcon } from "@/components/Icons";
-import { getPost, getPosts } from "@/lib/cms";
+import { getPost, getPostSitemap, getPosts } from "@/lib/cms";
 import { pageMeta } from "@/lib/seo";
 import { articleSchema, breadcrumbSchema } from "@/lib/schema";
 
 type Props = { params: Promise<{ slug: string }> };
+
+export async function generateStaticParams() {
+  const posts = await getPostSitemap();
+  return posts.map((p) => ({ slug: p.slug }));
+}
 
 export async function generateMetadata({ params }: Props): Promise<Metadata> {
   const { slug } = await params;
@@ -74,7 +79,27 @@ export default async function PostPage({ params }: Props) {
               </div>
             )}
             <p className="article__lede">{post.excerpt}</p>
-            <RichText className="article__body prose" data={post.content} />
+            {post.content ? (
+              <RichText className="article__body prose" data={post.content} />
+            ) : (
+              <div className="article__body prose">
+                {(post.sections ?? []).map((section) => (
+                  <section key={section.heading}>
+                    <h2>{section.heading}</h2>
+                    {section.paragraphs.map((p, idx) => (
+                      <p key={idx}>{p}</p>
+                    ))}
+                    {section.bullets && section.bullets.length > 0 && (
+                      <ul>
+                        {section.bullets.map((b, idx) => (
+                          <li key={idx}>{b}</li>
+                        ))}
+                      </ul>
+                    )}
+                  </section>
+                ))}
+              </div>
+            )}
           </article>
 
           {more.length > 0 && (

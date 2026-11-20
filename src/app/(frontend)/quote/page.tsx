@@ -2,15 +2,20 @@ import type { Metadata } from "next";
 import Link from "next/link";
 import PageHeader from "@/components/PageHeader";
 import QuoteForm from "@/components/QuoteForm";
+import JsonLd from "@/components/JsonLd";
 import { getCms, getEngagements, getFeatures, getProjectPricing, getServices, getSettings } from "@/lib/cms";
+import { breadcrumbSchema, webPageSchema } from "@/lib/schema";
 import { pageMeta } from "@/lib/seo";
 import { WHATSAPP_GREETING, whatsappUrl } from "@/lib/contact";
 
+const QUOTE_DESCRIPTION =
+  "Request a custom quote from Zirka Digital Solutions for social media management, websites, SEO, paid advertising, branding, or AI automation.";
+
 export const metadata: Metadata = pageMeta({
   title: "Get a quote",
-  description:
-    "Request a quote from Zirka Digital Solutions: choose the services you need, tell us your budget, and we'll reply with a clear price.",
+  description: QUOTE_DESCRIPTION,
   path: "/quote",
+  keywords: ["marketing agency quote", "website design quote", "SEO quote"],
 });
 
 type Props = { searchParams: Promise<{ service?: string; plan?: string }> };
@@ -74,6 +79,19 @@ export default async function QuotePage({ searchParams }: Props) {
 
   return (
     <>
+      <JsonLd
+        data={webPageSchema({
+          title: "Get a Quote | Zirka Digital Solutions",
+          description: QUOTE_DESCRIPTION,
+          path: "/quote",
+        })}
+      />
+      <JsonLd
+        data={breadcrumbSchema([
+          { name: "Home", path: "/" },
+          { name: "Get a Quote", path: "/quote" },
+        ])}
+      />
       <PageHeader
         eyebrow="Request a quote"
         title={plan ? `Start with ${plan}.` : "Tell us what you need."}

@@ -1,7 +1,18 @@
 import type { Metadata } from "next";
 import PageHeader from "@/components/PageHeader";
+import JsonLd from "@/components/JsonLd";
 import { getFeatures, getGaMeasurementId, getSettings } from "@/lib/cms";
+import { breadcrumbSchema, webPageSchema } from "@/lib/schema";
 import { pageMeta } from "@/lib/seo";
+
+const PRIVACY_DESCRIPTION =
+  "Read how Zirka Digital Solutions collects, uses, and protects your website and enquiry data, including analytics, cookies, and your privacy choices.";
+
+export const metadata: Metadata = pageMeta({
+  title: "Privacy",
+  description: PRIVACY_DESCRIPTION,
+  path: "/privacy",
+});
 import { TURNSTILE_SITE_KEY } from "@/lib/turnstile";
 import { ADS_ENABLED, GOOGLE_ADS_ID, META_PIXEL_ID } from "@/lib/ads";
 
@@ -23,6 +34,19 @@ export default async function PrivacyPage() {
 
   return (
     <>
+      <JsonLd
+        data={webPageSchema({
+          title: "Privacy Policy | Zirka Digital Solutions",
+          description: PRIVACY_DESCRIPTION,
+          path: "/privacy",
+        })}
+      />
+      <JsonLd
+        data={breadcrumbSchema([
+          { name: "Home", path: "/" },
+          { name: "Privacy Policy", path: "/privacy" },
+        ])}
+      />
       <PageHeader
         eyebrow="Privacy"
         title="What we collect, and why."

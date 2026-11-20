@@ -15,7 +15,13 @@ import HeroPackagesHook, { type QuickPackage } from "@/components/HeroPackagesHo
 import Faq from "@/components/Faq";
 import CtaBand from "@/components/CtaBand";
 import JsonLd from "@/components/JsonLd";
-import { organizationSchema, websiteSchema } from "@/lib/schema";
+import {
+  faqSchema,
+  organizationSchema,
+  pricingCatalogSchema,
+  servicesCatalogSchema,
+  websiteSchema,
+} from "@/lib/schema";
 import { pageMeta } from "@/lib/seo";
 import type { Metadata } from "next";
 import { WHATSAPP_GREETING, whatsappUrl } from "@/lib/contact";
@@ -29,12 +35,20 @@ import {
   getProjects,
   getEngagements,
   getProjectPricing,
+  getFaqs,
 } from "@/lib/cms";
 
 export const metadata: Metadata = pageMeta({
   description:
-    "Zirka Digital Solutions helps growing businesses generate more leads and revenue through paid advertising, SEO, websites, content and automation.",
+    "Zirka Digital Solutions is a full-service digital marketing agency offering social media management from $299/mo, custom websites from $997, SEO, ads, and AI automation.",
   path: "/",
+  keywords: [
+    "digital marketing agency",
+    "social media management packages",
+    "business website design",
+    "local SEO agency",
+    "Meta and Google Ads agency",
+  ],
 });
 
 /** Split the headline so the emphasised word can carry the accent colour. */
@@ -51,7 +65,7 @@ function Headline({ text, emphasis }: { text: string; emphasis: string }) {
 }
 
 export default async function Home() {
-  const [settings, services, work, steps, features, categories, projects, engagements, projectPrices] =
+  const [settings, services, work, steps, features, categories, projects, engagements, projectPrices, faqs] =
     await Promise.all([
       getSettings(),
       getServices(),
@@ -62,6 +76,7 @@ export default async function Home() {
       getProjects({ featured: true, limit: 3 }),
       getEngagements(),
       getProjectPricing(),
+      getFaqs(),
     ]);
 
   const placed = new Set(categories.flatMap((c) => c.services.map((s) => s.slug)));
@@ -108,6 +123,11 @@ export default async function Home() {
       {/* The business record every other page's schema points back at. */}
       <JsonLd data={organizationSchema(settings)} />
       <JsonLd data={websiteSchema(settings.companyName)} />
+      {services.length > 0 && <JsonLd data={servicesCatalogSchema(services)} />}
+      {features.showPricing && (engagements.length > 0 || projectPrices.length > 0) && (
+        <JsonLd data={pricingCatalogSchema(engagements, projectPrices)} />
+      )}
+      {features.showFaq && faqs.length > 0 && <JsonLd data={faqSchema(faqs)} />}
 
       {/* 1 — Hook: who we are and the one line that matters */}
       <div className="hero">
